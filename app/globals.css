@@ -34,15 +34,18 @@
 }
 
 .dark {
-  /* Paleta oscura — "pergamino nocturno" (diseñada, no invertida) */
-  --paper: #1c1814;
-  --paper-raised: #242019;
+  /* Paleta oscura — "pergamino nocturno" (diseñada, no invertida).
+     Fondos un paso más claros que el negro-cálido original (pedido 2026-07:
+     "más claro el marrón"): umbral profundo, sigue siendo dark inequívoco.
+     Contraste tinta/papel medido: ink 11.4:1, ink-secondary 6.5:1 (AA). */
+  --paper: #2e2720;
+  --paper-raised: #362e25;
   --ink: #e8e2d4;
   --ink-secondary: #b5ac99;
   --ink-muted: #847b69;
   --accent: #a66a5e;
   --accent-hover: #bc7f72;
-  --hairline: #38322a;
+  --hairline: #463e33;
   --selection: #3a342b;
 
   /* En pergamino nocturno la tinta es hueso: el borde del rollo se sugiere
@@ -118,10 +121,6 @@
   --container-page: 72rem; /* chrome: header / footer / listados */
   --container-prose: 70ch; /* medida de lectura (65–75ch) */
   --container-palette: 36rem; /* panel del command palette (T14) */
-  /* Ancho del form de newsletter (T17). OJO: max-w-sm NO sirve acá —
-     en Tailwind v4 resuelve contra --spacing-sm (0.75rem), no contra la
-     escala de containers. Token propio, como todo lo demás. */
-  --container-form: 24rem;
 
   /* Radius: 0 por defecto; subtle (4px) es el máximo absoluto */
   --radius-subtle: 4px;
@@ -487,7 +486,7 @@
   }
 
   /* Chrome y bloques interactivos fuera: header/footer/nav, PrevNext,
-     Reactions, NewsletterForm, RelatedPosts, palette, cajas de embeds.
+     Reactions, RelatedPosts, palette, cajas de embeds.
      Cada componente marca su raíz con .print-hidden. */
   .print-hidden {
     display: none !important;

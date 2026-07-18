@@ -1,6 +1,6 @@
 # jeffrey-blog
 
-Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear; no hay panel de administración, ni CMS, ni base de datos para los posts. Lo único con backend son dos extras opcionales (reacciones y newsletter) que desaparecen solos si no están configurados.
+Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear; no hay panel de administración, ni CMS, ni base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
 
 ## Cómo agregar un post nuevo
 
@@ -111,12 +111,11 @@ jeffrey-blog/
 │   ├── acerca/  colofon/       # páginas fijas
 │   ├── lab/                    # playground (solo dev)
 │   ├── api/reactions/          # contador de reacciones (Supabase)
-│   ├── api/subscribe/          # alta de newsletter (Buttondown)
 │   └── rss.xml/  sitemap.ts  robots.ts
 ├── content/posts/              # ← los posts (.mdx); acá se escribe
 ├── components/
 │   ├── mdx/                    # YouTube, Spotify, Tweet, LinkCard, …
-│   ├── ui/                     # header, footer, Cmd+K, reacciones, newsletter
+│   ├── ui/                     # header, footer, Cmd+K, reacciones
 │   └── scroll/                 # reveals y sonido de página
 ├── lib/                        # posts, mdx, now.ts, supabase, oembed, …
 ├── types/                      # contrato de frontmatter e índice de búsqueda
@@ -130,7 +129,7 @@ jeffrey-blog/
 
 ## Widget "Ahora"
 
-Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin APIs ni scrobbling — es parte del encanto.
+Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin scrobbling — es parte del encanto. Las portadas sí se resuelven solas en build (iTunes para el disco, OpenLibrary para el libro, vía `lib/now-covers.ts`) y se cachean en `.cache/embeds/`; si la búsqueda no encuentra nada, el widget queda solo-texto. `coverUrl` en `lib/now.ts` permite fijar una portada a mano.
 
 ## Sonido de página
 
@@ -144,17 +143,12 @@ Un contador anónimo por post. Los datos viven en la tabla `blog_reactions` del 
 - Env vars: `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (del proyecto `cullwwdkcgnwgqjmfmqn`: dashboard de Supabase → Settings → API). La key es solo de servidor; nunca lleva prefijo `NEXT_PUBLIC_`.
 - Sin esas variables, la API responde 503 y el bloque de reacciones desaparece solo del post — no hay error visible.
 
-## Newsletter
-
-Buttondown. Crear cuenta en buttondown.com, generar la API key (Settings → API) y cargarla como `BUTTONDOWN_API_KEY` (en Vercel y/o `.env.local`). Sin la key, el form muestra un "no disponible" discreto — nada se rompe.
-
 ## Deploy (Vercel)
 
 1. Repo en GitHub → **Import** en Vercel. Auto-deploy en cada push a `main`.
 2. Cargar las env vars (mismos nombres que `.env.example`):
    - `NEXT_PUBLIC_SITE_URL` — URL canónica del sitio (para metadata, RSS, sitemap y OG).
    - `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` — reacciones (opcional).
-   - `BUTTONDOWN_API_KEY` — newsletter (opcional).
 3. Nota: el autor de los commits debe resolver a un login de GitHub (`jeffreydtz`), o Vercel bloquea el deploy.
 
 ## Modo impresión

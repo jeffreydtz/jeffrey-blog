@@ -5,7 +5,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ScrollReveal } from "@/components/scroll/ScrollReveal";
-import { NewsletterForm } from "@/components/ui/NewsletterForm";
 import { PrevNext } from "@/components/ui/PrevNext";
 import { Reactions } from "@/components/ui/Reactions";
 import { RelatedPosts } from "@/components/ui/RelatedPosts";
@@ -191,9 +190,8 @@ export default async function PostPage({
         <CoverImage post={post} />
         <article className="prose-blog drop-cap">{body}</article>
         <div className="hairline mt-3xl" />
-        {/* Fase 6 (T16/T17): cierre del post — marca + correo, antes de Relacionados */}
+        {/* Fase 6 (T16): cierre del post — la marca, antes de Relacionados */}
         <Reactions slug={post.slug} />
-        <NewsletterForm className="mx-auto mt-2xl w-full max-w-form" />
         <RelatedPosts posts={related} />
         <PrevNext
           prev={prev && { slug: prev.slug, title: prev.title }}

@@ -17,14 +17,14 @@ colors:
     hairline: "#D9D2C3" # divisores 1px, bordes de contenedores
     selection: "#E4DCC9" # fondo de ::selection
   dark: # "pergamino nocturno" (.dark) — paleta DISEÑADA, no inversión
-    paper: "#1C1814" # negro cálido, tirando a marrón profundo
-    paper-raised: "#242019" # superficie elevada: un paso más clara, nunca sombra
+    paper: "#2E2720" # umbral profundo: marrón cálido oscuro (aclarado 2026-07; ink 11.4:1)
+    paper-raised: "#362E25" # superficie elevada: un paso más clara, nunca sombra
     ink: "#E8E2D4" # hueso. Nunca blanco puro.
     ink-secondary: "#B5AC99" # metadata
     ink-muted: "#847B69" # terciario
     accent: "#A66A5E" # burdeos aclarado/desaturado para fondo oscuro (el #5C1F1F no contrasta)
     accent-hover: "#BC7F72"
-    hairline: "#38322A" # separación por borde, jamás por sombra
+    hairline: "#463E33" # separación por borde, jamás por sombra (sigue al papel aclarado)
     selection: "#3A342B"
 
 typography:
@@ -85,7 +85,6 @@ typography:
 measure:
   prose: "70ch" # cuerpo de post: 65–75ch, fijado en 70ch
   ui-max: "72rem" # ancho máximo del chrome (header/footer/home)
-  form: "24rem" # form de newsletter (fin de post / footer) — token --container-form
 
 spacing: # escala base 8px expresada en rem (tokens --spacing-* en globals.css)
   2xs: "0.25rem"

@@ -42,17 +42,6 @@ export const ui = {
     listening: "Escuchando",
     reading: "Leyendo",
   },
-  newsletter: {
-    label: "Correo ocasional",
-    placeholder: "tu@correo.com",
-    submit: "Suscribirse",
-    sending: "Enviando…",
-    success: "Listo. Gracias por leer.",
-    error: "No se pudo suscribir. Probá de nuevo.",
-    invalid: "Ese correo no parece válido.",
-    already: "Ese correo ya estaba suscripto.",
-    unavailable: "Las suscripciones no están disponibles todavía.",
-  },
   reactions: {
     label: "¿Te quedó algo?",
     thanks: "Gracias.",
