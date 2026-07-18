@@ -1,0 +1,557 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de Jeffrey's blog — implementación de DESIGN.md.
+ * Paleta cruda por tema en :root / .dark; @theme inline los expone a Tailwind
+ * con nombres semánticos. Los componentes consumen SOLO tokens.
+ */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Paleta clara — "papel de día" */
+  --paper: #f5f1e8;
+  --paper-raised: #efeadd;
+  --ink: #1a1815;
+  --ink-secondary: #4a453c;
+  --ink-muted: #7a7264;
+  --accent: #5c1f1f;
+  --accent-hover: #732727;
+  --hairline: #d9d2c3;
+  --selection: #e4dcc9;
+
+  /* Movimiento (constante entre temas) */
+  --ease-page: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-slow: 600ms;
+  --duration-reveal: 1000ms;
+
+  /* Sombra del rollo (pergamino, T07): tinta translúcida derivada del token.
+     ÚNICA sombra permitida en el sitio (DESIGN.md, principio 3). */
+  --roll-shadow: color-mix(in srgb, var(--ink) 14%, transparent);
+
+  color-scheme: light;
+}
+
+.dark {
+  /* Paleta oscura — "pergamino nocturno" (diseñada, no invertida) */
+  --paper: #1c1814;
+  --paper-raised: #242019;
+  --ink: #e8e2d4;
+  --ink-secondary: #b5ac99;
+  --ink-muted: #847b69;
+  --accent: #a66a5e;
+  --accent-hover: #bc7f72;
+  --hairline: #38322a;
+  --selection: #3a342b;
+
+  /* En pergamino nocturno la tinta es hueso: el borde del rollo se sugiere
+     con un brillo tenue (la curva del cilindro que toma luz), no con negro
+     sobre negro. Mismo token, menor intensidad. */
+  --roll-shadow: color-mix(in srgb, var(--ink) 9%, transparent);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  /* Colores semánticos */
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-secondary: var(--ink-secondary);
+  --color-ink-muted: var(--ink-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-hairline: var(--hairline);
+  --color-selection: var(--selection);
+
+  /* Tipografías (variables inyectadas por next/font en app/layout.tsx) */
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-source-serif);
+  /* Mono de sistema para código (DESIGN.md → typography.mono): sin webfont
+     extra — contención old-money, el código es ciudadano raro acá. */
+  --font-mono:
+    ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+
+  /* Escala tipográfica (DESIGN.md → typography.scale) */
+  --text-display-xl: 3.5rem;
+  --text-display-xl--line-height: 1.05;
+  --text-display-xl--font-weight: 500;
+  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-lg: 2.5rem;
+  --text-display-lg--line-height: 1.1;
+  --text-display-lg--font-weight: 500;
+  --text-display-lg--letter-spacing: -0.015em;
+  --text-display-md: 1.75rem;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--font-weight: 500;
+  --text-display-md--letter-spacing: -0.01em;
+  --text-display-sm: 1.25rem;
+  --text-display-sm--line-height: 1.3;
+  --text-display-sm--font-weight: 500;
+  --text-body: 1.125rem;
+  --text-body--line-height: 1.75;
+  --text-body--font-weight: 400;
+  --text-body-sm: 0.9375rem;
+  --text-body-sm--line-height: 1.6;
+  --text-body-sm--font-weight: 400;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1.2;
+  --text-label--font-weight: 500;
+  --text-label--letter-spacing: 0.18em;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.2;
+  --text-micro--font-weight: 400;
+  --text-micro--letter-spacing: 0.14em;
+
+  /* Espaciado nombrado (escala 8px) */
+  --spacing-2xs: 0.25rem;
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 5rem;
+  --spacing-3xl: 8rem;
+
+  /* Contenedores */
+  --container-page: 72rem; /* chrome: header / footer / listados */
+  --container-prose: 70ch; /* medida de lectura (65–75ch) */
+  --container-palette: 36rem; /* panel del command palette (T14) */
+  /* Ancho del form de newsletter (T17). OJO: max-w-sm NO sirve acá —
+     en Tailwind v4 resuelve contra --spacing-sm (0.75rem), no contra la
+     escala de containers. Token propio, como todo lo demás. */
+  --container-form: 24rem;
+
+  /* Radius: 0 por defecto; subtle (4px) es el máximo absoluto */
+  --radius-subtle: 4px;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-variant-ligatures: common-ligatures;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-selection);
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+
+  /* Numerales tabulares en fechas y columnas numéricas */
+  time,
+  [data-tnum] {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Label mayúscula con tracking amplio — la voz secundaria del sitio */
+  .label {
+    font-family: var(--font-body);
+    font-size: var(--text-label);
+    line-height: var(--text-label--line-height);
+    font-weight: var(--text-label--font-weight);
+    letter-spacing: var(--text-label--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  /* Divisor de 1px — la ÚNICA forma de separación entre bloques */
+  .hairline {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  /* Subrayado que se dibuja de izquierda a derecha */
+  .link-underline {
+    position: relative;
+    text-decoration: none;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: -0.125em;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--duration-fast) var(--ease-page);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Peso variable 400→500 al hover (fuentes variables: sin reflow) */
+  .weight-hover {
+    font-weight: 400;
+    transition: font-weight var(--duration-fast) var(--ease-page);
+  }
+  .weight-hover:hover,
+  .weight-hover:focus-visible {
+    font-weight: 500;
+  }
+
+  /* Capitular: primera letra del primer párrafo del post */
+  .drop-cap::first-letter {
+    font-family: var(--font-display);
+    font-weight: 500;
+    float: left;
+    font-size: 3.4em;
+    line-height: 0.85;
+    padding-right: 0.09em;
+    padding-top: 0.04em;
+  }
+
+  /* Prosa de post — medida 70ch, Source Serif 4, interlineado generoso */
+  .prose-blog {
+    max-width: var(--container-prose);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    color: var(--color-ink);
+  }
+  .prose-blog > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-blog h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-display-md);
+    line-height: var(--text-display-md--line-height);
+    font-weight: var(--text-display-md--font-weight);
+    letter-spacing: var(--text-display-md--letter-spacing);
+    margin-top: 2em;
+  }
+  .prose-blog h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-display-sm);
+    line-height: var(--text-display-sm--line-height);
+    font-weight: var(--text-display-sm--font-weight);
+    margin-top: 1.75em;
+  }
+  .prose-blog a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--color-ink-muted);
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+    transition: text-decoration-color var(--duration-fast) var(--ease-page);
+  }
+  .prose-blog a:hover {
+    text-decoration-color: currentColor;
+  }
+  /* blockquote: lo pinta el override MDX (components/mdx/Typography.tsx) —
+     editorial, hairline a la izquierda, sin itálica. */
+  .prose-blog hr {
+    border: 0;
+    border-top: 1px solid var(--color-hairline);
+    margin-block: 3em;
+  }
+  .prose-blog ul,
+  .prose-blog ol {
+    padding-left: 1.5em;
+  }
+  .prose-blog ul {
+    list-style: disc;
+  }
+  .prose-blog ol {
+    list-style: decimal;
+  }
+  .prose-blog li + li {
+    margin-top: 0.5em;
+  }
+  /* Code inline (T11): tinte sutil sobre token, radius subtle (el único
+     radius > 0 del sistema). Scoped fuera de <pre>: los bloques son de Shiki. */
+  .prose-blog :not(pre) > code {
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-subtle);
+    padding: 0.1em 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+  }
+  /* Bloques de código (T11): Shiki server-side; el fondo lo pone el token
+     (paper-raised) para seguir al tema — el tema de Shiki solo colorea spans. */
+  .prose-blog pre {
+    overflow-x: auto;
+    background-color: var(--color-paper-raised);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-subtle);
+    padding: var(--spacing-md);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+  }
+  /* Dual theme estándar de Shiki (defaultColor: false → variables por span) */
+  .prose-blog .shiki span {
+    color: var(--shiki-light);
+    font-style: var(--shiki-light-font-style, inherit);
+    font-weight: var(--shiki-light-font-weight, inherit);
+  }
+  .dark .prose-blog .shiki span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style, inherit);
+    font-weight: var(--shiki-dark-font-weight, inherit);
+  }
+  .prose-blog strong {
+    font-weight: 600;
+  }
+
+  /* Self-link de headings (T11): "§" que aparece al hover del título */
+  .heading-anchor {
+    margin-left: 0.4em;
+    font-family: var(--font-display);
+    font-size: 0.7em;
+    font-weight: 400;
+    color: var(--color-ink-muted);
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-page);
+  }
+  .prose-blog a.heading-anchor {
+    text-decoration: none;
+  }
+  :is(h2, h3):hover > .heading-anchor,
+  .heading-anchor:focus-visible {
+    opacity: 1;
+  }
+
+  /*
+   * Vuelta de página (T12) — microinteracción de los links prev/next.
+   * La etiqueta ("Anterior"/"Siguiente") se levanta apenas, como la esquina
+   * de una página a punto de darse vuelta: rotación mínima con origen en la
+   * base, curva de la casa. Sin springs, sin bounce. Reduced-motion la anula
+   * (bloque global al final del archivo).
+   */
+  .page-flip .page-corner {
+    display: inline-block;
+    transform-origin: bottom left;
+    transition: transform var(--duration-fast) var(--ease-page);
+  }
+  .page-flip:hover .page-corner,
+  .page-flip:focus-visible .page-corner {
+    transform: rotate(-3deg) translateY(-0.125em);
+  }
+  .page-flip:active .page-corner {
+    transform: rotate(-6deg) translateY(-0.2em);
+  }
+  .page-flip[data-side="next"] .page-corner {
+    transform-origin: bottom right;
+  }
+  .page-flip[data-side="next"]:hover .page-corner,
+  .page-flip[data-side="next"]:focus-visible .page-corner {
+    transform: rotate(3deg) translateY(-0.125em);
+  }
+  .page-flip[data-side="next"]:active .page-corner {
+    transform: rotate(6deg) translateY(-0.2em);
+  }
+
+  /*
+   * Marca de reacción (T16) — micro-feedback del asterisco: escala mínima
+   * con la curva de la casa. Sin springs. El bloque global de reduced-motion
+   * (final del archivo) lo anula.
+   */
+  .reaction-button {
+    cursor: pointer;
+  }
+  .reaction-button:disabled {
+    cursor: default;
+  }
+  .reaction-button svg {
+    transition: transform var(--duration-fast) var(--ease-page);
+  }
+  .reaction-button:not(:disabled):hover svg,
+  .reaction-button:not(:disabled):focus-visible svg {
+    transform: scale(1.1);
+  }
+  .reaction-button:not(:disabled):active svg {
+    transform: scale(0.9);
+  }
+
+  /*
+   * Pergamino (T07) — reveal de entrada del post.
+   * El contenido se "desenrolla" desde el centro del viewport: clip-path inset
+   * cuyos bordes superior/inferior se separan con la curva de la casa. Los
+   * bordes móviles llevan un scrim degradado (--roll-shadow) que sugiere el
+   * cilindro del rollo — sin texturas, sin pergamino literal.
+   *
+   * Estados base = animación terminada (contenido visible, scrims invisibles):
+   * bajo prefers-reduced-motion no hay animación y el post se pinta instantáneo.
+   */
+  .scroll-reveal-edge {
+    opacity: 0;
+  }
+  .scroll-reveal-edge-top {
+    top: 0;
+    background: linear-gradient(to bottom, var(--roll-shadow), transparent);
+  }
+  .scroll-reveal-edge-bottom {
+    bottom: 0;
+    background: linear-gradient(to top, var(--roll-shadow), transparent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-reveal {
+      animation: reveal-unroll var(--duration-reveal) var(--ease-page) both;
+    }
+    /* Los scrims viajan con los bordes del clip: misma duración y curva.
+       El fade es una animación aparte (lineal) para no alterar el tracking. */
+    .scroll-reveal-edge-top {
+      animation:
+        reveal-edge-top var(--duration-reveal) var(--ease-page) both,
+        reveal-edge-fade var(--duration-reveal) linear both;
+    }
+    .scroll-reveal-edge-bottom {
+      animation:
+        reveal-edge-bottom var(--duration-reveal) var(--ease-page) both,
+        reveal-edge-fade var(--duration-reveal) linear both;
+    }
+  }
+}
+
+/*
+ * Keyframes del pergamino. El borde superior parte del centro del viewport
+ * (50vh) y sube; el inferior parte del mismo punto y baja hasta el final del
+ * post. En posts largos el borde inferior recorre más distancia con la misma
+ * curva: el rollo "cae" abriéndose, el superior se desenrolla a ritmo legible.
+ */
+@keyframes reveal-unroll {
+  from {
+    clip-path: inset(50vh 0 calc(100% - 50vh) 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes reveal-edge-top {
+  from {
+    top: 50vh;
+  }
+  to {
+    top: 0;
+  }
+}
+@keyframes reveal-edge-bottom {
+  from {
+    bottom: calc(100% - 50vh);
+  }
+  to {
+    bottom: 0;
+  }
+}
+@keyframes reveal-edge-fade {
+  0% {
+    opacity: 0.85;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * Print (T18, FR-005) — el post impreso es una página de libro: serif, negro
+ * sobre blanco, drop cap, sin chrome ni piezas interactivas. Los overrides de
+ * paleta son TOKENS (esta es su fuente): papel blanco y tinta de imprenta,
+ * gane quien gane entre :root y .dark en pantalla.
+ */
+@media print {
+  :root,
+  .dark {
+    --paper: #ffffff;
+    --paper-raised: #ffffff;
+    --ink: #1a1815;
+    --ink-secondary: #4a453c;
+    --ink-muted: #7a7264;
+    --accent: #1a1815;
+    --accent-hover: #1a1815;
+    --hairline: #d9d2c3;
+    --selection: transparent;
+    --roll-shadow: transparent;
+    color-scheme: light;
+  }
+
+  @page {
+    margin: 2.5cm;
+  }
+
+  /* Chrome y bloques interactivos fuera: header/footer/nav, PrevNext,
+     Reactions, NewsletterForm, RelatedPosts, palette, cajas de embeds.
+     Cada componente marca su raíz con .print-hidden. */
+  .print-hidden {
+    display: none !important;
+  }
+  /* Cinturón y tiradores: ningún iframe de terceros llega al papel. */
+  iframe {
+    display: none !important;
+  }
+
+  /* Pergamino: contenido SIEMPRE visible — sin clip, sin scrims, sin
+     parallax congelado a mitad de scroll (transform inline de motion). */
+  .scroll-reveal {
+    animation: none !important;
+    clip-path: none !important;
+  }
+  .scroll-reveal * {
+    transform: none !important;
+  }
+  .scroll-reveal-edge {
+    display: none !important;
+  }
+
+  /* Tipografía de imprenta: viudas/huérfanas, títulos pegados a su texto,
+     código que envuelve en vez de desbordar. Hairlines siguen en 1px. */
+  p,
+  li,
+  blockquote {
+    orphans: 3;
+    widows: 3;
+  }
+  h1,
+  h2,
+  h3 {
+    break-after: avoid-page;
+  }
+  pre,
+  blockquote,
+  img {
+    break-inside: avoid;
+  }
+  .prose-blog pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    overflow-x: visible;
+  }
+
+  /* Links externos del cuerpo: la URL como paréntesis de nota al pie
+     (chico, en la tinta terciaria). Los anclas internas (#) no la llevan. */
+  .prose-blog a[href^="http"]:not(.heading-anchor)::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: var(--color-ink-muted);
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Reduced motion: todo instantáneo. Sin excepciones (DESIGN.md). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "jeffrey-blog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "predev": "node scripts/build-search-index.mjs",
+    "dev": "next dev --turbopack",
+    "prebuild": "node scripts/build-search-index.mjs",
+    "build": "next build --turbopack",
+    "start": "next start",
+    "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "fuse.js": "7.1.0",
+    "gray-matter": "4.0.3",
+    "image-size": "2.0.2",
+    "motion": "12.42.2",
+    "next": "15.5.20",
+    "next-mdx-remote": "5.0.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "server-only": "^0.0.1",
+    "shiki": "4.3.1"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.20",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

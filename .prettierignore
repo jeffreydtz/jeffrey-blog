@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+build
+package-lock.json
+public
+# cache de embeds generado por lib/embed-cache.ts (JSON de máquina, commiteado)
+.cache
