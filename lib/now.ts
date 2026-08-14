@@ -33,11 +33,13 @@ export interface Now {
 
 export const now: Now = {
   listening: {
-    title: "Paradise",
-    artist: "Sade",
+    title: "I Wish It Would Rain Down",
+    artist: "Phil Collins",
   },
   reading: {
-    title: "1984",
-    author: "George Orwell",
+    title: "El lobo estepario",
+    author: "Hermann Hesse",
+    // OpenLibrary venía dando timeout en build — portada fijada a mano.
+    coverUrl: "https://covers.openlibrary.org/b/id/12527375-M.jpg",
   },
 };
