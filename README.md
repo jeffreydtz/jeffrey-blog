@@ -135,6 +135,18 @@ jeffrey-blog/
 
 `/gabinete` es la página de curaduría: lo que estoy **mirando** (vlogs de YouTube embebidos con `<YouTube caption="…">`) y lo que estoy **leyendo** (`<LinkCard>` + notas). Se edita como cualquier página fija: `content/pages/gabinete.mdx`, commit y push. Entra algo cuando vale la pena, sale cuando deja de valerla — sin algoritmo.
 
+## Panel /admin
+
+`/admin` es el panel de administración: publicaciones (crear/editar/borrar), Gabinete, Acerca, Colofón y el widget "Ahora", todo desde el navegador. **No es un CMS**: cada guardado es un commit real a `main` vía la GitHub API — el repo sigue siendo la única fuente de verdad y el historial queda en git.
+
+Env vars (sin las dos primeras el panel queda deshabilitado y no aparece nada):
+
+- `ADMIN_PASSWORD` — contraseña de acceso (sesión de 7 días, cookie firmada; cambiar la contraseña revoca sesiones).
+- `GITHUB_TOKEN` — token fine-grained con permiso **Contents read/write** solo sobre este repo.
+- `VERCEL_DEPLOY_HOOK_URL` — (opcional) Deploy Hook de Vercel; con él cada guardado dispara el rebuild solo. Sin él, el commit queda hecho y hay que deployar a mano.
+
+El panel está fuera de robots/sitemap/búsqueda; el login tiene rate limit por IP.
+
 ## Widget "Ahora"
 
 Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin scrobbling — es parte del encanto. Las portadas sí se resuelven solas en build (iTunes para el disco, OpenLibrary para el libro, vía `lib/now-covers.ts`) y se cachean en `.cache/embeds/`; si la búsqueda no encuentra nada, el widget queda solo-texto. `coverUrl` en `lib/now.ts` permite fijar una portada a mano.
