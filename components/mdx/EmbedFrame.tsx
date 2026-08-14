@@ -8,29 +8,45 @@ import type { CSSProperties, ReactNode } from "react";
  *
  * Tratamiento old-money: el marco es del sitio (tokens); lo que viva adentro
  * del iframe de terceros queda como venga — aceptable por spec.
+ *
+ * `caption` opcional: pie editorial en .label bajo el marco (mismo criterio
+ * que el pie de foto de MdxImage) — con caption el contenedor es <figure>.
  */
 export function EmbedFrame({
   aspectRatio,
   height,
+  caption,
   children,
 }: {
   /** Ej.: "16 / 9" para video. Excluyente con height. */
   aspectRatio?: string;
   /** Altura fija en px para players de audio (Spotify 152/352, SoundCloud 166…). */
   height?: number;
+  /** Pie editorial opcional bajo el marco (estilo .label). */
+  caption?: string;
   children: ReactNode;
 }) {
   const style: CSSProperties = aspectRatio
     ? { aspectRatio }
     : { height: height ? `${height}px` : undefined };
 
-  return (
-    // print-hidden (T18): caja interactiva de terceros — no llega al papel
+  const media = (
     <div
-      className="print-hidden relative my-lg overflow-hidden rounded-subtle border border-hairline bg-paper-raised"
+      className="relative overflow-hidden rounded-subtle border border-hairline bg-paper-raised"
       style={style}
     >
       {children}
     </div>
+  );
+
+  // print-hidden (T18): caja interactiva de terceros — no llega al papel
+  if (!caption) {
+    return <div className="print-hidden my-lg">{media}</div>;
+  }
+  return (
+    <figure className="print-hidden my-lg">
+      {media}
+      <figcaption className="label mt-sm">{caption}</figcaption>
+    </figure>
   );
 }

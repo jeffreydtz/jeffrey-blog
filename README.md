@@ -1,5 +1,7 @@
 # jeffrey-blog
 
+**Sitio en vivo:** <https://jeffrey-blog-tau.vercel.app>
+
 Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear; no hay panel de administración, ni CMS, ni base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
 
 ## Cómo agregar un post nuevo
@@ -48,6 +50,7 @@ Se usan directo en el cuerpo del post, sin imports. Ejemplos reales:
 
 ```mdx
 <YouTube id="ZXsQAXx_ao0" />
+<YouTube id="oK2y5xH20ZY" caption="Pie de foto editorial opcional bajo el video" />
 
 <Vimeo id="76979871" />
 
@@ -68,7 +71,7 @@ Notas:
 
 - `<Spotify>` acepta `kind`: `track` | `album` | `playlist` | `episode` | `show` | `artist` (o directamente `url`, que lo deduce). `compact` da un player más bajo.
 - `<Bandcamp>` usa los ids numéricos del EmbeddedPlayer de Bandcamp (`album`, `track`, o ambos para un track dentro de un álbum).
-- `<YouTube>` y `<Vimeo>` son facades: no cargan nada hasta que se hace click en play.
+- `<YouTube>` y `<Vimeo>` son facades: no cargan nada hasta que se hace click en play. Ambos aceptan `caption` (pie editorial en estilo label bajo el marco).
 - `<Tweet>` y `<LinkCard>` no incrustan iframes: resuelven el contenido en build y pintan una cita/tarjeta estática con la tipografía del sitio. Si la red falla y no hay cache, degradan a un link estilado.
 - Props inválidas (id malformado, URL que no es de SoundCloud, etc.) rompen el build con un mensaje que muestra el uso correcto.
 
@@ -108,6 +111,7 @@ jeffrey-blog/
 ├── app/                        # rutas (App Router)
 │   ├── posts/[slug]/           # página de post + imagen OG por post
 │   ├── archivo/                # archivo por año/tag
+│   ├── gabinete/               # curaduría: qué miro (vlogs YT) y qué leo
 │   ├── acerca/  colofon/       # páginas fijas
 │   ├── lab/                    # playground (solo dev)
 │   ├── api/reactions/          # contador de reacciones (Supabase)
@@ -126,6 +130,10 @@ jeffrey-blog/
 ├── specs/001-blog-foundation/  # spec, plan y tareas de la fundación
 └── DESIGN.md                   # sistema de diseño (tokens y guardrails)
 ```
+
+## Gabinete
+
+`/gabinete` es la página de curaduría: lo que estoy **mirando** (vlogs de YouTube embebidos con `<YouTube caption="…">`) y lo que estoy **leyendo** (`<LinkCard>` + notas). Se edita como cualquier página fija: `content/pages/gabinete.mdx`, commit y push. Entra algo cuando vale la pena, sale cuando deja de valerla — sin algoritmo.
 
 ## Widget "Ahora"
 

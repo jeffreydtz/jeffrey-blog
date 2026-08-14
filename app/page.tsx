@@ -16,10 +16,13 @@ export default function HomePage() {
     <div className="mx-auto w-full max-w-page px-lg">
       <section className="py-2xl sm:py-3xl">
         <h1 className="label">{ui.home.latest}</h1>
+        <p className="mt-sm max-w-prose font-display text-display-sm text-ink-secondary">
+          {ui.siteDescription}
+        </p>
         <ol className="mt-lg">
           {posts.map((post, index) => (
             <li key={post.slug} className={index > 0 ? "hairline" : undefined}>
-              <article className="grid gap-x-lg gap-y-sm py-xl sm:grid-cols-[minmax(10rem,13rem)_1fr]">
+              <article className="grid gap-x-lg gap-y-sm py-xl sm:grid-cols-[minmax(10rem,13rem)_1fr_auto]">
                 <div className="flex flex-row flex-wrap items-baseline gap-x-md gap-y-xs sm:flex-col">
                   <p
                     aria-hidden="true"
@@ -49,6 +52,16 @@ export default function HomePage() {
                     {post.excerpt}
                   </p>
                 </div>
+                {post.cover_image !== undefined && (
+                  // eslint-disable-next-line @next/next/no-img-element -- miniatura decorativa en caja fija (sin CLS); puede ser host remoto y next/image proxearía hosts arbitrarios (ver MdxImage)
+                  <img
+                    src={post.cover_image}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="hidden h-2xl w-2xl rounded-subtle border border-hairline object-cover sm:block"
+                  />
+                )}
               </article>
             </li>
           ))}

@@ -12,6 +12,7 @@ export const ui = {
   nav: {
     home: "Inicio",
     archive: "Archivo",
+    cabinet: "Gabinete",
     about: "Acerca de",
     colophon: "Colofón",
   },

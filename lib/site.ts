@@ -7,7 +7,7 @@ import { ui } from "@/lib/ui";
  */
 export const SITE = {
   name: ui.siteTitle,
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://jeffrey-blog.vercel.app",
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://jeffrey-blog-tau.vercel.app",
   author: "Jeffrey Dietz",
   description: ui.siteDescription,
 } as const;

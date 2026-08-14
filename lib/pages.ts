@@ -5,7 +5,7 @@ import matter from "gray-matter";
 
 const PAGES_DIR = path.join(process.cwd(), "content", "pages");
 
-export type StaticPageSlug = "acerca" | "colofon";
+export type StaticPageSlug = "acerca" | "colofon" | "gabinete";
 
 export interface StaticPage {
   title: string;
