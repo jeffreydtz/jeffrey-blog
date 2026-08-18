@@ -1,3 +1,4 @@
+import { AmbientRing } from "@/components/three/AmbientRing";
 import { PostLink } from "@/components/ui/PostLink";
 import { getAllPosts } from "@/lib/posts";
 import { formatDate, ui } from "@/lib/ui";
@@ -15,10 +16,15 @@ export default function HomePage() {
   return (
     <div className="mx-auto w-full max-w-page px-lg">
       <section className="py-2xl sm:py-3xl">
-        <h1 className="label">{ui.home.latest}</h1>
-        <p className="mt-sm max-w-prose font-display text-display-sm text-ink-secondary">
-          {ui.siteDescription}
-        </p>
+        <div className="relative overflow-hidden">
+          <AmbientRing />
+          <div className="relative z-10">
+            <h1 className="label">{ui.home.latest}</h1>
+            <p className="mt-sm max-w-prose font-display text-display-sm text-ink-secondary">
+              {ui.siteDescription}
+            </p>
+          </div>
+        </div>
         <ol className="mt-lg">
           {posts.map((post, index) => (
             <li key={post.slug} className={index > 0 ? "hairline" : undefined}>

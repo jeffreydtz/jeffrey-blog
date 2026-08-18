@@ -1,3 +1,4 @@
+import { EndMark } from "@/components/three/EndMark";
 import fs from "node:fs";
 import path from "node:path";
 import { imageSize } from "image-size";
@@ -189,6 +190,7 @@ export default async function PostPage({
       >
         <CoverImage post={post} />
         <article className="prose-blog drop-cap">{body}</article>
+        <EndMark />
         <div className="hairline mt-3xl" />
         {/* Fase 6 (T16): cierre del post — la marca, antes de Relacionados */}
         <Reactions slug={post.slug} />
