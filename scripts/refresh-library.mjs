@@ -43,11 +43,43 @@ async function fetchShelf(/** @type {string} */ shelf) {
   return books;
 }
 
+async function openLibraryCover(title, author) {
+  const endpoint = `https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}&limit=1`;
+  const response = await fetch(endpoint, {
+    headers: { accept: "application/json" },
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!response.ok) return undefined;
+  const body = await response.json();
+  const coverId = body.docs?.[0]?.cover_i;
+  if (!coverId || typeof coverId !== "number") return undefined;
+  return `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`;
+}
+
+async function fillMissingCovers(books) {
+  let filled = 0;
+  for (const book of books) {
+    if (book.coverUrl) continue;
+    try {
+      const coverUrl = await openLibraryCover(book.title, book.author);
+      if (coverUrl) {
+        book.coverUrl = coverUrl;
+        filled += 1;
+      }
+    } catch {
+      // Keep the snapshot even if Open Library is down.
+    }
+  }
+  if (filled) console.log(`Open Library: filled ${filled} missing covers.`);
+}
+
 const shelves = await Promise.all(libraryShelves.map(fetchShelf));
+const books = selectLibraryBooks(shelves);
+await fillMissingCovers(books);
 const snapshot = {
   profileUrl: goodreadsProfileUrl,
   verifiedAt: new Date().toISOString(),
-  books: selectLibraryBooks(shelves),
+  books,
 };
 // Fetch/parse every configured shelf before changing the last valid snapshot.
 await fs.writeFile(

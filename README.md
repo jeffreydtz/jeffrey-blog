@@ -124,7 +124,8 @@ jeffrey-blog/
 ├── components/
 │   ├── mdx/                    # YouTube, Spotify, Tweet, LinkCard, …
 │   ├── ui/                     # header, footer, Cmd+K, reacciones
-│   ├── three/                  # estante, tocadiscos, marcas de impresor
+│   ├── reading/                # carrusel CSS 3D del estante Leído
+│   ├── three/                  # tocadiscos, marcas de impresor
 │   └── scroll/                 # reveals y sonido de página
 ├── lib/                        # posts, mdx, now.ts, supabase, oembed, …
 ├── types/                      # contrato de frontmatter e índice de búsqueda
@@ -158,7 +159,7 @@ Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los v
 
 ## Vinilo
 
-`/vinyl` es un tocadiscos aparte — no vive en la home, para no cargar WebGL en el LCP. Un disco y un plinto procedurales (Three.js, misma familia que el estante del gabinete; sin React Three Fiber). El giro se pausa fuera de pantalla, con la pestaña oculta y con `prefers-reduced-motion`.
+`/vinyl` es un tocadiscos aparte — no vive en la home, para no cargar WebGL en el LCP. Un disco y un plinto procedurales (Three.js, sin React Three Fiber). El giro se pausa fuera de pantalla, con la pestaña oculta y con `prefers-reduced-motion`. El estante de `/gabinete` es CSS 3D, no este canvas.
 
 **Cómo editar el cajón**
 
@@ -207,23 +208,20 @@ Papel, tinta y espacio: el sitio intenta parecerse más a un libro bien encuader
 
 ## Biblioteca interactiva y Goodreads
 
-El estante de `/gabinete` usa geometrías reales de Three.js y una lista HTML equivalente:
-un índice numerado permite elegir libros con teclado, mouse o touch y una ficha muestra
-autor, valoración y comentario verificados del libro elegido. Sin JavaScript aparecen
-todas las fichas; sin WebGL el índice sigue funcionando. En ambos casos,
-la lista y sus enlaces siguen disponibles. El canvas se dibuja bajo demanda; la selección
-se mueve brevemente y `prefers-reduced-motion` elimina ese movimiento.
+El estante de `/gabinete` es el paquete **ReadingShelf** (CSS 3D + scroll-snap nativo):
+carrusel horizontal de tapas reales, ficha con nota / promedio Goodreads / año, y un
+filmstrip de miniaturas para recorrer los ~60 libros leídos. Sin WebGL ni GLB. El
+header y el footer del sitio siguen envueltos alrededor; el estante va a sangre.
+Teclado (← → Home End), arrastre y snap; `prefers-reduced-motion` deja la pose 3D
+fija. Si una tapa falta o falla, hay una placa tipográfica — nunca un ladrillo vacío.
 
 La fuente es el **RSS público del propio perfil de Goodreads**, sin login ni API key.
-La configuración vive en `content/data/goodreads-config.json`: cambiar `profileUrl` para
-usar otro perfil público. Solo se consulta el estante `read` (Leído): no entra
-`to-read` ni `currently-reading`. El snapshot revisable está en
-`content/data/goodreads.json`; cada libro guarda su fuente.
-Solo se toma `user_rating` (la valoración personal), nunca `average_rating`. Cero significa
-sin valoración. Los comentarios salen de `user_review`, convertidos a texto. Un estante
-vacío no recibe libros inventados. El snapshot guarda **todos** los libros leídos
-(sin tope de siete). Las encuadernaciones son representaciones tipográficas del
-blog, no reproducciones de las tapas comerciales.
+La configuración vive en `content/data/goodreads-config.json`: `profileUrl` y
+`shelfUrl` (estante Leído). Solo se consulta `read`: no entra `to-read` ni
+`currently-reading`. El snapshot revisable está en `content/data/goodreads.json`.
+Cada libro guarda tapa (`book_large_image_url`, o Open Library si falta),
+`user_rating`, `average_rating`, año, comentario y URL. Cero en `user_rating`
+significa sin valoración. Un estante vacío no recibe libros inventados.
 
 **Snapshot local:** ni el build ni las visitas consultan Goodreads. La página siempre sirve
 los datos revisados y versionados. Para renovarlos explícitamente (Node 20.18+ o 22+):
@@ -281,10 +279,9 @@ npm start -- --port 3100
 ```
 
 Abrir `/gabinete` en 390, 768 y 1440 px, temas claro/oscuro, zoom de texto 200% y reduced motion.
-Seleccionar libros en el canvas y con Tab/Enter, verificar foco y todos sus datos en la lista.
+Recorrer el carrusel (snap, flechas, filmstrip, teclado), comprobar tapas reales y la ficha.
 En el footer, pulsar el vinilo, pausar, reanudar y esperar el final; abrir también el enlace
-del tema. El video no debe crear un iframe hasta el click. Desactivar JavaScript y WebGL por
-separado para revisar los enlaces/lista de respaldo. Revisar consola y desbordes horizontales.
+del tema. El video no debe crear un iframe hasta el click. Revisar consola y desbordes horizontales.
 Las pruebas de datos usan fixtures únicamente de test; no agregan libros al snapshot.
 
 Para probar en Vercel, abrir **Details / Visit Preview** del check de la PR si la integración

@@ -211,15 +211,16 @@ un defecto** y se corrigen agregando el token que faltaba, no dejando el literal
 
 ## Gabinete interactivo
 
-Tokens de objeto en `:root`: `--control-target` (2.75rem), `--shelf-height`
-(25rem; 19rem en móvil), `--vinyl-size` (4rem), `--vinyl-period` (5s), `--line-width` (1px),
-`--round-disc` (50%, solo el objeto circular vinilo), `--needle-rest` (-24deg)
-y `--needle-playing` (-8deg). La geometría Three se expresa en unidades de escena,
-no píxeles; materiales y rótulos se derivan de papel/tinta del tema. Sin portadas
-inventadas: encuadernaciones tipográficas numeradas, equivalentes a la lista HTML.
-Solo tres gestos nuevos: elevación breve del libro seleccionado, giro del disco
-mientras suena y aguja de estado. El estante se dibuja bajo demanda; reduced motion
-cambia la selección de forma instantánea y detiene el disco.
+Tokens de objeto en `:root`: `--control-target` (2.75rem), `--vinyl-size` (4rem),
+`--vinyl-period` (5s), `--turntable-height` (28rem; 20rem en móvil), `--line-width`
+(1px), `--round-disc` (50%, solo el objeto circular vinilo), `--needle-rest`
+(-24deg) y `--needle-playing` (-8deg).
+
+El estante de lecturas (`components/reading/`) es CSS 3D + scroll-snap, no WebGL:
+portadas reales del snapshot Goodreads, lomo y canto de hojas, carrusel centrado
+y ficha (Mi nota / Promedio Goodreads / Publicado). El chrome del blog (header,
+footer, tokens papel/tinta) se conserva; la galería puede usar chips y profundidad
+propias del volumen. `prefers-reduced-motion` deja una pose 3D fija, sin interpolar.
 
 El favicon (`app/icon.svg`, respaldo `app/favicon.ico` de 16/32/48 px) es una J
 vectorial de imprenta. El SVG replica únicamente los tokens papel/tinta de ambos
@@ -227,17 +228,11 @@ temas porque un documento de icono externo no hereda las variables de la página
 
 Los tokens `ink-muted` mantienen contraste AA para texto pequeño en ambos temas.
 
-### Biblioteca: encuadernaciones e índice
+### Biblioteca: carrusel y filmstrip
 
-El estante ocupa el ancho editorial y muestra tapas de proporción de libro, lomos
-rotulados, hojas y bandas de encuadernación. El seleccionado gira y avanza en un
-único gesto de `duration-slow`, dibujado solo mientras cambia la selección. No usa
-portadas comerciales inventadas ni texturas. El índice numerado y una ficha única
-separan navegación de lectura; en móvil el índice se desplaza horizontalmente dentro
-de su columna. Sin JavaScript cada libro conserva su ficha completa y su enlace.
-Tokens adicionales: `--shelf-height-mobile` (19rem), `--book-folio-size` (3.5rem),
-`--book-index-mobile-width` (12rem). La ficha usa el tipo display-md, el folio tinta
-muted, y divisores hairline. No hay nuevas sombras ni colores.
+El estante ocupa el ancho de la página (a sangre bajo el header). La navegación
+de ~60 volúmenes es el filmstrip de tapas + flechas; el contador `n / total` es
+texto muted compacto, no un folio gigante. Reduced motion: snap instantáneo.
 
 ### Tocadiscos (`/vinyl`)
 
