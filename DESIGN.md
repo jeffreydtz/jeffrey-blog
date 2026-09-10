@@ -238,3 +238,13 @@ de su columna. Sin JavaScript cada libro conserva su ficha completa y su enlace.
 Tokens adicionales: `--shelf-height-mobile` (19rem), `--book-folio-size` (3.5rem),
 `--book-index-mobile-width` (12rem). La ficha usa el tipo display-md, el folio tinta
 muted, y divisores hairline. No hay nuevas sombras ni colores.
+
+### Tocadiscos (`/vinyl`)
+
+Ruta dedicada: el canvas no se monta en `/`. Tokens `--turntable-height` (28rem;
+20rem en móvil) y `--disc-index-mobile-width` (12rem). Un disco con surcos
+procedurales, sello tipográfico (o portada iTunes si hay CORS) y plinto/brazo
+simples; paleta papel/tinta. Gira con `--vinyl-period` solo a la vista y sin
+reduced-motion. El índice HTML es el equivalente accesible; sin JS se ven todas
+las fichas. TODO posterior: swap de plinto/brazo a GLB (Astra), conservando el
+disco procedural.
