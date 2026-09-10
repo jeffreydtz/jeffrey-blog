@@ -30,14 +30,16 @@ export default async function GabinetePage() {
     <div className="mx-auto w-full max-w-page px-lg">
       <div className="py-2xl sm:py-3xl sm:pl-[14%]">
         <h1 className="font-display text-display-lg text-ink">{page.title}</h1>
-        <section className="mt-xl max-w-prose" aria-labelledby="library-title">
+        <section className="mt-xl" aria-labelledby="library-title">
           <h2
             id="library-title"
             className="font-display text-display-md text-ink"
           >
             {ui.library.title}
           </h2>
-          <p className="mt-md text-ink-secondary">{ui.library.intro}</p>
+          <p className="mt-md max-w-prose text-ink-secondary">
+            {ui.library.intro}
+          </p>
           <a
             href={library.profileUrl}
             className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"

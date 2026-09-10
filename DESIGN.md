@@ -212,7 +212,7 @@ un defecto** y se corrigen agregando el token que faltaba, no dejando el literal
 ## Gabinete interactivo
 
 Tokens de objeto en `:root`: `--control-target` (2.75rem), `--shelf-height`
-(20rem), `--vinyl-size` (4rem), `--vinyl-period` (5s), `--line-width` (1px),
+(25rem; 19rem en móvil), `--vinyl-size` (4rem), `--vinyl-period` (5s), `--line-width` (1px),
 `--round-disc` (50%, solo el objeto circular vinilo), `--needle-rest` (-24deg)
 y `--needle-playing` (-8deg). La geometría Three se expresa en unidades de escena,
 no píxeles; materiales y rótulos se derivan de papel/tinta del tema. Sin portadas
@@ -226,3 +226,15 @@ vectorial de imprenta. El SVG replica únicamente los tokens papel/tinta de ambo
 temas porque un documento de icono externo no hereda las variables de la página.
 
 Los tokens `ink-muted` mantienen contraste AA para texto pequeño en ambos temas.
+
+### Biblioteca: encuadernaciones e índice
+
+El estante ocupa el ancho editorial y muestra tapas de proporción de libro, lomos
+rotulados, hojas y bandas de encuadernación. El seleccionado gira y avanza en un
+único gesto de `duration-slow`, dibujado solo mientras cambia la selección. No usa
+portadas comerciales inventadas ni texturas. El índice numerado y una ficha única
+separan navegación de lectura; en móvil el índice se desplaza horizontalmente dentro
+de su columna. Sin JavaScript cada libro conserva su ficha completa y su enlace.
+Tokens adicionales: `--shelf-height-mobile` (19rem), `--book-folio-size` (3.5rem),
+`--book-index-mobile-width` (12rem). La ficha usa el tipo display-md, el folio tinta
+muted, y divisores hairline. No hay nuevas sombras ni colores.

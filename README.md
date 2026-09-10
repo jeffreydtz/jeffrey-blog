@@ -191,7 +191,9 @@ Papel, tinta y espacio: el sitio intenta parecerse más a un libro bien encuader
 ## Biblioteca interactiva y Goodreads
 
 El estante de `/gabinete` usa geometrías reales de Three.js y una lista HTML equivalente:
-los títulos de la lista se seleccionan con teclado, mouse o touch. Sin JavaScript o WebGL,
+un índice numerado permite elegir libros con teclado, mouse o touch y una ficha muestra
+autor, valoración y comentario verificados del libro elegido. Sin JavaScript aparecen
+todas las fichas; sin WebGL el índice sigue funcionando. En ambos casos,
 la lista y sus enlaces siguen disponibles. El canvas se dibuja bajo demanda; la selección
 se mueve brevemente y `prefers-reduced-motion` elimina ese movimiento.
 
