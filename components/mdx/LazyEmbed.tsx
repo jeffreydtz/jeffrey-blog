@@ -50,7 +50,7 @@ export function LazyEmbed({
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <span className="label absolute bottom-sm left-sm border border-hairline bg-paper px-sm py-2xs text-ink transition-colors group-hover:bg-paper-raised">
+      <span className="label absolute bottom-sm left-sm right-sm w-fit max-w-full border border-hairline bg-paper px-sm py-2xs text-ink transition-colors group-hover:bg-paper-raised">
         {playLabel}
       </span>
     </button>

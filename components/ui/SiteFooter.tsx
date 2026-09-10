@@ -5,7 +5,7 @@ export function SiteFooter() {
   return (
     <footer className="print-hidden mx-auto w-full max-w-page px-lg pb-2xl">
       <div className="hairline mb-lg" />
-      <div className="flex flex-col justify-between gap-lg sm:flex-row sm:items-end">
+      <div className="flex flex-col justify-between gap-lg lg:flex-row lg:items-end">
         {/* Columna izquierda: "Ahora" (T17) */}
         <NowWidget />
         <p className="text-body-sm text-ink-muted">
