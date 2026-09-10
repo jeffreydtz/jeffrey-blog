@@ -662,6 +662,7 @@
   border-block: var(--line-width) solid var(--color-hairline);
 }
 .turntable-scene {
+  position: relative;
   width: 100%;
   height: var(--turntable-height);
 }
@@ -669,7 +670,29 @@
   display: block;
   width: 100%;
   height: 100%;
+  pointer-events: none;
   touch-action: pan-y;
+}
+.turntable-arm-hit {
+  position: absolute;
+  z-index: 1;
+  top: 8%;
+  right: 2%;
+  bottom: 20%;
+  width: 42%;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.turntable-scene[data-playing="true"] .turntable-arm-hit {
+  left: 8%;
+  right: 18%;
+  width: auto;
+}
+.turntable-arm-hit[data-grabbing="true"] {
+  inset: 0;
+  width: auto;
+  cursor: grabbing;
 }
 .turntable-instructions {
   padding-block: var(--spacing-sm) var(--spacing-lg);

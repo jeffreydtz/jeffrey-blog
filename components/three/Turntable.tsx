@@ -1,17 +1,23 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type RefObject } from "react";
 import { ui } from "@/lib/ui";
-import type { VinylRecord } from "@/lib/vinyl-data";
+import { spotifyEmbedFor, type VinylRecord } from "@/lib/vinyl-data";
 
 const TurntableCanvas = dynamic(
   () => import("./TurntableCanvas").then((mod) => mod.TurntableCanvas),
   { ssr: false },
 );
 
-const SPOTIFY_ALBUM_ID =
-  /^https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?album\/([A-Za-z0-9]{10,40})/;
+const EMPTY_RECORD: VinylRecord = {
+  id: "",
+  title: "",
+  artist: "",
+  coverUrl: null,
+  previewUrl: null,
+  source: "crate",
+};
 
 function Cover({ src }: { src: string | null }) {
   if (!src) return null;
@@ -27,28 +33,42 @@ function Cover({ src }: { src: string | null }) {
   );
 }
 
-/** Reproducción audible del disco seleccionado. Preferir embed de Spotify; si no, preview iTunes con gesto del usuario (Safari móvil). */
-function VinylListen({ record }: { record: VinylRecord }) {
+type VinylPlayback = {
+  playing: boolean;
+  failed: boolean;
+  audioRef: RefObject<HTMLAudioElement | null>;
+  playFromGesture: () => void;
+  pause: () => void;
+  toggle: () => void;
+  onPlaying: () => void;
+  onPause: () => void;
+  onEnded: () => void;
+  onError: () => void;
+};
+
+function useVinylPlayback(record: VinylRecord): VinylPlayback {
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);
   const generation = useRef(0);
-  const [playing, setPlaying] = useState(false);
-  const [failed, setFailed] = useState(false);
-
-  const spotifyMatch = record.spotifyUrl
-    ? SPOTIFY_ALBUM_ID.exec(record.spotifyUrl)
-    : null;
-  const spotifyId = spotifyMatch?.[1] ?? null;
+  const [session, setPlaySession] = useState({
+    id: record.id,
+    playing: false,
+    failed: false,
+  });
+  if (session.id !== record.id) {
+    requested.current = false;
+    setPlaySession({ id: record.id, playing: false, failed: false });
+  }
+  const playing = session.id === record.id && session.playing;
+  const failed = session.id === record.id && session.failed;
 
   useEffect(() => {
     requested.current = false;
     generation.current += 1;
-    setPlaying(false);
-    setFailed(false);
     const audio = audioRef.current;
     if (!audio) return;
     audio.pause();
-    if (record.previewUrl && !spotifyId) {
+    if (record.previewUrl) {
       audio.src = record.previewUrl;
     } else {
       audio.removeAttribute("src");
@@ -59,84 +79,138 @@ function VinylListen({ record }: { record: VinylRecord }) {
       requested.current = false;
       audio.pause();
     };
-  }, [record.id, record.previewUrl, spotifyId]);
+  }, [record.id, record.previewUrl]);
 
-  async function toggle() {
-    const audio = audioRef.current;
-    if (!audio || !record.previewUrl) return;
-    requested.current = !requested.current;
-    const attempt = ++generation.current;
-    if (!requested.current) {
-      audio.pause();
-      return;
-    }
-    setFailed(false);
-    try {
-      if (audio.ended) audio.currentTime = 0;
-      await audio.play();
-      if (!requested.current) audio.pause();
-    } catch {
-      if (attempt !== generation.current) return;
-      requested.current = false;
-      setPlaying(false);
-      setFailed(true);
-    }
-  }
-
-  if (spotifyId) {
-    return (
-      <div
-        className="vinyl-embed print-hidden mt-md overflow-hidden rounded-subtle border border-hairline bg-paper-raised"
-        style={{ height: 152 }}
-      >
-        <iframe
-          src={`https://open.spotify.com/embed/album/${spotifyId}`}
-          title={`${ui.mdx.spotifyTitle}: ${record.title}`}
-          loading="lazy"
-          className="h-full w-full border-0"
-          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        />
-      </div>
+  function setPlaying(next: boolean) {
+    setPlaySession((current) =>
+      current.id === record.id ? { ...current, playing: next } : current,
     );
   }
 
-  if (!record.previewUrl) return null;
+  function setFailed(next: boolean) {
+    setPlaySession((current) =>
+      current.id === record.id ? { ...current, failed: next } : current,
+    );
+  }
+
+  function playFromGesture() {
+    const audio = audioRef.current;
+    if (!audio || !record.previewUrl) return;
+    requested.current = true;
+    const attempt = ++generation.current;
+    setFailed(false);
+    if (audio.ended) audio.currentTime = 0;
+    const attemptPlay = audio.play();
+    if (attemptPlay) {
+      void attemptPlay.catch(() => {
+        if (attempt !== generation.current) return;
+        requested.current = false;
+        setPlaying(false);
+        setFailed(true);
+      });
+    }
+  }
+
+  function pause() {
+    requested.current = false;
+    audioRef.current?.pause();
+  }
+
+  function toggle() {
+    if (requested.current) pause();
+    else playFromGesture();
+  }
+
+  function onPlaying() {
+    if (requested.current) setPlaying(true);
+    else audioRef.current?.pause();
+  }
+
+  function onPause() {
+    setPlaying(false);
+  }
+
+  function onEnded() {
+    requested.current = false;
+    setPlaying(false);
+  }
+
+  function onError() {
+    requested.current = false;
+    setPlaying(false);
+    setFailed(true);
+  }
+
+  return {
+    playing,
+    failed,
+    audioRef,
+    playFromGesture,
+    pause,
+    toggle,
+    onPlaying,
+    onPause,
+    onEnded,
+    onError,
+  };
+}
+
+/** Preview iTunes (brazo + botón) y, si hay URL, embed compacto de Spotify. */
+function VinylListen({
+  record,
+  playback,
+}: {
+  record: VinylRecord;
+  playback: VinylPlayback;
+}) {
+  const spotify = spotifyEmbedFor(record);
+  if (!record.previewUrl && !spotify) return null;
 
   return (
     <div className="mt-md">
-      <button
-        type="button"
-        className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
-        aria-pressed={playing}
-        aria-label={`${playing ? ui.now.pausePreview : ui.now.playPreview}: ${record.title} — ${record.artist}`}
-        onClick={() => void toggle()}
-      >
-        {playing ? ui.now.pausePreview : ui.now.playPreview}
-      </button>
-      <p className="mt-xs text-body-sm text-ink-secondary">{ui.now.preview}</p>
-      <p role="status" className="text-body-sm text-ink-secondary">
-        {failed ? ui.now.previewError : ""}
-      </p>
-      <audio
-        ref={audioRef}
-        src={record.previewUrl}
-        preload="none"
-        aria-label={`${ui.now.playPreview}: ${record.title}`}
-        onPlaying={() => {
-          if (requested.current) setPlaying(true);
-          else audioRef.current?.pause();
-        }}
-        onPause={() => setPlaying(false)}
-        onEnded={() => {
-          requested.current = false;
-          setPlaying(false);
-        }}
-        onError={() => {
-          requested.current = false;
-          setPlaying(false);
-          setFailed(true);
-        }}
-      />
+      {record.previewUrl ? (
+        <>
+          <button
+            type="button"
+            className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
+            aria-pressed={playback.playing}
+            aria-label={`${playback.playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview}: ${record.title} — ${record.artist}`}
+            onClick={() => playback.toggle()}
+          >
+            {playback.playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview}
+          </button>
+          <p className="mt-xs text-body-sm text-ink-secondary">
+            {ui.vinyl.preview}
+          </p>
+          <p role="status" className="text-body-sm text-ink-secondary">
+            {playback.failed ? ui.now.previewError : ""}
+          </p>
+          <audio
+            ref={playback.audioRef}
+            src={record.previewUrl}
+            preload="none"
+            aria-label={`${ui.vinyl.playPreview}: ${record.title}`}
+            onPlaying={playback.onPlaying}
+            onPause={playback.onPause}
+            onEnded={playback.onEnded}
+            onError={playback.onError}
+          />
+        </>
+      ) : null}
+      {spotify ? (
+        <div
+          className="vinyl-embed print-hidden mt-md overflow-hidden rounded-subtle border border-hairline bg-paper-raised"
+          style={{ height: 152 }}
+        >
+          <iframe
+            src={`https://open.spotify.com/embed/${spotify.kind}/${spotify.id}`}
+            title={`${ui.mdx.spotifyTitle}: ${record.title}`}
+            loading="lazy"
+            className="h-full w-full border-0"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -144,9 +218,11 @@ function VinylListen({ record }: { record: VinylRecord }) {
 function Details({
   record,
   listen = false,
+  playback,
 }: {
   record: VinylRecord;
   listen?: boolean;
+  playback?: VinylPlayback;
 }) {
   return (
     <>
@@ -165,11 +241,11 @@ function Details({
       {record.note ? (
         <p className="mt-md text-body-sm text-ink-secondary">{record.note}</p>
       ) : null}
-      {record.spotifyUrl || record.appleUrl ? (
+      {record.spotifyUrl || record.spotifyTrackUrl || record.appleUrl ? (
         <p className="mt-md flex flex-wrap gap-md">
-          {record.spotifyUrl ? (
+          {record.spotifyUrl || record.spotifyTrackUrl ? (
             <a
-              href={record.spotifyUrl}
+              href={record.spotifyTrackUrl ?? record.spotifyUrl}
               className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
             >
               {ui.vinyl.openSpotify}
@@ -180,12 +256,14 @@ function Details({
               href={record.appleUrl}
               className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
             >
-              {record.source === "now" ? ui.now.openTrack : ui.vinyl.openApple}
+              {ui.vinyl.openApple}
             </a>
           ) : null}
         </p>
       ) : null}
-      {listen ? <VinylListen record={record} /> : null}
+      {listen && playback ? (
+        <VinylListen record={record} playback={playback} />
+      ) : null}
     </>
   );
 }
@@ -196,10 +274,27 @@ export function Turntable({ records }: { records: VinylRecord[] }) {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
   const current = records[selected];
+  const playback = useVinylPlayback(current ?? EMPTY_RECORD);
+  const playingRef = useRef(false);
+  const grabWasPlaying = useRef(false);
+  playingRef.current = playback.playing;
 
   useEffect(() => {
     setReady(true);
   }, []);
+
+  function onArmGrab() {
+    grabWasPlaying.current = playingRef.current;
+    playback.playFromGesture();
+  }
+
+  function onArmRelease(onRecord: boolean, tapped: boolean) {
+    if (tapped) {
+      if (grabWasPlaying.current) playback.pause();
+      return;
+    }
+    if (!onRecord) playback.pause();
+  }
 
   if (!records.length) {
     return <p className="text-body-sm text-ink-secondary">{ui.vinyl.empty}</p>;
@@ -214,7 +309,14 @@ export function Turntable({ records }: { records: VinylRecord[] }) {
         </span>
       </div>
       {ready && current && !failed ? (
-        <TurntableCanvas record={current} onFailure={() => setFailed(true)} />
+        <TurntableCanvas
+          record={current}
+          playing={playback.playing}
+          canPlay={Boolean(current.previewUrl)}
+          onFailure={() => setFailed(true)}
+          onArmGrab={onArmGrab}
+          onArmRelease={onArmRelease}
+        />
       ) : null}
       <p className="turntable-instructions text-body-sm text-ink-secondary">
         {failed ? ui.vinyl.fallback : ui.vinyl.instructions}
@@ -267,7 +369,7 @@ export function Turntable({ records }: { records: VinylRecord[] }) {
             id={detailId}
             aria-label={ui.vinyl.selected}
           >
-            <Details record={current} listen />
+            <Details record={current} listen playback={playback} />
           </section>
         ) : null}
       </div>

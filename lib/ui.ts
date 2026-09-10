@@ -119,10 +119,13 @@ export const ui = {
     select: "Poner en el plato",
     selected: "Disco en el plato",
     instructions:
-      "Elegí un disco de la lista. El plato gira despacio mientras está a la vista. Reproducí debajo con un toque (Safari exige gesto).",
+      "Elegí un disco. Arrastrá el brazo al vinilo para escuchar el preview; sacalo para pausar. En el teléfono, un toque en el brazo también sirve. El botón de abajo siempre funciona.",
     fallback: "El tocadiscos también se recorre en esta lista.",
+    playPreview: "Escuchar preview",
+    pausePreview: "Pausar preview",
+    preview: "Fragmento oficial · 30 segundos",
     openSpotify: "Abrir en Spotify",
-    openApple: "Abrir en Apple Music",
+    openApple: "Abrir en Apple",
     empty: "No hay discos en el cajón todavía.",
   },
   reactions: {

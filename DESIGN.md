@@ -240,6 +240,7 @@ Ruta dedicada: el canvas no se monta en `/`. Tokens `--turntable-height` (28rem;
 20rem en móvil) y `--disc-index-mobile-width` (12rem). Un disco con surcos
 procedurales, sello tipográfico (o portada iTunes si hay CORS) y plinto/brazo
 simples; paleta papel/tinta. Gira con `--vinyl-period` solo a la vista y sin
-reduced-motion. El índice HTML es el equivalente accesible; sin JS se ven todas
-las fichas. TODO posterior: swap de plinto/brazo a GLB (Astra), conservando el
-disco procedural.
+reduced-motion. El brazo se arrastra al disco para el preview (toque en
+móvil; el botón HTML es el control accesible). El índice HTML es el equivalente
+accesible; sin JS se ven todas las fichas. TODO posterior: swap de plinto/brazo
+a GLB (Astra), conservando el disco procedural.

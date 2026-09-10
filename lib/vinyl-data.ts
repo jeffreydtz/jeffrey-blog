@@ -9,6 +9,7 @@ export interface VinylAlbumDraft {
   artist: string;
   coverUrl?: string;
   spotifyUrl?: string;
+  spotifyTrackUrl?: string;
   note?: string;
 }
 
@@ -18,14 +19,41 @@ export interface VinylRecord {
   artist: string;
   coverUrl: string | null;
   spotifyUrl?: string;
+  spotifyTrackUrl?: string;
   appleUrl?: string;
   previewUrl: string | null;
   note?: string;
   source: "now" | "crate";
 }
 
+export interface SpotifyEmbed {
+  kind: "track" | "album";
+  id: string;
+}
+
+const SPOTIFY_RESOURCE =
+  /^https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?(track|album)\/([A-Za-z0-9]{10,40})(?:\?.*)?$/;
+
 const SPOTIFY_ALBUM =
   /^https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?album\/[A-Za-z0-9]{10,40}(?:\?.*)?$/;
+
+const SPOTIFY_TRACK =
+  /^https:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?track\/[A-Za-z0-9]{10,40}(?:\?.*)?$/;
+
+/** Track URL gana sobre álbum. Sin URL válida → null. */
+export function parseSpotifyUrl(url: string | undefined): SpotifyEmbed | null {
+  if (!url) return null;
+  const match = SPOTIFY_RESOURCE.exec(url);
+  if (!match) return null;
+  return { kind: match[1] as "track" | "album", id: match[2] };
+}
+
+export function spotifyEmbedFor(record: VinylRecord): SpotifyEmbed | null {
+  return (
+    parseSpotifyUrl(record.spotifyTrackUrl) ??
+    parseSpotifyUrl(record.spotifyUrl)
+  );
+}
 
 function requireString(value: unknown, field: string, id: string): string {
   if (typeof value !== "string" || value.trim() === "") {
@@ -90,6 +118,19 @@ export function parseVinylCrate(raw: unknown): VinylAlbumDraft[] {
         );
       }
       draft.spotifyUrl = url;
+    }
+    if (
+      "spotifyTrackUrl" in item &&
+      item.spotifyTrackUrl != null &&
+      item.spotifyTrackUrl !== ""
+    ) {
+      const url = requireString(item.spotifyTrackUrl, "spotifyTrackUrl", id);
+      if (!SPOTIFY_TRACK.test(url)) {
+        throw new Error(
+          `[vinyl] ${id}: spotifyTrackUrl debe ser https://open.spotify.com/track/{id}`,
+        );
+      }
+      draft.spotifyTrackUrl = url;
     }
     if ("note" in item && item.note != null && item.note !== "") {
       draft.note = requireString(item.note, "note", id);

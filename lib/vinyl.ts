@@ -3,7 +3,7 @@ import crate from "@/content/data/vinyl.json";
 import { now } from "@/lib/now";
 import { getNowCovers } from "@/lib/now-covers";
 import { getNowTrack } from "@/lib/now-track";
-import { resolveAlbumArtwork } from "@/lib/vinyl-covers";
+import { resolveAlbumArtwork, resolveAlbumPreview } from "@/lib/vinyl-covers";
 import {
   assembleVinyl,
   parseVinylCrate,
@@ -20,6 +20,9 @@ export async function getVinylRecords(): Promise<VinylRecord[]> {
     getNowTrack(),
     Promise.all(albums.map(resolveAlbumArtwork)),
   ]);
+  const previews = await Promise.all(
+    albums.map((album, index) => resolveAlbumPreview(album, artwork[index])),
+  );
 
   const nowPlaying: VinylRecord = {
     id: "now",
@@ -27,6 +30,8 @@ export async function getVinylRecords(): Promise<VinylRecord[]> {
     artist: now.listening.artist,
     coverUrl: now.listening.coverUrl ?? track?.coverUrl ?? covers.listening,
     appleUrl: track?.trackUrl,
+    spotifyUrl: now.listening.spotifyUrl,
+    spotifyTrackUrl: now.listening.spotifyTrackUrl,
     previewUrl: track?.previewUrl ?? null,
     source: "now",
   };
@@ -37,8 +42,9 @@ export async function getVinylRecords(): Promise<VinylRecord[]> {
     artist: album.artist,
     coverUrl: album.coverUrl ?? artwork[index]?.coverUrl ?? null,
     spotifyUrl: album.spotifyUrl,
+    spotifyTrackUrl: album.spotifyTrackUrl,
     appleUrl: artwork[index]?.appleUrl || undefined,
-    previewUrl: null,
+    previewUrl: previews[index],
     note: album.note,
     source: "crate",
   }));

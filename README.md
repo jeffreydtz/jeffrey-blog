@@ -148,7 +148,7 @@ jeffrey-blog/
 Env vars (sin las dos primeras el panel queda deshabilitado y no aparece nada):
 
 - `ADMIN_PASSWORD` — contraseña de acceso (sesión de 7 días, cookie firmada; cambiar la contraseña revoca sesiones).
-- `GITHUB_TOKEN` — token fine-grained con permiso **Contents: Read and write** solo sobre este repo. Un token de solo lectura (o el `GITHUB_TOKEN` de Actions sin `contents: write`) da 403 *Resource not accessible by personal access token* al guardar.
+- `GITHUB_TOKEN` — token fine-grained con permiso **Contents: Read and write** solo sobre este repo. Un token de solo lectura (o el `GITHUB_TOKEN` de Actions sin `contents: write`) da 403 _Resource not accessible by personal access token_ al guardar.
 - `VERCEL_DEPLOY_HOOK_URL` — (opcional) Deploy Hook de Vercel; con él cada guardado dispara el rebuild solo. Sin él, el commit queda hecho y hay que deployar a mano.
 
 El panel está fuera de robots/sitemap/búsqueda; el login tiene rate limit por IP.
@@ -161,12 +161,20 @@ Qué estoy escuchando y leyendo, en el footer. Desde `/admin/now` se busca una c
 
 `/vinyl` es un tocadiscos aparte — no vive en la home, para no cargar WebGL en el LCP. Un disco y un plinto procedurales (Three.js, sin React Three Fiber). El giro se pausa fuera de pantalla, con la pestaña oculta y con `prefers-reduced-motion`. El estante de `/gabinete` es CSS 3D, no este canvas.
 
+**Cómo escuchar**
+
+El brazo del tocadiscos es el control de preview (fragmento oficial de iTunes, ~30 s). Arrastralo desde la derecha hacia el vinilo: al dejar la aguja sobre el disco arranca el audio (el `pointerdown` cuenta como gesto, necesario en Safari). Sacalo o levantalo para pausar. En el teléfono, un toque en el brazo también sirve. El botón **Escuchar preview** debajo del índice hace lo mismo y es el camino con teclado. Si WebGL no carga, quedan el botón y los enlaces.
+
+Cada disco usa el mismo chrome: **Escuchar preview** + **Abrir en Spotify** / **Abrir en Apple** cuando hay URL, y el embed compacto de Spotify solo si hay `spotifyUrl` o `spotifyTrackUrl`. El disco de Ahora es una canción (preview del tema); los del cajón son álbumes (preview del primer corte, no un tema “popular”).
+
 **Cómo editar el cajón**
 
 1. Abrir `content/data/vinyl.json`.
 2. Cada álbum necesita `id` (slug único; `now` está reservado), `title` y `artist`.
-3. Opcional: `spotifyUrl` (`https://open.spotify.com/album/…`), `coverUrl` (https, gana sobre iTunes) y `note` (una línea editorial).
-4. Guardar, `git commit` y pushear. En el próximo build, iTunes resuelve portada y enlace de Apple Music (coincidencia exacta de título/artista; cache en `.cache/embeds/` con clave `itunes-album:v1:ARTISTA — TÍTULO`). Commitear el JSON nuevo del cache si querés builds reproducibles sin red.
+3. Opcional: `spotifyUrl` (`https://open.spotify.com/album/…`), `spotifyTrackUrl` (`https://open.spotify.com/track/…`, gana para el embed), `coverUrl` (https, gana sobre iTunes) y `note` (una línea editorial).
+4. Guardar, `git commit` y pushear. En el próximo build, iTunes resuelve portada, enlace de Apple Music (coincidencia exacta de título/artista; cache `itunes-album:v1:ARTISTA — TÍTULO`) y el preview del primer corte (`itunes-album-preview:v1:{collectionId}`). Commitear el JSON nuevo del cache si querés builds reproducibles sin red.
+
+En `lib/now.ts` se puede añadir `spotifyUrl` / `spotifyTrackUrl` al tema de Ahora para el mismo embed; sin ellos, Ahora queda en preview iTunes + enlace de Apple, igual de escuchable que el cajón.
 
 El tema de **Ahora** (`lib/now.ts`) se antepone siempre como primer disco. Si el cajón ya tiene el mismo título y artista, no se duplica.
 
