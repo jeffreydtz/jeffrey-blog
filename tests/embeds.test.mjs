@@ -114,17 +114,38 @@ test("Goodreads rejects a book URL whose numeric ID only shares a prefix", () =>
     ),
   );
 });
-test("Selection reserves shelves, deduplicates and caps at seven", () => {
-  const books = Array.from({ length: 12 }, (_, index) => ({
+test("Committed snapshot is the full read shelf, never to-read", async () => {
+  const snapshot = JSON.parse(
+    await fs.readFile(
+      new URL("../content/data/goodreads.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.ok(snapshot.books.length > 7);
+  assert.equal(
+    snapshot.books.every((book) => book.shelf === "read"),
+    true,
+  );
+  assert.ok(snapshot.books.some((book) => Boolean(book.comment)));
+  assert.ok(snapshot.books.some((book) => typeof book.rating === "number"));
+});
+test("Selection keeps the full read shelf, drops other shelves and duplicates", () => {
+  const read = Array.from({ length: 12 }, (_, index) => ({
     id: String(index),
+    shelf: "read",
   }));
-  const selected = selectLibraryBooks([
-    books.slice(0, 6),
-    [books[0], ...books.slice(6)],
-  ]);
-  assert.equal(selected.length, 7);
-  assert.equal(new Set(selected.map((book) => book.id)).size, 7);
-  assert.ok(selected.some((book) => book.id === "6"));
+  const extra = [
+    { id: "0", shelf: "read" },
+    { id: "99", shelf: "to-read" },
+    { id: "88", shelf: "currently-reading" },
+  ];
+  const selected = selectLibraryBooks([read, extra]);
+  assert.equal(selected.length, 12);
+  assert.equal(new Set(selected.map((book) => book.id)).size, 12);
+  assert.equal(
+    selected.every((book) => book.shelf === "read"),
+    true,
+  );
   assert.deepEqual(selectLibraryBooks([[], [], []]), []);
 });
 

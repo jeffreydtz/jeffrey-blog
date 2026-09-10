@@ -146,6 +146,7 @@
     line-height: var(--text-body--line-height);
     font-variant-ligatures: common-ligatures;
     text-rendering: optimizeLegibility;
+    overflow-wrap: break-word;
   }
 
   ::selection {
@@ -179,6 +180,20 @@
   /* Divisor de 1px — la ÚNICA forma de separación entre bloques */
   .hairline {
     border-top: 1px solid var(--color-hairline);
+  }
+
+  /* Saltar al contenido: invisible hasta el foco (primer tab) */
+  .skip-link {
+    position: absolute;
+    left: var(--spacing-md);
+    top: var(--spacing-md);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    transform: translateY(-200%);
+  }
+  .skip-link:focus {
+    transform: none;
   }
 
   /* Subrayado que se dibuja de izquierda a derecha */

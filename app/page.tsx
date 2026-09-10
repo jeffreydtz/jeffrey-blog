@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import { AmbientRing } from "@/components/three/AmbientRing";
 import { PostLink } from "@/components/ui/PostLink";
 import { getAllPosts } from "@/lib/posts";
 import { formatDate, ui } from "@/lib/ui";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 /**
  * Home (T12) — índice editorial: la tapa del blog es su tabla de contenidos.
@@ -38,7 +43,7 @@ export default function HomePage() {
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <time className="label block" dateTime={post.published_at}>
-                    {formatDate(post.published_at, post.lang)}
+                    {formatDate(post.published_at)}
                   </time>
                   <p className="label" data-tnum>
                     {post.readingTimeMinutes} {ui.post.readingTime} ·{" "}
@@ -46,7 +51,7 @@ export default function HomePage() {
                   </p>
                 </div>
                 <div lang={post.lang}>
-                  <h2 className="font-display text-display-md">
+                  <h2 className="text-balance font-display text-display-md">
                     <PostLink
                       href={`/posts/${post.slug}`}
                       className="link-underline weight-hover text-ink"

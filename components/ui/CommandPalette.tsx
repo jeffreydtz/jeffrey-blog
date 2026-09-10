@@ -244,7 +244,7 @@ export function CommandPalette({
               setQuery(event.target.value);
               setActiveIndex(0);
             }}
-            className="w-full bg-transparent py-xs font-mono text-body-sm text-ink outline-none placeholder:text-ink-muted"
+            className="w-full bg-transparent py-xs font-mono text-body-sm text-ink placeholder:text-ink-muted"
           />
           <kbd aria-hidden="true" className="label shrink-0">
             esc
@@ -301,7 +301,7 @@ export function CommandPalette({
                             dateTime={item.doc.published_at}
                             className="label shrink-0"
                           >
-                            {formatDate(item.doc.published_at, item.doc.lang)}
+                            {formatDate(item.doc.published_at)}
                           </time>
                         </>
                       ) : item.kind === "page" ? (

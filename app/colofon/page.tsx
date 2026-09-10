@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { renderMdx } from "@/lib/mdx";
 import { getStaticPage } from "@/lib/pages";
+import { ui } from "@/lib/ui";
 
 /**
  * /colofon (T13) — la página que cuenta cómo está hecho el sitio,
@@ -11,6 +12,7 @@ const page = getStaticPage("colofon");
 
 export const metadata: Metadata = {
   title: page.title,
+  description: ui.pages.colophonDescription,
   alternates: { canonical: "/colofon" },
 };
 

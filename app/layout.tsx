@@ -29,8 +29,18 @@ export const metadata: Metadata = {
     template: `%s · ${ui.siteTitle}`,
   },
   description: ui.siteDescription,
+  authors: [{ name: SITE.author, url: SITE.url }],
+  creator: SITE.author,
   alternates: {
     types: { "application/rss+xml": "/rss.xml" },
+  },
+  openGraph: {
+    type: "website",
+    locale: "es_AR",
+    siteName: SITE.name,
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 
@@ -56,8 +66,13 @@ export default function RootLayout({
       </head>
       <body className="flex min-h-dvh flex-col antialiased">
         <SoundProvider available={hasPageTurnAsset()}>
+          <a href="#contenido" className="skip-link print-hidden z-50">
+            {ui.skipToContent}
+          </a>
           <SiteHeader />
-          <main className="flex-1">{children}</main>
+          <main id="contenido" className="flex-1">
+            {children}
+          </main>
           <SiteFooter />
         </SoundProvider>
       </body>

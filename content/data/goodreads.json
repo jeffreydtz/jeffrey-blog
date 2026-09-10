@@ -1,6 +1,6 @@
 {
   "profileUrl": "https://www.goodreads.com/user/show/128723960-jeffrey",
-  "verifiedAt": "2026-09-10T15:21:01.833Z",
+  "verifiedAt": "2026-09-10T16:15:49.703Z",
   "books": [
     {
       "id": "43517789",
@@ -21,22 +21,6 @@
       "sourceUrl": "https://www.goodreads.com/review/show/8926469532?utm_medium=api&utm_source=rss",
       "rating": 3,
       "comment": "“De todas esas glorias, la menos falaz es la que se vive”"
-    },
-    {
-      "id": "56420157",
-      "title": "La biblioteca de la medianoche (Universo de la medianoche, #1)",
-      "author": "Matt Haig",
-      "shelf": "to-read",
-      "url": "https://www.goodreads.com/book/show/56420157-la-biblioteca-de-la-medianoche?utm_medium=api&utm_source=rss",
-      "sourceUrl": "https://www.goodreads.com/review/show/8893365950?utm_medium=api&utm_source=rss"
-    },
-    {
-      "id": "231301304",
-      "title": "Always Remember: The Boy, the Mole, the Fox, the Horse and the Storm",
-      "author": "Charlie Mackesy",
-      "shelf": "to-read",
-      "url": "https://www.goodreads.com/book/show/231301304-always-remember?utm_medium=api&utm_source=rss",
-      "sourceUrl": "https://www.goodreads.com/review/show/8347735274?utm_medium=api&utm_source=rss"
     },
     {
       "id": "2139323",
@@ -67,6 +51,515 @@
       "sourceUrl": "https://www.goodreads.com/review/show/8659757637?utm_medium=api&utm_source=rss",
       "rating": 3,
       "comment": "👍"
+    },
+    {
+      "id": "52036",
+      "title": "Siddhartha",
+      "author": "Hermann Hesse",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/52036.Siddhartha?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8659754975?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "excelente como está escrito, como desarrolla los personajes y la claridad con que se entiende a sidharta, hermoso y hasta liberador."
+    },
+    {
+      "id": "1836303",
+      "title": "El extranjero",
+      "author": "Albert Camus",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/1836303.El_extranjero?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8659752663?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "gran libro, excelente como plantea ser original es una manera de ser libre."
+    },
+    {
+      "id": "1995421",
+      "title": "Seeking Wisdom: From Darwin To Munger",
+      "author": "Peter Bevelin",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/1995421.Seeking_Wisdom?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/7940114106?utm_medium=api&utm_source=rss",
+      "rating": 2,
+      "comment": "es redundante y da datos sin contexto no sigue un hilo"
+    },
+    {
+      "id": "13099738",
+      "title": "Steal Like an Artist: 10 Things Nobody Told You About Being Creative",
+      "author": "Austin Kleon",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/13099738-steal-like-an-artist?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8315484969?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "gran libro te ayuda con la creatividad!"
+    },
+    {
+      "id": "221374096",
+      "title": "Los náufragos del Wager",
+      "author": "David Grann",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/221374096-los-n-ufragos-del-wager?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8315479524?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "Gran libro excelentemente narrado y te mantiene alerta a que va a pasar. una historia de mi zona geográfica completamente desconocida :)"
+    },
+    {
+      "id": "103582",
+      "title": "Crimen y castigo",
+      "author": "Fyodor Dostoevsky",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/103582.Crimen_y_castigo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/7775737332?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "Gran libro, leída cortada por mi parte pero increíble como te sumerge en la vida de los personajes."
+    },
+    {
+      "id": "96175612",
+      "title": "Generación dopamina",
+      "author": "Anna Lembke",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/96175612-generaci-n-dopamina?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/7396383984?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "Buen libro explica perfecto todo cómo funciona la dopamina y sus formas de no caer en ella."
+    },
+    {
+      "id": "97411",
+      "title": "Letters from a Stoic",
+      "author": "Seneca",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/97411.Letters_from_a_Stoic?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/7212668268?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "Muy buen libro, es increíble como Seneca tenía respuestas sobre la muerte tan interesantes y tantas enseñanzas aplicable al mundo actual. Excelente libro, eso sí, se hace lento."
+    },
+    {
+      "id": "34313991",
+      "title": "La Divina Comedia, prólogo de Jorge Luis Borges",
+      "author": "Dante Alighieri",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/34313991-la-divina-comedia-pr-logo-de-jorge-luis-borges?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/6776786931?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "Muy buen libro pero tenes que ser un buen lector y estar acostumbrado a estas lecturas pesadas, yo no lo soy y me costó, sacando eso es arte."
+    },
+    {
+      "id": "61338803",
+      "title": "La psicología del dinero",
+      "author": "Morgan Housel",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/61338803-la-psicolog-a-del-dinero?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/6777377379?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "11417907",
+      "title": "Confianza Total, para vivir mejor (Spanish Edition)",
+      "author": "Verónica de Andrés",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/11417907-confianza-total-para-vivir-mejor?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/6324195870?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "38119216",
+      "title": "Padre Rico, Padre Pobre. Edición 20 aniversario / Rich Dad Poor Dad (Spanish Edition)",
+      "author": "Robert T. Kiyosaki",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/38119216-padre-rico-padre-pobre-edici-n-20-aniversario-rich-dad-poor-dad?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4044265898?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "59313539",
+      "title": "El pequeño libro del estoicismo",
+      "author": "Jonas Salzgeber",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/59313539-el-peque-o-libro-del-estoicismo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/5927540547?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "Buen libro, resume bastante lo que es el estoicismo y tiene consejos prácticos para el día a día que muchos libros no tienen, recomiendo."
+    },
+    {
+      "id": "48705360",
+      "title": "Di lo que quieres decir: Cómo tener diálogos cercanos y sinceros a través de la comunicación no violenta",
+      "author": "Oren Jay Sofer",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/48705360-di-lo-que-quieres-decir?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/5692106548?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "20421821",
+      "title": "El hombre multiorgásmico: cómo experimentar orgasmos múltiples e incrementar espectacularmente la capacidad sexual (Spanish Edition)",
+      "author": "Douglas Abrams Arava",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/20421821-el-hombre-multiorg-smico?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4753377501?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "964308",
+      "title": "Ellas llegan primero: El libro para los hombres que quieren complacer a las mujeres",
+      "author": "Ian Kerner",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/964308.Ellas_llegan_primero?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4737035578?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "40121378",
+      "title": "Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones",
+      "author": "James Clear",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/40121378-atomic-habits?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4044265283?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "52029870",
+      "title": "Inquebrantables",
+      "author": "Daniel Habif",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/52029870-inquebrantables?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4553014072?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "836517",
+      "title": "Las siete leyes espirituales del exito: Una guia practica para la realizacion de tus sueños",
+      "author": "Deepak Chopra",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/836517.Las_siete_leyes_espirituales_del_exito?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4520866117?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "27109542",
+      "title": "Los hombres son de Marte, las mujeres son de Venus (Marte y Venus)",
+      "author": "John  Gray",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/27109542-los-hombres-son-de-marte-las-mujeres-son-de-venus?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4400267476?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "709528",
+      "title": "Tus zonas erróneas",
+      "author": "Wayne W. Dyer",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/709528.Tus_zonas_err_neas?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4361187997?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "52248298",
+      "title": "Sexo ATR: A todo ritmo",
+      "author": "Cecilia Ce",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/52248298-sexo-atr?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4331987960?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "3853137",
+      "title": "La insoportable levedad del ser",
+      "author": "Milan Kundera",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/3853137-la-insoportable-levedad-del-ser?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4292701898?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "42895",
+      "title": "Una breve historia de casi todo",
+      "author": "Bill  Bryson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/42895.Una_breve_historia_de_casi_todo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4234561033?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "9828677",
+      "title": "La inteligencia emocional",
+      "author": "Daniel Goleman",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/9828677-la-inteligencia-emocional?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4105344501?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "36622739",
+      "title": "The Courage to Be Disliked: The Japanese Phenomenon That Shows You How to Change Your Life and Achieve Real Happiness",
+      "author": "Ichiro Kishimi",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/36622739-the-courage-to-be-disliked?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3996059837?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "28964271",
+      "title": "Deja de ser tú: La mente crea la realidad",
+      "author": "Joe Dispenza",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/28964271-deja-de-ser-t?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4053967038?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "30257963",
+      "title": "12 Rules for Life: An Antidote to Chaos",
+      "author": "Jordan B. Peterson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/30257963-12-rules-for-life?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/4029971818?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "31831645",
+      "title": "Una llamada al amor: Consciencia - libertad - felicidad El Pozo de Siquem()",
+      "author": "Anthony de Mello",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/31831645-una-llamada-al-amor?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3933966956?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "56126115",
+      "title": "En el limbo: Aprende a diseñar tus emociones para convertirte en quien siempre quisiste ser",
+      "author": "Estanislao Bachrach",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/56126115-en-el-limbo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3944134911?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "39863499",
+      "title": "How to Think Like a Roman Emperor: The Stoic Philosophy of Marcus Aurelius",
+      "author": "Donald J. Robertson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/39863499-how-to-think-like-a-roman-emperor?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3915075026?utm_medium=api&utm_source=rss",
+      "rating": 5
+    },
+    {
+      "id": "33652320",
+      "title": "El arte de la guerra",
+      "author": "Sun Tzu",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/33652320-el-arte-de-la-guerra?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3806157202?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "29601667",
+      "title": "El camino del hombre superior: Los desafíos del amor y del deseo sexual en el hombre de hoy. Guía espiritual (Spanish Edition)",
+      "author": "Miguel Iribarren Berrade",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/29601667-el-camino-del-hombre-superior?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781857895?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "28246891",
+      "title": "Psicología del éxito",
+      "author": "Mario Luna",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/28246891-psicolog-a-del-xito?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781848222?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "7009326",
+      "title": "El monje que vendió su Ferrari",
+      "author": "Robin Sharma",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/7009326-el-monje-que-vendi-su-ferrari?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781850979?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "19281665",
+      "title": "15 Claves Para Una Autoestima Indestructible",
+      "author": "Elías Berntsson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/19281665-15-claves-para-una-autoestima-indestructible?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781851439?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "29094163",
+      "title": "El placebo eres tú",
+      "author": "Joe Dispenza",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/29094163-el-placebo-eres-t?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781856474?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "15704926",
+      "title": "Love Yourself Like Your Life Depends on It",
+      "author": "Kamal Ravikant",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/15704926-love-yourself-like-your-life-depends-on-it?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3915074177?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "13722951",
+      "title": "Enamórate de ti: El valor imprescindible de la autoestima",
+      "author": "Walter Riso",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/13722951-enam-rate-de-ti?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781849567?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "24451398",
+      "title": "El efecto compuesto",
+      "author": "Darren Hardy",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/24451398-el-efecto-compuesto?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781848708?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "866618",
+      "title": "El principito",
+      "author": "Antoine de Saint-Exupéry",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/866618.El_principito?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781859341?utm_medium=api&utm_source=rss",
+      "rating": 5
+    },
+    {
+      "id": "155981",
+      "title": "Psycho-Cybernetics: A New Way to Get More Living Out of Life",
+      "author": "Maxwell Maltz",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/155981.Psycho_Cybernetics?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781850089?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "32327717",
+      "title": "Despertando al gigante interior",
+      "author": "Anthony Robbins",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/32327717-despertando-al-gigante-interior?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781851961?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "41721428",
+      "title": "Can't Hurt Me: Master Your Mind and Defy the Odds",
+      "author": "David Goggins",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/41721428-can-t-hurt-me?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3868578809?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "255668",
+      "title": "Poder sin límites",
+      "author": "Anthony Robbins",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/255668.Poder_sin_l_mites?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3818795076?utm_medium=api&utm_source=rss",
+      "rating": 3
+    },
+    {
+      "id": "37703996",
+      "title": "El ego es el enemigo",
+      "author": "Ryan Holiday",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/37703996-el-ego-es-el-enemigo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781929254?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "2058267",
+      "title": "La comunicación no verbal",
+      "author": "Flora Davis",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/2058267.La_comunicaci_n_no_verbal?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781850542?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "546704",
+      "title": "El Método (The Game)",
+      "author": "Neil Strauss",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/546704.El_M_todo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781832413?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "4894",
+      "title": "Who Moved My Cheese?",
+      "author": "Spencer Johnson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/4894.Who_Moved_My_Cheese_?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781827575?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "36072",
+      "title": "The 7 Habits of Highly Effective People: Powerful Lessons in Personal Change",
+      "author": "Stephen R. Covey",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/36072.The_7_Habits_of_Highly_Effective_People?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781825797?utm_medium=api&utm_source=rss",
+      "rating": 5
+    },
+    {
+      "id": "28257707",
+      "title": "The Subtle Art of Not Giving a F*ck: A Counterintuitive Approach to Living a Good Life",
+      "author": "Mark Manson",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/28257707-the-subtle-art-of-not-giving-a-f-ck?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781825732?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "4865",
+      "title": "How to Win Friends & Influence People",
+      "author": "Dale Carnegie",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/4865.How_to_Win_Friends_Influence_People?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781825593?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "4069",
+      "title": "Man's Search for Meaning",
+      "author": "Viktor E. Frankl",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/4069.Man_s_Search_for_Meaning?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781825371?utm_medium=api&utm_source=rss",
+      "rating": 2
+    },
+    {
+      "id": "6596",
+      "title": "The Four Agreements: A Practical Guide to Personal Freedom",
+      "author": "Miguel Ruiz",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/6596.The_Four_Agreements?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781824931?utm_medium=api&utm_source=rss",
+      "rating": 5
+    },
+    {
+      "id": "18144590",
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/18144590-the-alchemist?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781824627?utm_medium=api&utm_source=rss",
+      "rating": 4
+    },
+    {
+      "id": "6708",
+      "title": "The Power of Now: A Guide to Spiritual Enlightenment",
+      "author": "Eckhart Tolle",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/6708.The_Power_of_Now?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/3781824455?utm_medium=api&utm_source=rss",
+      "rating": 4
     }
   ]
 }

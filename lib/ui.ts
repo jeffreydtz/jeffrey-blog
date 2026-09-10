@@ -17,6 +17,21 @@ export const ui = {
     about: "Acerca de",
     colophon: "Colofón",
   },
+  skipToContent: "Saltar al contenido",
+  pages: {
+    archiveDescription: "Índice de todos los ensayos, ordenados por año.",
+    aboutDescription:
+      "Quién escribe estas páginas: atención, oficio y tecnología, desde Argentina.",
+    colophonDescription:
+      "Cómo está hecho este sitio: tipografía, materiales y las reglas de la casa.",
+    cabinetDescription:
+      "Curaduría a mano: lo que estoy mirando y lo que recomiendo leer.",
+  },
+  notFound: {
+    title: "Esta página no está.",
+    body: "Ese enlace no lleva a ninguna página de este sitio.",
+    back: "Volver al inicio",
+  },
   post: {
     published: "Publicado",
     updated: "Actualizado",
@@ -56,7 +71,8 @@ export const ui = {
   },
   library: {
     title: "Mi biblioteca",
-    intro: "Lecturas que van dejando su marca. Un estante de mi Goodreads.",
+    intro:
+      "Libros que ya leí: el estante Leído de Goodreads, completo. Sin lista de deseos.",
     select: "Seleccionar libro",
     selected: "Libro seleccionado",
     instructions: "Elegí un libro del estante o recorré el índice de lecturas.",
@@ -120,7 +136,13 @@ const LOCALE_BY_LANG: Record<PostLang, string> = {
   en: "en-US",
 };
 
-/** Formatea una fecha ISO (YYYY-MM-DD) en el idioma del post. Ej: "14 de septiembre de 2025". */
+/**
+ * Formatea una fecha ISO (YYYY-MM-DD).
+ * El chrome del sitio es español: listados, archivo y metadata de post usan
+ * el default (`es`) para que el índice no mezcle "May 30, 2026" con
+ * "18 de enero de 2026". Pasá `lang` del post solo cuando la fecha acompaña
+ * contenido en ese idioma (p. ej. la tarjeta OG de un ensayo en inglés).
+ */
 export function formatDate(iso: string, lang: PostLang = "es"): string {
   return new Intl.DateTimeFormat(LOCALE_BY_LANG[lang], {
     day: "numeric",

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { renderMdx } from "@/lib/mdx";
-import { getStaticPage } from "@/lib/pages";
-import { getLibrary } from "@/lib/goodreads";
-import { ui, formatDate } from "@/lib/ui";
 import { BookShelf } from "@/components/three/BookShelf";
 import { CabinetChannel } from "@/components/ui/CabinetChannel";
+import { getLibrary } from "@/lib/goodreads";
+import { renderMdx } from "@/lib/mdx";
+import { getStaticPage } from "@/lib/pages";
+import { formatDate, ui } from "@/lib/ui";
 
 /**
  * /gabinete — gabinete de curiosidades: curaduría manual de lo que se mira
@@ -17,6 +17,7 @@ const page = getStaticPage("gabinete");
 
 export const metadata: Metadata = {
   title: page.title,
+  description: ui.pages.cabinetDescription,
   alternates: { canonical: "/gabinete" },
 };
 

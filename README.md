@@ -2,7 +2,7 @@
 
 **Sitio en vivo:** <https://jeffrey-blog-tau.vercel.app>
 
-Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear; no hay panel de administración, ni CMS, ni base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
+Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear (o guardarlo desde `/admin`, que commitea al mismo repo). No es un CMS ni hay base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
 
 ## Cómo agregar un post nuevo
 
@@ -199,12 +199,13 @@ se mueve brevemente y `prefers-reduced-motion` elimina ese movimiento.
 
 La fuente es el **RSS público del propio perfil de Goodreads**, sin login ni API key.
 La configuración vive en `content/data/goodreads-config.json`: cambiar `profileUrl` para
-usar otro perfil público y mantener los estantes `currently-reading`, `read` y `to-read`.
-El snapshot revisable está en `content/data/goodreads.json`; cada libro guarda su fuente.
+usar otro perfil público. Solo se consulta el estante `read` (Leído): no entra
+`to-read` ni `currently-reading`. El snapshot revisable está en
+`content/data/goodreads.json`; cada libro guarda su fuente.
 Solo se toma `user_rating` (la valoración personal), nunca `average_rating`. Cero significa
 sin valoración. Los comentarios salen de `user_review`, convertidos a texto. Un estante
-vacío no recibe libros inventados. La selección reserva dos lugares por estante y completa
-hasta siete, sin duplicados. Las encuadernaciones son representaciones tipográficas del
+vacío no recibe libros inventados. El snapshot guarda **todos** los libros leídos
+(sin tope de siete). Las encuadernaciones son representaciones tipográficas del
 blog, no reproducciones de las tapas comerciales.
 
 **Snapshot local:** ni el build ni las visitas consultan Goodreads. La página siempre sirve
@@ -216,7 +217,7 @@ npm run test:embeds
 git diff -- content/data/goodreads.json
 ```
 
-El comando consulta los tres feeds, valida todos y recién entonces reemplaza el archivo.
+El comando consulta el feed `read` (paginado), valida y recién entonces reemplaza el archivo.
 Si hay timeout, una página de login o XML inesperado, sale con error y conserva el respaldo.
 Revisar el diff, commitear y publicar por PR. Al cambiar de perfil ejecutar este comando;
 si falla, no se muestran los libros del perfil anterior.

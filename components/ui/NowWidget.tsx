@@ -1,7 +1,7 @@
+import { MusicPreview } from "@/components/ui/MusicPreview";
 import { now } from "@/lib/now";
 import { getNowCovers } from "@/lib/now-covers";
 import { getNowTrack } from "@/lib/now-track";
-import { MusicPreview } from "@/components/ui/MusicPreview";
 import { ui } from "@/lib/ui";
 
 /**
@@ -40,9 +40,9 @@ export async function NowWidget() {
         trackUrl={track?.trackUrl ?? null}
         previewUrl={track?.previewUrl ?? null}
       />
-      <div className="flex items-center gap-sm">
+      <div className="flex min-w-0 items-center gap-sm">
         <Cover src={covers.reading} />
-        <div>
+        <div className="min-w-0">
           <p className="label text-ink-secondary">{ui.now.reading}</p>
           <p className="mt-xs text-body-sm text-ink-secondary">
             {now.reading.title}
