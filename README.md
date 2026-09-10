@@ -50,7 +50,10 @@ Se usan directo en el cuerpo del post, sin imports. Ejemplos reales:
 
 ```mdx
 <YouTube id="ZXsQAXx_ao0" />
-<YouTube id="oK2y5xH20ZY" caption="Pie de foto editorial opcional bajo el video" />
+<YouTube
+  id="oK2y5xH20ZY"
+  caption="Pie de foto editorial opcional bajo el video"
+/>
 
 <Vimeo id="76979871" />
 
@@ -89,7 +92,7 @@ Los drafts (`draft: true`) solo se ven corriendo en dev; nunca llegan a producci
 ## Correr local
 
 ```bash
-npm install
+npm ci              # instala las versiones del lockfile existente
 npm run dev          # http://localhost:3000
 ```
 
@@ -133,7 +136,7 @@ jeffrey-blog/
 
 ## Gabinete
 
-`/gabinete` es la página de curaduría: lo que estoy **mirando** (vlogs de YouTube embebidos con `<YouTube caption="…">`) y lo que estoy **leyendo** (`<LinkCard>` + notas). Se edita como cualquier página fija: `content/pages/gabinete.mdx`, commit y push. Entra algo cuando vale la pena, sale cuando deja de valerla — sin algoritmo.
+`/gabinete` conserva la página de curaduría: lo que estoy **mirando** (vlogs de YouTube embebidos con `<YouTube caption="…">`) y lo que estoy **leyendo** (`<LinkCard>` + notas). Se edita como cualquier página fija: `content/pages/gabinete.mdx`, commit y push. Entra algo cuando vale la pena, sale cuando deja de valerla — sin algoritmo.
 
 ## Panel /admin
 
@@ -184,3 +187,94 @@ Papel, tinta y espacio: el sitio intenta parecerse más a un libro bien encuader
 - Dark mode automático (con toggle).
 - `prefers-reduced-motion` respetado: sin reveals ni animaciones para quien lo pida.
 - Cmd+K abre la paleta de comandos con búsqueda de posts.
+
+## Biblioteca interactiva y Goodreads
+
+El estante de `/gabinete` usa geometrías reales de Three.js y una lista HTML equivalente:
+un índice numerado permite elegir libros con teclado, mouse o touch y una ficha muestra
+autor, valoración y comentario verificados del libro elegido. Sin JavaScript aparecen
+todas las fichas; sin WebGL el índice sigue funcionando. En ambos casos,
+la lista y sus enlaces siguen disponibles. El canvas se dibuja bajo demanda; la selección
+se mueve brevemente y `prefers-reduced-motion` elimina ese movimiento.
+
+La fuente es el **RSS público del propio perfil de Goodreads**, sin login ni API key.
+La configuración vive en `content/data/goodreads-config.json`: cambiar `profileUrl` para
+usar otro perfil público. Solo se consulta el estante `read` (Leído): no entra
+`to-read` ni `currently-reading`. El snapshot revisable está en
+`content/data/goodreads.json`; cada libro guarda su fuente.
+Solo se toma `user_rating` (la valoración personal), nunca `average_rating`. Cero significa
+sin valoración. Los comentarios salen de `user_review`, convertidos a texto. Un estante
+vacío no recibe libros inventados. El snapshot guarda **todos** los libros leídos
+(sin tope de siete). Las encuadernaciones son representaciones tipográficas del
+blog, no reproducciones de las tapas comerciales.
+
+**Snapshot local:** ni el build ni las visitas consultan Goodreads. La página siempre sirve
+los datos revisados y versionados. Para renovarlos explícitamente (Node 20.18+ o 22+):
+
+```bash
+npm run refresh:library
+npm run test:embeds
+git diff -- content/data/goodreads.json
+```
+
+El comando consulta el feed `read` (paginado), valida y recién entonces reemplaza el archivo.
+Si hay timeout, una página de login o XML inesperado, sale con error y conserva el respaldo.
+Revisar el diff, commitear y publicar por PR. Al cambiar de perfil ejecutar este comando;
+si falla, no se muestran los libros del perfil anterior.
+
+## Canal de YouTube
+
+`lib/cabinet-channel.ts` contiene el canal real y el video verificado. Se eligió el más reciente
+del [feed público de Shefrii](https://www.youtube.com/feeds/videos.xml?channel_id=UCA3jf05nGvtY5lPZTML-MDA),
+verificado también con oEmbed. Para fijar otro video, cambiar `video.id`, `title`, `publishedAt`
+y `sourceUrl` por datos públicos comprobados; para cambiar de canal, actualizar también `url`.
+Si no hay videos públicos verificables, poner `video: null`: queda el enlace al canal.
+El video se mantiene editorialmente, no cambia en cada visita. Usa la fachada existente:
+el iframe de `youtube-nocookie.com` se crea solo al pulsar reproducir. El enlace al canal
+permanece disponible incluso si YouTube falla o JavaScript está desactivado.
+
+## Preview musical oficial
+
+La canción sigue definida exclusivamente por título/artista en `lib/now.ts`.
+`lib/now-track.ts` busca una coincidencia exacta en la iTunes Search API y guarda portada,
+URL del tema y `previewUrl` en `.cache/embeds/`, usando la clave
+`itunes-track:v1:ARTISTA — TÍTULO`. Ese JSON se commitea: con caché no se consulta la API
+en cada build. Para renovar una URL caducada, eliminar solo el JSON con esa clave legible,
+levantar el sitio o compilar con red y revisar el nuevo resultado antes de commitearlo.
+Al cambiar de canción, la clave cambia automáticamente; una búsqueda sin coincidencia
+exacta degrada a portada/texto. `coverUrl` sigue permitiendo la portada manual.
+
+El botón del vinilo reproduce únicamente el fragmento suministrado por Apple, a pedido,
+con pausa y reanudación. No aloja ni descarga canciones completas, no inicia sesión en
+Spotify y no necesita instalar nada para el visitante. La animación gira solo durante
+la reproducción y se detiene con reduced motion. El enlace visible abre el tema oficial.
+Si no hay preview o el navegador/servicio rechaza el audio, queda ese enlace o portada/texto;
+el resto del blog sigue funcionando. La disponibilidad y duración dependen de Apple.
+
+## Validar esta integración
+
+```bash
+npm ci
+npm run test:embeds
+npx tsc --noEmit
+npm run lint
+npm run build
+git diff --check
+npm start -- --port 3100
+```
+
+Abrir `/gabinete` en 390, 768 y 1440 px, temas claro/oscuro, zoom de texto 200% y reduced motion.
+Seleccionar libros en el canvas y con Tab/Enter, verificar foco y todos sus datos en la lista.
+En el footer, pulsar el vinilo, pausar, reanudar y esperar el final; abrir también el enlace
+del tema. El video no debe crear un iframe hasta el click. Desactivar JavaScript y WebGL por
+separado para revisar los enlaces/lista de respaldo. Revisar consola y desbordes horizontales.
+Las pruebas de datos usan fixtures únicamente de test; no agregan libros al snapshot.
+
+Para probar en Vercel, abrir **Details / Visit Preview** del check de la PR si la integración
+GitHub está conectada. Si no aparece un check, conectar el repositorio al proyecto Vercel o
+crear un deployment **Preview** de esta rama desde el panel; no promoverlo a producción.
+
+El icono de pestaña vive en `app/icon.svg` (J vectorial, papel/tinta y tema del
+sistema); `app/favicon.ico` incluye el respaldo de 16, 32 y 48 px. Next.js publica
+ambos mediante su convención de archivos. Los resultados y límites de esta entrega
+están en `specs/002-interactive-gabinete/validation.md`.

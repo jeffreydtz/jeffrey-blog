@@ -1,5 +1,7 @@
+import { MusicPreview } from "@/components/ui/MusicPreview";
 import { now } from "@/lib/now";
 import { getNowCovers } from "@/lib/now-covers";
+import { getNowTrack } from "@/lib/now-track";
 import { ui } from "@/lib/ui";
 
 /**
@@ -26,27 +28,25 @@ function Cover({ src }: { src: string | null }) {
 }
 
 export async function NowWidget() {
-  const covers = await getNowCovers();
+  const [covers, track] = await Promise.all([getNowCovers(), getNowTrack()]);
 
   return (
-    <div className="flex min-w-0 flex-col gap-lg sm:flex-row sm:flex-wrap sm:gap-2xl">
-      <div className="flex min-w-0 items-center gap-sm">
-        <Cover src={covers.listening} />
-        <div className="min-w-0">
-          <p className="label">{ui.now.listening}</p>
-          <p className="mt-xs text-body-sm text-ink-secondary">
-            {now.listening.title}
-            <span className="text-ink-muted"> — {now.listening.artist}</span>
-          </p>
-        </div>
-      </div>
+    <div className="flex min-w-0 flex-col gap-lg sm:flex-row sm:flex-wrap sm:gap-xl">
+      <MusicPreview
+        key={`${now.listening.title}-${now.listening.artist}`}
+        title={now.listening.title}
+        artist={now.listening.artist}
+        coverUrl={now.listening.coverUrl ?? track?.coverUrl ?? covers.listening}
+        trackUrl={track?.trackUrl ?? null}
+        previewUrl={track?.previewUrl ?? null}
+      />
       <div className="flex min-w-0 items-center gap-sm">
         <Cover src={covers.reading} />
         <div className="min-w-0">
-          <p className="label">{ui.now.reading}</p>
+          <p className="label text-ink-secondary">{ui.now.reading}</p>
           <p className="mt-xs text-body-sm text-ink-secondary">
             {now.reading.title}
-            <span className="text-ink-muted"> — {now.reading.author}</span>
+            <span className="text-ink-secondary"> — {now.reading.author}</span>
           </p>
         </div>
       </div>
