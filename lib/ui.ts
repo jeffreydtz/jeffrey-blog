@@ -108,7 +108,7 @@ export const ui = {
     select: "Poner en el plato",
     selected: "Disco en el plato",
     instructions:
-      "Elegí un disco de la lista. El plato gira despacio mientras está a la vista.",
+      "Elegí un disco de la lista. El plato gira despacio mientras está a la vista. Reproducí debajo con un toque (Safari exige gesto).",
     fallback: "El tocadiscos también se recorre en esta lista.",
     openSpotify: "Abrir en Spotify",
     openApple: "Abrir en Apple Music",
