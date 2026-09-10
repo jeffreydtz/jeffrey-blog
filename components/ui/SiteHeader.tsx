@@ -22,14 +22,14 @@ export function SiteHeader() {
           {ui.siteTitle}
         </Link>
         <nav
-          aria-label="Principal"
-          className="flex items-center gap-md sm:gap-lg"
+          aria-label={ui.nav.label}
+          className="site-navigation flex min-w-0 flex-wrap items-center gap-x-md gap-y-xs sm:gap-x-lg"
         >
           {NAV_ITEMS.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="label link-underline weight-hover py-sm text-ink-secondary transition-colors hover:text-ink"
+              className="label link-underline weight-hover inline-flex min-h-[var(--control-target)] items-center py-sm text-ink-secondary transition-colors hover:text-ink"
             >
               {item.label}
             </Link>

@@ -10,6 +10,7 @@ export const ui = {
   siteDescription:
     "Ensayos personales sobre atención, oficio y tecnología. Papel, tinta y espacio en blanco.",
   nav: {
+    label: "Principal",
     home: "Inicio",
     archive: "Archivo",
     cabinet: "Gabinete",
@@ -42,6 +43,36 @@ export const ui = {
   now: {
     listening: "Escuchando",
     reading: "Leyendo",
+    playPreview: "Reproducir fragmento autorizado",
+    pausePreview: "Pausar fragmento",
+    preview: "Fragmento oficial · 30 segundos",
+    previewError:
+      "No se pudo reproducir el fragmento. Podés abrir la canción en su sitio oficial.",
+    openTrack: "Abrir canción",
+  },
+  cabinet: {
+    channelTitle: "Mi canal",
+    channelLink: "Ver mi canal en YouTube",
+  },
+  library: {
+    title: "Mi biblioteca",
+    intro: "Lecturas que van dejando su marca. Un estante de mi Goodreads.",
+    select: "Seleccionar libro",
+    selected: "Libro seleccionado",
+    instructions: "Elegí un lomo o un título para recorrer el estante.",
+    profile: "Mi perfil en Goodreads",
+    bookLink: "Ver en Goodreads",
+    rating: "Mi valoración",
+    outOf: "de 5",
+    comment: "Mi comentario",
+    verified: "Última consulta",
+    fallback: "El estante también se puede recorrer en esta lista.",
+    empty: "Las lecturas están disponibles en mi perfil de Goodreads.",
+    shelves: {
+      "currently-reading": "Leyendo actualmente",
+      read: "Leído",
+      "to-read": "Por leer",
+    },
   },
   reactions: {
     label: "¿Te quedó algo?",

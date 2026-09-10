@@ -14,7 +14,7 @@
   --paper-raised: #efeadd;
   --ink: #1a1815;
   --ink-secondary: #4a453c;
-  --ink-muted: #7a7264;
+  --ink-muted: #71695d;
   --accent: #5c1f1f;
   --accent-hover: #732727;
   --hairline: #d9d2c3;
@@ -25,6 +25,14 @@
   --duration-fast: 150ms;
   --duration-slow: 600ms;
   --duration-reveal: 1000ms;
+  --control-target: 2.75rem;
+  --shelf-height: 20rem;
+  --vinyl-size: 4rem;
+  --vinyl-period: 5s;
+  --line-width: 1px;
+  --round-disc: 50%;
+  --needle-rest: -24deg;
+  --needle-playing: -8deg;
 
   /* Sombra del rollo (pergamino, T07): tinta translúcida derivada del token.
      ÚNICA sombra permitida en el sitio (DESIGN.md, principio 3). */
@@ -42,7 +50,7 @@
   --paper-raised: #362e25;
   --ink: #e8e2d4;
   --ink-secondary: #b5ac99;
-  --ink-muted: #847b69;
+  --ink-muted: #a09785;
   --accent: #a66a5e;
   --accent-hover: #bc7f72;
   --hairline: #463e33;
@@ -472,7 +480,7 @@
     --paper-raised: #ffffff;
     --ink: #1a1815;
     --ink-secondary: #4a453c;
-    --ink-muted: #7a7264;
+    --ink-muted: #71695d;
     --accent: #1a1815;
     --accent-hover: #1a1815;
     --hairline: #d9d2c3;
@@ -553,4 +561,105 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Gabinete: encuadernación, disco y aguja; colores de la misma página. */
+.site-navigation > :is(a, button) {
+  min-height: var(--control-target);
+  flex-shrink: 0;
+}
+.bookshelf-scene {
+  width: 100%;
+  height: var(--shelf-height);
+}
+.bookshelf-scene canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+.book-entry {
+  border-top: var(--line-width) solid var(--color-hairline);
+  padding-block: var(--spacing-md);
+}
+.book-entry[data-selected="true"] {
+  border-top-color: var(--color-ink);
+}
+.book-choice {
+  display: inline-block;
+  min-height: var(--control-target);
+  text-align: left;
+  cursor: pointer;
+}
+.music-disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--vinyl-size);
+  height: var(--vinyl-size);
+  flex-shrink: 0;
+}
+.music-vinyl {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--round-disc);
+  background: var(--color-ink);
+  border: var(--line-width) solid var(--color-ink-secondary);
+  animation: vinyl-turn var(--vinyl-period) linear infinite;
+  animation-play-state: paused;
+}
+.music-vinyl::before,
+.music-vinyl::after {
+  content: "";
+  position: absolute;
+  inset: 12%;
+  border: var(--line-width) solid var(--color-paper);
+  opacity: 0.25;
+  border-radius: var(--round-disc);
+}
+.music-vinyl::after {
+  inset: 22%;
+}
+.music-vinyl img {
+  width: 48%;
+  height: 48%;
+  object-fit: cover;
+  border-radius: var(--round-disc);
+}
+.music-disc[data-playing="true"] .music-vinyl {
+  animation-play-state: running;
+}
+.music-needle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40%;
+  height: var(--line-width);
+  background: var(--color-ink-secondary);
+  transform-origin: right;
+  transform: rotate(var(--needle-rest));
+  transition: transform var(--duration-fast) var(--ease-page);
+}
+.music-disc[data-playing="true"] .music-needle {
+  transform: rotate(var(--needle-playing));
+}
+@keyframes vinyl-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .music-vinyl {
+    animation: none !important;
+  }
+  .music-needle {
+    transition: none;
+  }
+}
+
+/* Preserve text reflow at 200%, including long titles and external domains. */
+body {
+  overflow-wrap: anywhere;
 }

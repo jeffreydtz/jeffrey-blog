@@ -1,0 +1,72 @@
+{
+  "profileUrl": "https://www.goodreads.com/user/show/128723960-jeffrey",
+  "verifiedAt": "2026-09-10T15:21:01.833Z",
+  "books": [
+    {
+      "id": "43517789",
+      "title": "Indigno de ser humano",
+      "author": "Osamu Dazai",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/43517789-indigno-de-ser-humano?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8926489676?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "y uno piensa que la pasa mal. “Bebe, que el tiempo es un enemigo implacable y goce que el hoy es lo más tuyo”"
+    },
+    {
+      "id": "56484219",
+      "title": "El mito de Sísifo",
+      "author": "Albert Camus",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/56484219-el-mito-de-s-sifo?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8926469532?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "“De todas esas glorias, la menos falaz es la que se vive”"
+    },
+    {
+      "id": "56420157",
+      "title": "La biblioteca de la medianoche (Universo de la medianoche, #1)",
+      "author": "Matt Haig",
+      "shelf": "to-read",
+      "url": "https://www.goodreads.com/book/show/56420157-la-biblioteca-de-la-medianoche?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8893365950?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "231301304",
+      "title": "Always Remember: The Boy, the Mole, the Fox, the Horse and the Storm",
+      "author": "Charlie Mackesy",
+      "shelf": "to-read",
+      "url": "https://www.goodreads.com/book/show/231301304-always-remember?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8347735274?utm_medium=api&utm_source=rss"
+    },
+    {
+      "id": "2139323",
+      "title": "El lobo estepario",
+      "author": "Hermann Hesse",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/2139323.El_lobo_estepario?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8879104533?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "Excelente como retrata al hombre tan personal y solitario, como a veces uno puede sentirse fuera de época por ser racional. gran libro para explorar la dualidad."
+    },
+    {
+      "id": "61439040",
+      "title": "1984",
+      "author": "George Orwell",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/61439040-1984?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8796630321?utm_medium=api&utm_source=rss",
+      "rating": 4,
+      "comment": "Este libro es increíble como hace tanto tiempo escrito aún puede ser considerado contemporáneo, orwell entiende a la perfección esa idea de ser controlado y sometido por el sistema."
+    },
+    {
+      "id": "59186",
+      "title": "La metamorfosis",
+      "author": "Franz Kafka",
+      "shelf": "read",
+      "url": "https://www.goodreads.com/book/show/59186.La_metamorfosis?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8659757637?utm_medium=api&utm_source=rss",
+      "rating": 3,
+      "comment": "👍"
+    }
+  ]
+}
