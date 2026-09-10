@@ -17,7 +17,7 @@ const output = ts.transpileModule(source, {
     module: ts.ModuleKind.ES2022,
   },
 }).outputText;
-const { selectItunesTrack } = await import(
+const { selectItunesTrack, selectItunesAlbum } = await import(
   `data:text/javascript;base64,${Buffer.from(output).toString("base64")}`
 );
 
@@ -259,4 +259,57 @@ test("iTunes safely degrades bad preview/artwork URLs to an official track link"
     assert.equal(result.coverUrl, null);
     assert.ok(result.trackUrl.startsWith("https://music.apple.com/"));
   }
+});
+
+const album = (changes = {}) => ({
+  collectionName: "In a Silent Way",
+  artistName: "Miles Davis",
+  collectionId: 44,
+  collectionViewUrl: "https://music.apple.com/us/album/in-a-silent-way/44",
+  artworkUrl100: "https://is1-ssl.mzstatic.com/image/100x100bb.jpg",
+  ...changes,
+});
+const selectAlbum = (results) =>
+  selectItunesAlbum({ results }, "In a Silent Way", "Miles Davis");
+test("iTunes albums prefer the exact title and otherwise accept a remaster of the same album", () => {
+  assert.equal(selectAlbum([album({ artistName: "Cover Band" })]), null);
+  assert.equal(selectAlbum([album({ collectionName: "Kind of Blue" })]), null);
+  assert.equal(
+    selectAlbum([album({ collectionName: "In a Silent Way Live" })]),
+    null,
+  );
+  const remaster = selectAlbum([
+    album({ collectionName: "In a Silent Way (Remastered)", collectionId: 99 }),
+  ]);
+  assert.equal(remaster.collectionId, 99);
+  const preferred = selectAlbum([
+    album({ collectionName: "In a Silent Way (Remastered)", collectionId: 1 }),
+    album({ collectionId: 44 }),
+  ]);
+  assert.equal(preferred.collectionId, 44);
+});
+test("iTunes albums treat unicode ellipsis as three dots and upscale artwork", () => {
+  const result = selectItunesAlbum(
+    {
+      results: [
+        album({
+          collectionName: "\u2026But Seriously",
+          artistName: "Phil Collins",
+        }),
+      ],
+    },
+    "...But Seriously",
+    "Phil Collins",
+  );
+  assert.equal(result.collectionId, 44);
+  assert.match(result.coverUrl, /600x600bb/);
+  assert.ok(result.appleUrl.startsWith("https://music.apple.com/"));
+});
+test("iTunes albums reject untrusted collection URLs", () => {
+  assert.equal(
+    selectAlbum([
+      album({ collectionViewUrl: "https://music.apple.com.evil.test/album" }),
+    ]),
+    null,
+  );
 });

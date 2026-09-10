@@ -212,8 +212,9 @@ un defecto** y se corrigen agregando el token que faltaba, no dejando el literal
 ## Gabinete interactivo
 
 Tokens de objeto en `:root`: `--control-target` (2.75rem), `--vinyl-size` (4rem),
-`--vinyl-period` (5s), `--line-width` (1px), `--round-disc` (50%, solo el objeto
-circular vinilo), `--needle-rest` (-24deg) y `--needle-playing` (-8deg).
+`--vinyl-period` (5s), `--turntable-height` (28rem; 20rem en móvil), `--line-width`
+(1px), `--round-disc` (50%, solo el objeto circular vinilo), `--needle-rest`
+(-24deg) y `--needle-playing` (-8deg).
 
 El estante de lecturas (`components/reading/`) es CSS 3D + scroll-snap, no WebGL:
 portadas reales del snapshot Goodreads, lomo y canto de hojas, carrusel centrado
@@ -232,3 +233,13 @@ Los tokens `ink-muted` mantienen contraste AA para texto pequeño en ambos temas
 El estante ocupa el ancho de la página (a sangre bajo el header). La navegación
 de ~60 volúmenes es el filmstrip de tapas + flechas; el contador `n / total` es
 texto muted compacto, no un folio gigante. Reduced motion: snap instantáneo.
+
+### Tocadiscos (`/vinyl`)
+
+Ruta dedicada: el canvas no se monta en `/`. Tokens `--turntable-height` (28rem;
+20rem en móvil) y `--disc-index-mobile-width` (12rem). Un disco con surcos
+procedurales, sello tipográfico (o portada iTunes si hay CORS) y plinto/brazo
+simples; paleta papel/tinta. Gira con `--vinyl-period` solo a la vista y sin
+reduced-motion. El índice HTML es el equivalente accesible; sin JS se ven todas
+las fichas. TODO posterior: swap de plinto/brazo a GLB (Astra), conservando el
+disco procedural.

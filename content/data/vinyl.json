@@ -1,0 +1,18 @@
+{
+  "albums": [
+    {
+      "id": "in-a-silent-way",
+      "title": "In a Silent Way",
+      "artist": "Miles Davis",
+      "spotifyUrl": "https://open.spotify.com/album/0Hs3BomCdwIWRhgT57x22T",
+      "note": "El disco que no funciona en shuffle. De «El lujo de lo lento»."
+    },
+    {
+      "id": "but-seriously",
+      "title": "...But Seriously",
+      "artist": "Phil Collins",
+      "spotifyUrl": "https://open.spotify.com/album/7z6woPD6HInYpLQYqiLO1K",
+      "note": "El álbum de la canción que vive en Ahora."
+    }
+  ]
+}
