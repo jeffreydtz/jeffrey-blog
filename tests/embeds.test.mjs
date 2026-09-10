@@ -33,6 +33,11 @@ const item = (changes = {}) => {
     user_rating: "4",
     average_rating: "1.2",
     user_review: "<![CDATA[Useful<br/>note]]>",
+    book_large_image_url:
+      "<![CDATA[https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1l/12._SY475_.jpg]]>",
+    book_published: "1948",
+    book_description: "<![CDATA[A <i>brief</i> synopsis.]]>",
+    num_pages: "160",
     ...changes,
   };
   return `<item>${Object.entries(fields)
@@ -55,11 +60,49 @@ test("Goodreads keeps the member rating, decoded text, source and requested shel
     book.sourceUrl,
     "https://www.goodreads.com/review/show/34?utm_source=rss",
   );
+  assert.equal(book.averageRating, 1.2);
+  assert.equal(book.publishedYear, 1948);
+  assert.equal(book.pageCount, 160);
+  assert.equal(book.description, "A brief synopsis.");
+  assert.equal(
+    book.coverUrl,
+    "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1l/12._SY475_.jpg",
+  );
 });
 test("Goodreads omits rating zero and empty comments", () => {
   const [book] = parse(feed(item({ user_rating: "0", user_review: "" })));
   assert.equal("rating" in book, false);
   assert.equal("comment" in book, false);
+});
+test("Goodreads omits placeholder covers, empty years and empty synopses", () => {
+  const [book] = parse(
+    feed(
+      item({
+        book_large_image_url:
+          "<![CDATA[https://i.gr-assets.com/assets/nophoto/book/111x148-xyz.png]]>",
+        book_medium_image_url: "",
+        book_image_url: "",
+        book_published: "0",
+        book_description: "",
+        num_pages: "",
+      }),
+    ),
+  );
+  assert.equal("coverUrl" in book, false);
+  assert.equal("publishedYear" in book, false);
+  assert.equal("description" in book, false);
+  assert.equal("pageCount" in book, false);
+});
+test("Goodreads rejects an off-site cover host", () => {
+  assert.throws(() =>
+    parse(
+      feed(
+        item({
+          book_large_image_url: "<![CDATA[https://evil.test/cover.jpg]]>",
+        }),
+      ),
+    ),
+  );
 });
 test("Goodreads rejects a sign-in page and truncated RSS", () => {
   assert.throws(() => parse("<html><title>Sign in</title></html>"));
@@ -128,6 +171,21 @@ test("Committed snapshot is the full read shelf, never to-read", async () => {
   );
   assert.ok(snapshot.books.some((book) => Boolean(book.comment)));
   assert.ok(snapshot.books.some((book) => typeof book.rating === "number"));
+  const withCover = snapshot.books.filter((book) => Boolean(book.coverUrl));
+  assert.ok(withCover.length >= snapshot.books.length * 0.8);
+  assert.ok(
+    withCover.every(
+      (book) =>
+        typeof book.coverUrl === "string" &&
+        book.coverUrl.startsWith("https://"),
+    ),
+  );
+  assert.ok(
+    snapshot.books.some((book) => typeof book.averageRating === "number"),
+  );
+  assert.ok(
+    snapshot.books.some((book) => typeof book.publishedYear === "number"),
+  );
 });
 test("Selection keeps the full read shelf, drops other shelves and duplicates", () => {
   const read = Array.from({ length: 12 }, (_, index) => ({

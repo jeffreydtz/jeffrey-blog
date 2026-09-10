@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { BookShelf } from "@/components/three/BookShelf";
+import { ReadingShelf } from "@/components/reading/ReadingShelf";
 import { CabinetChannel } from "@/components/ui/CabinetChannel";
 import { getLibrary } from "@/lib/goodreads";
+import { goodreadsReadShelfUrl } from "@/lib/library-data";
 import { renderMdx } from "@/lib/mdx";
 import { getStaticPage } from "@/lib/pages";
+import { toReadingBooks } from "@/lib/reading-books";
 import { formatDate, ui } from "@/lib/ui";
 
 /**
- * /gabinete — gabinete de curiosidades: curaduría manual de lo que se mira
- * y lo que se lee (vlogs, videos, artículos, libros). Contenido en
- * content/pages/gabinete.mdx, con los componentes MDX de la casa
- * (<YouTube caption>, <LinkCard>, …). Misma asimetría que /acerca.
+ * /gabinete — curaduría (MDX) + estante Leído de Goodreads.
+ * El estante es el paquete Astra ReadingShelf, a sangre, bajo el chrome del sitio.
  */
 
 const page = getStaticPage("gabinete");
@@ -26,40 +26,35 @@ export default async function GabinetePage() {
     renderMdx(page.content),
     getLibrary(),
   ]);
+  const books = toReadingBooks(library.books);
 
   return (
-    <div className="mx-auto w-full max-w-page px-lg">
-      <div className="py-2xl sm:py-3xl sm:pl-[14%]">
-        <h1 className="font-display text-display-lg text-ink">{page.title}</h1>
-        <section className="mt-xl" aria-labelledby="library-title">
-          <h2
-            id="library-title"
-            className="font-display text-display-md text-ink"
-          >
-            {ui.library.title}
-          </h2>
+    <>
+      <div className="mx-auto w-full max-w-page px-lg">
+        <div className="pt-2xl sm:pt-3xl sm:pl-[14%]">
+          <h1 className="font-display text-display-lg text-ink">
+            {page.title}
+          </h1>
           <p className="mt-md max-w-prose text-ink-secondary">
             {ui.library.intro}
           </p>
-          <a
-            href={library.profileUrl}
-            className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
-          >
-            {ui.library.profile}
-          </a>
-          <BookShelf books={library.books} />
+        </div>
+      </div>
+      <ReadingShelf books={books} shelfUrl={goodreadsReadShelfUrl} />
+      <div className="mx-auto w-full max-w-page px-lg">
+        <div className="pb-2xl sm:pb-3xl sm:pl-[14%]">
           {library.verifiedAt ? (
-            <p className="mt-md text-body-sm text-ink-secondary">
+            <p className="text-body-sm text-ink-secondary">
               {ui.library.verified}:{" "}
               <time dateTime={library.verifiedAt}>
                 {formatDate(library.verifiedAt)}
               </time>
             </p>
           ) : null}
-        </section>
-        <CabinetChannel />
-        <article className="prose-blog mt-2xl">{body}</article>
+          <CabinetChannel />
+          <article className="prose-blog mt-2xl">{body}</article>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
