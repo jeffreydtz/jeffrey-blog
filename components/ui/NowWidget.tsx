@@ -29,10 +29,10 @@ export async function NowWidget() {
   const covers = await getNowCovers();
 
   return (
-    <div className="flex flex-col gap-lg sm:flex-row sm:gap-2xl">
-      <div className="flex items-center gap-sm">
+    <div className="flex min-w-0 flex-col gap-lg sm:flex-row sm:flex-wrap sm:gap-2xl">
+      <div className="flex min-w-0 items-center gap-sm">
         <Cover src={covers.listening} />
-        <div>
+        <div className="min-w-0">
           <p className="label">{ui.now.listening}</p>
           <p className="mt-xs text-body-sm text-ink-secondary">
             {now.listening.title}
@@ -40,9 +40,9 @@ export async function NowWidget() {
           </p>
         </div>
       </div>
-      <div className="flex items-center gap-sm">
+      <div className="flex min-w-0 items-center gap-sm">
         <Cover src={covers.reading} />
-        <div>
+        <div className="min-w-0">
           <p className="label">{ui.now.reading}</p>
           <p className="mt-xs text-body-sm text-ink-secondary">
             {now.reading.title}

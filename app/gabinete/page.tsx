@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { renderMdx } from "@/lib/mdx";
 import { getStaticPage } from "@/lib/pages";
+import { ui } from "@/lib/ui";
 
 /**
  * /gabinete — gabinete de curiosidades: curaduría manual de lo que se mira
@@ -13,6 +14,7 @@ const page = getStaticPage("gabinete");
 
 export const metadata: Metadata = {
   title: page.title,
+  description: ui.pages.cabinetDescription,
   alternates: { canonical: "/gabinete" },
 };
 

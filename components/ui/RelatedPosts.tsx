@@ -18,16 +18,16 @@ export function RelatedPosts({ posts }: { posts: Post[] }) {
           <li
             key={post.slug}
             className="flex flex-wrap items-baseline gap-x-md gap-y-2xs py-sm"
-            lang={post.lang}
           >
             <PostLink
               href={`/posts/${post.slug}`}
+              lang={post.lang}
               className="link-underline weight-hover font-display text-display-sm text-ink"
             >
               {post.title}
             </PostLink>
             <time className="label" dateTime={post.published_at}>
-              {formatDate(post.published_at, post.lang)}
+              {formatDate(post.published_at)}
             </time>
           </li>
         ))}

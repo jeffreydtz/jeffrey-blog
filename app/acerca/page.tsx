@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { renderMdx } from "@/lib/mdx";
 import { getStaticPage } from "@/lib/pages";
+import { ui } from "@/lib/ui";
 
 /**
  * /acerca (T13) — página suelta desde content/pages/acerca.mdx.
@@ -12,6 +13,7 @@ const page = getStaticPage("acerca");
 
 export const metadata: Metadata = {
   title: page.title,
+  description: ui.pages.aboutDescription,
   alternates: { canonical: "/acerca" },
 };
 

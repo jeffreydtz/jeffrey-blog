@@ -2,7 +2,7 @@
 
 **Sitio en vivo:** <https://jeffrey-blog-tau.vercel.app>
 
-Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear; no hay panel de administración, ni CMS, ni base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
+Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear (o guardarlo desde `/admin`, que commitea al mismo repo). No es un CMS ni hay base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
 
 ## Cómo agregar un post nuevo
 

@@ -45,10 +45,13 @@ export function SearchButton() {
         onClick={openPalette}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="label link-underline weight-hover py-sm text-ink-secondary transition-colors hover:text-ink"
+        className="label link-underline weight-hover inline-flex min-h-11 items-center py-sm text-ink-secondary transition-colors hover:text-ink"
       >
         {ui.search.label}{" "}
-        <kbd aria-hidden="true" className="font-[inherit] tracking-[inherit]">
+        <kbd
+          aria-hidden="true"
+          className="hidden font-[inherit] tracking-[inherit] sm:inline"
+        >
           {ui.search.shortcutHint}
         </kbd>
       </button>
