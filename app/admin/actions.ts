@@ -10,7 +10,12 @@ import {
   destroySession,
   requireAdmin,
 } from "@/lib/admin/auth";
-import { commitFile, deleteRepoFile, repoFile } from "@/lib/admin/github";
+import {
+  commitFile,
+  deleteRepoFile,
+  githubUserMessage,
+  repoFile,
+} from "@/lib/admin/github";
 import { triggerDeploy } from "@/lib/admin/deploy";
 import { rateLimit } from "@/lib/rate-limit";
 import type { PostFrontmatter } from "@/types/post";
@@ -138,7 +143,11 @@ export async function savePostAction(formData: FormData): Promise<void> {
   if (isRename) {
     const old = await repoFile(`content/posts/${originalSlug}.mdx`);
     if (old)
-      await deleteRepoFile(old.path, `post: renombrar ${originalSlug} → ${slug}`, old.sha);
+      await deleteRepoFile(
+        old.path,
+        `post: renombrar ${originalSlug} → ${slug}`,
+        old.sha,
+      );
   }
 
   const result = await triggerDeploy();
@@ -167,14 +176,21 @@ export async function savePageAction(formData: FormData): Promise<void> {
   const body = String(formData.get("body") ?? "").replace(/\r\n/g, "\n");
   const sha = String(formData.get("sha") ?? "").trim() || undefined;
   if (!title || !body.trim())
-    redirect(`/admin/pages/${slug}?e=${encodeURIComponent("Título y cuerpo son obligatorios.")}`);
+    redirect(
+      `/admin/pages/${slug}?e=${encodeURIComponent("Título y cuerpo son obligatorios.")}`,
+    );
 
   const mdx = matter.stringify(`\n${body.trim()}\n`, {
     title,
     slug,
     lang: "es",
   });
-  await commitFile(`content/pages/${slug}.mdx`, mdx, `pages: editar ${slug}`, sha);
+  await commitFile(
+    `content/pages/${slug}.mdx`,
+    mdx,
+    `pages: editar ${slug}`,
+    sha,
+  );
   const result = await triggerDeploy();
   redirect(`/admin?m=${encodeURIComponent(result.detail)}`);
 }
@@ -190,8 +206,11 @@ export async function saveNowAction(formData: FormData): Promise<void> {
   const readingTitle = get("readingTitle");
   const readingAuthor = get("readingAuthor");
   const readingCover = get("readingCover");
+  const backToNow = (error: string): never =>
+    redirect(`/admin/now?e=${encodeURIComponent(error)}`);
+
   if (!listeningTitle || !listeningArtist || !readingTitle || !readingAuthor)
-    redirect(`/admin/now?e=${encodeURIComponent("Título y artista/autor son obligatorios.")}`);
+    backToNow("Título y artista/autor son obligatorios.");
 
   const cover = (v: string) =>
     v ? `\n    coverUrl: ${JSON.stringify(v)},` : "";
@@ -239,13 +258,17 @@ export const now: Now = {
 };
 `;
 
-  const existing = await repoFile("lib/now.ts");
-  await commitFile(
-    "lib/now.ts",
-    text,
-    `chore(now): ${readingTitle} + ${listeningTitle}`,
-    existing?.sha,
-  );
+  try {
+    const existing = await repoFile("lib/now.ts");
+    await commitFile(
+      "lib/now.ts",
+      text,
+      `chore(now): ${readingTitle} + ${listeningTitle}`,
+      existing?.sha,
+    );
+  } catch (error) {
+    backToNow(githubUserMessage(error));
+  }
   const result = await triggerDeploy();
   redirect(`/admin?m=${encodeURIComponent(result.detail)}`);
 }

@@ -1,7 +1,7 @@
-import { saveNowAction } from "@/app/admin/actions";
-import { Field, Notice, SubmitButton, inputClass } from "@/components/admin/Field";
 import { requireAdmin } from "@/lib/admin/auth";
-import { repoFile } from "@/lib/admin/github";
+import { githubUserMessage, repoFile } from "@/lib/admin/github";
+import { Notice } from "@/components/admin/Field";
+import { NowForm } from "@/components/admin/NowForm";
 
 /**
  * Widget "Ahora" — currently listening / currently reading del footer.
@@ -30,76 +30,38 @@ export default async function AdminNowPage({
 }) {
   await requireAdmin();
   const { e } = await searchParams;
-  const file = await repoFile("lib/now.ts");
-  const listening = section(file?.text ?? "", "listening");
-  const reading = section(file?.text ?? "", "reading");
+
+  let loadError: string | undefined;
+  let fileText = "";
+  try {
+    const file = await repoFile("lib/now.ts");
+    fileText = file?.text ?? "";
+  } catch (error) {
+    loadError = githubUserMessage(error);
+  }
+
+  const listening = section(fileText, "listening");
+  const reading = section(fileText, "reading");
 
   return (
     <div>
-      <Notice error={e} />
+      <Notice error={e ?? loadError} />
       <h1 className="font-display text-display-md text-ink">Ahora</h1>
       <p className="mt-sm max-w-prose text-body-sm text-ink-muted">
-        Qué estás escuchando y leyendo — aparece en el pie de todas las
-        páginas. Las portadas se buscan solas en el build (iTunes /
-        OpenLibrary); la URL manual es opcional y gana si está.
+        Buscá una canción o un libro para rellenar título, artista/autor y
+        portada; los campos siguen editables a mano. Las portadas también se
+        buscan solas en el build (iTunes / OpenLibrary) si la URL queda vacía.
       </p>
-      <form action={saveNowAction} className="mt-lg flex max-w-prose flex-col gap-lg">
-        <fieldset className="flex flex-col gap-md">
-          <legend className="label mb-xs">Escuchando</legend>
-          <Field label="Disco / canción">
-            <input
-              name="listeningTitle"
-              defaultValue={extract(listening, "title")}
-              required
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Artista">
-            <input
-              name="listeningArtist"
-              defaultValue={extract(listening, "artist")}
-              required
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Portada (URL, opcional)">
-            <input
-              name="listeningCover"
-              defaultValue={extract(listening, "coverUrl")}
-              className={inputClass}
-            />
-          </Field>
-        </fieldset>
-        <fieldset className="flex flex-col gap-md">
-          <legend className="label mb-xs">Leyendo</legend>
-          <Field label="Libro">
-            <input
-              name="readingTitle"
-              defaultValue={extract(reading, "title")}
-              required
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Autor">
-            <input
-              name="readingAuthor"
-              defaultValue={extract(reading, "author")}
-              required
-              className={inputClass}
-            />
-          </Field>
-          <Field label="Portada (URL, opcional)">
-            <input
-              name="readingCover"
-              defaultValue={extract(reading, "coverUrl")}
-              className={inputClass}
-            />
-          </Field>
-        </fieldset>
-        <div>
-          <SubmitButton>Guardar y publicar</SubmitButton>
-        </div>
-      </form>
+      <NowForm
+        values={{
+          listeningTitle: extract(listening, "title"),
+          listeningArtist: extract(listening, "artist"),
+          listeningCover: extract(listening, "coverUrl"),
+          readingTitle: extract(reading, "title"),
+          readingAuthor: extract(reading, "author"),
+          readingCover: extract(reading, "coverUrl"),
+        }}
+      />
     </div>
   );
 }
