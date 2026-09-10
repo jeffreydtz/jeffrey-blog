@@ -14,6 +14,7 @@ export const ui = {
     home: "Inicio",
     archive: "Archivo",
     cabinet: "Gabinete",
+    vinyl: "Vinilo",
     about: "Acerca de",
     colophon: "Colofón",
   },
@@ -26,6 +27,8 @@ export const ui = {
       "Cómo está hecho este sitio: tipografía, materiales y las reglas de la casa.",
     cabinetDescription:
       "Curaduría a mano: lo que estoy mirando y lo que recomiendo leer.",
+    vinylDescription:
+      "Un tocadiscos quieto: el disco de ahora y un cajón de álbumes enteros.",
   },
   notFound: {
     title: "Esta página no está.",
@@ -92,6 +95,24 @@ export const ui = {
       read: "Leído",
       "to-read": "Por leer",
     },
+  },
+  vinyl: {
+    title: "Vinilo",
+    intro:
+      "Un tocadiscos en el estudio: el disco que suena ahora — el mismo del pie de página — y un cajón corto de álbumes enteros. Sin shuffle, sin cola automática.",
+    platter: "En el plato",
+    sides: "caras",
+    nowPlaying: "Ahora",
+    crate: "Cajón",
+    index: "Índice",
+    select: "Poner en el plato",
+    selected: "Disco en el plato",
+    instructions:
+      "Elegí un disco de la lista. El plato gira despacio mientras está a la vista.",
+    fallback: "El tocadiscos también se recorre en esta lista.",
+    openSpotify: "Abrir en Spotify",
+    openApple: "Abrir en Apple Music",
+    empty: "No hay discos en el cajón todavía.",
   },
   reactions: {
     label: "¿Te quedó algo?",

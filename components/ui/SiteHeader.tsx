@@ -7,6 +7,7 @@ import { ui } from "@/lib/ui";
 const NAV_ITEMS = [
   { href: "/archivo", label: ui.nav.archive },
   { href: "/gabinete", label: ui.nav.cabinet },
+  { href: "/vinyl", label: ui.nav.vinyl },
   { href: "/acerca", label: ui.nav.about },
   { href: "/colofon", label: ui.nav.colophon },
 ] as const;

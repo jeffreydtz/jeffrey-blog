@@ -115,6 +115,7 @@ jeffrey-blog/
 │   ├── posts/[slug]/           # página de post + imagen OG por post
 │   ├── archivo/                # archivo por año/tag
 │   ├── gabinete/               # curaduría: qué miro (vlogs YT) y qué leo
+│   ├── vinyl/                  # tocadiscos (Three.js, lazy)
 │   ├── acerca/  colofon/       # páginas fijas
 │   ├── lab/                    # playground (solo dev)
 │   ├── api/reactions/          # contador de reacciones (Supabase)
@@ -123,6 +124,7 @@ jeffrey-blog/
 ├── components/
 │   ├── mdx/                    # YouTube, Spotify, Tweet, LinkCard, …
 │   ├── ui/                     # header, footer, Cmd+K, reacciones
+│   ├── three/                  # estante, tocadiscos, marcas de impresor
 │   └── scroll/                 # reveals y sonido de página
 ├── lib/                        # posts, mdx, now.ts, supabase, oembed, …
 ├── types/                      # contrato de frontmatter e índice de búsqueda
@@ -152,7 +154,22 @@ El panel está fuera de robots/sitemap/búsqueda; el login tiene rate limit por 
 
 ## Widget "Ahora"
 
-Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin scrobbling — es parte del encanto. Las portadas sí se resuelven solas en build (iTunes para el disco, OpenLibrary para el libro, vía `lib/now-covers.ts`) y se cachean en `.cache/embeds/`; si la búsqueda no encuentra nada, el widget queda solo-texto. `coverUrl` en `lib/now.ts` permite fijar una portada a mano.
+Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin scrobbling — es parte del encanto. Las portadas sí se resuelven solas en build (iTunes para el disco, OpenLibrary para el libro, vía `lib/now-covers.ts`) y se cachean en `.cache/embeds/`; si la búsqueda no encuentra nada, el widget queda solo-texto. `coverUrl` en `lib/now.ts` permite fijar una portada a mano. El mismo `listening` es el disco que arranca en el plato de `/vinyl`.
+
+## Vinilo
+
+`/vinyl` es un tocadiscos aparte — no vive en la home, para no cargar WebGL en el LCP. Un disco y un plinto procedurales (Three.js, misma familia que el estante del gabinete; sin React Three Fiber). El giro se pausa fuera de pantalla, con la pestaña oculta y con `prefers-reduced-motion`.
+
+**Cómo editar el cajón**
+
+1. Abrir `content/data/vinyl.json`.
+2. Cada álbum necesita `id` (slug único; `now` está reservado), `title` y `artist`.
+3. Opcional: `spotifyUrl` (`https://open.spotify.com/album/…`), `coverUrl` (https, gana sobre iTunes) y `note` (una línea editorial).
+4. Guardar, `git commit` y pushear. En el próximo build, iTunes resuelve portada y enlace de Apple Music (coincidencia exacta de título/artista; cache en `.cache/embeds/` con clave `itunes-album:v1:ARTISTA — TÍTULO`). Commitear el JSON nuevo del cache si querés builds reproducibles sin red.
+
+El tema de **Ahora** (`lib/now.ts`) se antepone siempre como primer disco. Si el cajón ya tiene el mismo título y artista, no se duplica.
+
+Hay un TODO en `components/three/TurntableScene.ts` para, más adelante, cambiar plinto y brazo por un GLB de Astra/Blender sin tocar la página.
 
 ## Sonido de página
 
