@@ -9,7 +9,8 @@ const TAP_PX = 12;
 /**
  * Lienzo WebGL del tocadiscos. Se carga con next/dynamic({ ssr: false })
  * desde Turntable; Three.js entra recién cuando el host se acerca al viewport.
- * El hit del brazo es un overlay 2D (Safari: play() en el pointerdown).
+ * El hit del brazo vive FUERA de aria-hidden: Safari/Chrome no cuentan
+ * un gesto dentro de un árbol oculto a AT como activación de audio.
  */
 export function TurntableCanvas({
   record,
@@ -26,6 +27,7 @@ export function TurntableCanvas({
   onArmGrab: () => void;
   onArmRelease: (onRecord: boolean, tapped: boolean) => void;
 }) {
+  const stage = useRef<HTMLDivElement>(null);
   const host = useRef<HTMLDivElement>(null);
   const scene = useRef<TurntableHandle | null>(null);
   const recordRef = useRef(record);
@@ -81,8 +83,12 @@ export function TurntableCanvas({
     if (!drag.current) scene.current?.setPlaying(playing);
   }, [playing]);
 
+  function sceneRect() {
+    return (host.current ?? stage.current)?.getBoundingClientRect();
+  }
+
   function onRecordAt(clientX: number, clientY: number) {
-    const rect = host.current?.getBoundingClientRect();
+    const rect = sceneRect();
     if (!rect) return false;
     return (
       scene.current?.dragTo(clientX, clientY, rect) ??
@@ -92,6 +98,7 @@ export function TurntableCanvas({
 
   function onPointerDown(event: PointerEvent<HTMLDivElement>) {
     if (!canPlay || event.button !== 0) return;
+    event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     event.currentTarget.dataset.grabbing = "true";
     drag.current = { x: event.clientX, y: event.clientY };
@@ -120,12 +127,12 @@ export function TurntableCanvas({
 
   return (
     <div
-      ref={host}
-      aria-hidden="true"
-      className="turntable-scene"
+      ref={stage}
+      className="turntable-stage"
       data-playing={playing}
       data-can-play={canPlay}
     >
+      <div ref={host} aria-hidden="true" className="turntable-scene" />
       {canPlay ? (
         <div
           className="turntable-arm-hit"

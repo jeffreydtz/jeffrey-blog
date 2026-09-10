@@ -99,6 +99,7 @@ function useVinylPlayback(record: VinylRecord): VinylPlayback {
     requested.current = true;
     const attempt = ++generation.current;
     setFailed(false);
+    setPlaying(true);
     if (audio.ended) audio.currentTime = 0;
     const attemptPlay = audio.play();
     if (attemptPlay) {
@@ -185,16 +186,6 @@ function VinylListen({
           <p role="status" className="text-body-sm text-ink-secondary">
             {playback.failed ? ui.now.previewError : ""}
           </p>
-          <audio
-            ref={playback.audioRef}
-            src={record.previewUrl}
-            preload="none"
-            aria-label={`${ui.vinyl.playPreview}: ${record.title}`}
-            onPlaying={playback.onPlaying}
-            onPause={playback.onPause}
-            onEnded={playback.onEnded}
-            onError={playback.onError}
-          />
         </>
       ) : null}
       {spotify ? (
@@ -316,6 +307,18 @@ export function Turntable({ records }: { records: VinylRecord[] }) {
           onFailure={() => setFailed(true)}
           onArmGrab={onArmGrab}
           onArmRelease={onArmRelease}
+        />
+      ) : null}
+      {ready && current?.previewUrl ? (
+        <audio
+          ref={playback.audioRef}
+          src={current.previewUrl}
+          preload="none"
+          aria-label={`${ui.vinyl.playPreview}: ${current.title}`}
+          onPlaying={playback.onPlaying}
+          onPause={playback.onPause}
+          onEnded={playback.onEnded}
+          onError={playback.onError}
         />
       ) : null}
       <p className="turntable-instructions text-body-sm text-ink-secondary">
