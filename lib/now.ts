@@ -17,6 +17,9 @@ interface NowListening {
   artist: string;
   /** Override manual de portada; sin él se busca en iTunes en build time. */
   coverUrl?: string;
+  /** Track o álbum de Spotify para el embed de /vinyl. Editorial, opcional. */
+  spotifyUrl?: string;
+  spotifyTrackUrl?: string;
 }
 
 interface NowReading {

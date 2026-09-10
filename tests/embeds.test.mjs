@@ -17,9 +17,10 @@ const output = ts.transpileModule(source, {
     module: ts.ModuleKind.ES2022,
   },
 }).outputText;
-const { selectItunesTrack, selectItunesAlbum } = await import(
-  `data:text/javascript;base64,${Buffer.from(output).toString("base64")}`
-);
+const { selectItunesTrack, selectItunesAlbum, selectItunesAlbumLeadTrack } =
+  await import(
+    `data:text/javascript;base64,${Buffer.from(output).toString("base64")}`
+  );
 
 // Synthetic fixture data belongs only in tests, never in the personal snapshot.
 const item = (changes = {}) => {
@@ -310,6 +311,74 @@ test("iTunes albums reject untrusted collection URLs", () => {
     selectAlbum([
       album({ collectionViewUrl: "https://music.apple.com.evil.test/album" }),
     ]),
+    null,
+  );
+});
+
+const leadTrack = (changes = {}) => ({
+  collectionId: 44,
+  artistName: "Miles Davis",
+  trackName: "Shhh / Peaceful",
+  trackId: 101,
+  trackNumber: 1,
+  discNumber: 1,
+  trackViewUrl: "https://music.apple.com/us/album/shhh/44?i=101",
+  previewUrl: "https://audio-ssl.itunes.apple.com/shhh.m4a",
+  ...changes,
+});
+
+test("iTunes album preview takes the first cut in disc/track order", () => {
+  const result = selectItunesAlbumLeadTrack(
+    {
+      results: [
+        album(),
+        leadTrack({
+          trackName: "In a Silent Way",
+          trackId: 202,
+          trackNumber: 2,
+          previewUrl: "https://audio-ssl.itunes.apple.com/second.m4a",
+        }),
+        leadTrack(),
+      ],
+    },
+    44,
+    "Miles Davis",
+  );
+  assert.equal(result.trackName, "Shhh / Peaceful");
+  assert.equal(
+    result.previewUrl,
+    "https://audio-ssl.itunes.apple.com/shhh.m4a",
+  );
+});
+
+test("iTunes album preview skips a lead cut without audio and ignores other albums", () => {
+  const result = selectItunesAlbumLeadTrack(
+    {
+      results: [
+        leadTrack({ previewUrl: "https://evil.test/nope.m4a" }),
+        leadTrack({
+          trackName: "In a Silent Way",
+          trackId: 202,
+          trackNumber: 2,
+          previewUrl: "https://audio-ssl.itunes.apple.com/second.m4a",
+        }),
+        leadTrack({
+          collectionId: 99,
+          trackName: "Other Album",
+          trackId: 303,
+        }),
+      ],
+    },
+    44,
+    "Miles Davis",
+  );
+  assert.equal(result.trackName, "In a Silent Way");
+  assert.equal(
+    result.previewUrl,
+    "https://audio-ssl.itunes.apple.com/second.m4a",
+  );
+  assert.equal(
+    selectItunesAlbumLeadTrack({ results: [leadTrack()] }, 44, "Cover Band"),
     null,
   );
 });

@@ -5,10 +5,31 @@ import type { VinylRecord } from "@/lib/vinyl-data";
  * Tocadiscos procedural (v1).
  *
  * TODO(later): sustituir plinto + brazo por un GLB de Astra/Blender. Conservar
- * este factory (`setRecord`, dispose, paleta CSS, spin/reduced-motion) para
- * que el host React no cambie. El vinilo puede seguir siendo procedural
+ * este factory (`setRecord`, setPlaying, dispose, paleta CSS, spin/reduced-motion)
+ * para que el host React no cambie. El vinilo puede seguir siendo procedural
  * (surcos + sello) encima del mesh importado.
  */
+
+const ARM_REST_Y = 0.42;
+const ARM_PLAY_Y = -1.05;
+const ARM_REST_X = -0.18;
+const ARM_PLAY_X = -0.04;
+const ARM_PIVOT_X = 1.22;
+const ARM_PIVOT_Y = 0.28;
+const ARM_PIVOT_Z = -0.72;
+const ARM_REACH = 1.48;
+const PLATTER_X = -0.52;
+const PLATTER_Z = 0.08;
+const VINYL_RADIUS = 1.05;
+
+export type TurntableHandle = {
+  setRecord: (record: VinylRecord) => void;
+  setPlaying: (playing: boolean) => void;
+  beginDrag: () => void;
+  dragTo: (clientX: number, clientY: number, rect: DOMRect) => boolean;
+  endDrag: () => boolean;
+  dispose: () => void;
+};
 
 export function createTurntableScene(
   host: HTMLDivElement,
@@ -260,7 +281,7 @@ export function createTurntableScene(
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     renderer.setClearColor(0, 0);
     renderer.domElement.setAttribute("aria-hidden", "true");
-    host.appendChild(renderer.domElement);
+    host.insertBefore(renderer.domElement, host.firstChild);
 
     scene.add(new THREE.AmbientLight(0xffffff, 1.55));
     const key = new THREE.DirectionalLight(0xffffff, 1.9);
@@ -308,13 +329,87 @@ export function createTurntableScene(
     const arm = box(0.045, 0.035, 1.55, armMat, 0, 0.04, 0.72);
     const head = box(0.08, 0.03, 0.16, armMat, 0, 0.01, 1.48);
     armGroup.add(pivot, arm, head);
-    armGroup.position.set(1.22, 0.28, -0.72);
-    armGroup.rotation.y = 0.42;
+    armGroup.position.set(ARM_PIVOT_X, ARM_PIVOT_Y, ARM_PIVOT_Z);
+    armGroup.rotation.y = ARM_REST_Y;
+    armGroup.rotation.x = ARM_REST_X;
     deck.add(armGroup);
     scene.add(deck);
 
-    function needlePose(playing: boolean) {
-      armGroup.rotation.x = playing && !motion.matches ? -0.04 : -0.18;
+    const raycaster = new THREE.Raycaster();
+    const pointerNdc = new THREE.Vector2();
+    const planePoint = new THREE.Vector3();
+    const armPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -ARM_PIVOT_Y);
+
+    let dragging = false;
+    let armY = ARM_REST_Y;
+    let armX = ARM_REST_X;
+    let armYTarget = ARM_REST_Y;
+    let armXTarget = ARM_REST_X;
+
+    function headOverVinyl(yRot: number) {
+      const hx = ARM_PIVOT_X + ARM_REACH * Math.sin(yRot);
+      const hz = ARM_PIVOT_Z + ARM_REACH * Math.cos(yRot);
+      return Math.hypot(hx - PLATTER_X, hz - PLATTER_Z) <= VINYL_RADIUS;
+    }
+
+    function poseTargets(onRecord: boolean) {
+      armYTarget = onRecord ? ARM_PLAY_Y : ARM_REST_Y;
+      armXTarget = onRecord ? ARM_PLAY_X : ARM_REST_X;
+    }
+
+    function applyArm(dt: number) {
+      if (dragging) {
+        armGroup.rotation.y = armY;
+        armGroup.rotation.x = armX;
+        return;
+      }
+      if (motion.matches) {
+        armY = armYTarget;
+        armX = armXTarget;
+      } else {
+        const k = 1 - Math.exp(-10 * dt);
+        armY += (armYTarget - armY) * k;
+        armX += (armXTarget - armX) * k;
+      }
+      armGroup.rotation.y = armY;
+      armGroup.rotation.x = armX;
+    }
+
+    function yFromPointer(clientX: number, clientY: number, rect: DOMRect) {
+      pointerNdc.set(
+        ((clientX - rect.left) / rect.width) * 2 - 1,
+        -((clientY - rect.top) / rect.height) * 2 + 1,
+      );
+      camera.updateMatrixWorld();
+      raycaster.setFromCamera(pointerNdc, camera);
+      const hit = raycaster.ray.intersectPlane(armPlane, planePoint);
+      if (!hit) {
+        const u = (clientX - rect.left) / rect.width;
+        return THREE.MathUtils.lerp(
+          ARM_REST_Y,
+          ARM_PLAY_Y,
+          THREE.MathUtils.clamp((0.78 - u) / 0.46, 0, 1),
+        );
+      }
+      const y = Math.atan2(
+        planePoint.x - ARM_PIVOT_X,
+        planePoint.z - ARM_PIVOT_Z,
+      );
+      return THREE.MathUtils.clamp(y, ARM_PLAY_Y - 0.12, ARM_REST_Y + 0.08);
+    }
+
+    function setArmFromPointer(
+      clientX: number,
+      clientY: number,
+      rect: DOMRect,
+    ) {
+      armY = yFromPointer(clientX, clientY, rect);
+      const onRecord = headOverVinyl(armY);
+      armX = onRecord ? ARM_PLAY_X : ARM_REST_X;
+      armGroup.rotation.y = armY;
+      armGroup.rotation.x = armX;
+      draw();
+      return onRecord;
     }
 
     function resize() {
@@ -335,16 +430,18 @@ export function createTurntableScene(
 
     function loop(time: number) {
       if (disposed) return;
-      if (!shouldSpin()) {
+      if (!visible || document.hidden) {
         lastTime = 0;
-        needlePose(false);
+        applyArm(1);
         draw();
         return;
       }
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 0;
       lastTime = time;
-      needlePose(true);
-      recordGroup.rotation.y += ((Math.PI * 2) / spinPeriod) * dt;
+      if (shouldSpin()) {
+        recordGroup.rotation.y += ((Math.PI * 2) / spinPeriod) * dt;
+      }
+      applyArm(dt);
       draw();
       frame = requestAnimationFrame(loop);
     }
@@ -352,13 +449,17 @@ export function createTurntableScene(
     function syncLoop() {
       cancelAnimationFrame(frame);
       lastTime = 0;
-      needlePose(shouldSpin());
+      applyArm(1);
       draw();
-      if (!disposed && shouldSpin()) frame = requestAnimationFrame(loop);
+      if (!disposed && visible && !document.hidden) {
+        frame = requestAnimationFrame(loop);
+      }
     }
 
     function setRecord(record: VinylRecord) {
       if (disposed) return;
+      dragging = false;
+      poseTargets(false);
       const generation = ++coverGeneration;
       paintTypography(record);
       draw();
@@ -425,14 +526,59 @@ export function createTurntableScene(
       document.removeEventListener("visibilitychange", onVisibility);
     });
 
+    function setPlaying(next: boolean) {
+      if (disposed) return;
+      if (dragging) return;
+      poseTargets(next);
+      if (!visible || document.hidden) {
+        applyArm(1);
+        draw();
+      } else {
+        syncLoop();
+      }
+    }
+
+    function beginDrag() {
+      if (disposed) return;
+      dragging = true;
+    }
+
+    function dragTo(clientX: number, clientY: number, rect: DOMRect) {
+      if (disposed) return false;
+      dragging = true;
+      return setArmFromPointer(clientX, clientY, rect);
+    }
+
+    function endDrag() {
+      if (disposed) {
+        dragging = false;
+        return false;
+      }
+      const onRecord = headOverVinyl(armY);
+      dragging = false;
+      poseTargets(onRecord);
+      armY = armYTarget;
+      armX = armXTarget;
+      applyArm(1);
+      draw();
+      return onRecord;
+    }
+
     palette();
     setRecord(initial);
     resize();
     syncLoop();
 
-    return { setRecord, dispose };
+    return { setRecord, setPlaying, beginDrag, dragTo, endDrag, dispose };
   } catch {
     fail();
-    return { setRecord: () => {}, dispose };
+    return {
+      setRecord: () => {},
+      setPlaying: () => {},
+      beginDrag: () => {},
+      dragTo: () => false,
+      endDrag: () => false,
+      dispose: () => {},
+    };
   }
 }

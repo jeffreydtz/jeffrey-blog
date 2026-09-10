@@ -36,6 +36,12 @@ export function normalizeMusicName(value: string): string {
     .toLocaleLowerCase("en-US");
 }
 
+export interface AlbumLeadPreview {
+  previewUrl: string | null;
+  trackUrl: string | null;
+  trackName: string;
+}
+
 interface ItunesItem {
   trackName?: unknown;
   artistName?: unknown;
@@ -46,6 +52,8 @@ interface ItunesItem {
   collectionName?: unknown;
   collectionViewUrl?: unknown;
   collectionId?: unknown;
+  trackNumber?: unknown;
+  discNumber?: unknown;
 }
 
 function isItunesList(body: unknown): body is { results: ItunesItem[] } {
@@ -162,4 +170,51 @@ export function selectItunesAlbum(
     }
   }
   return edition;
+}
+
+/**
+ * First song of an album lookup (`entity=song`), in disc/track order.
+ * Used for crate previews — never a "popular" substitute. If that lead
+ * cut has no preview, walk forward until one does.
+ */
+export function selectItunesAlbumLeadTrack(
+  body: unknown,
+  collectionId: number,
+  artist: string,
+): AlbumLeadPreview | null {
+  if (!isItunesList(body) || !Number.isSafeInteger(collectionId)) return null;
+  const wantArtist = normalizeMusicName(artist);
+  const tracks: Array<{
+    disc: number;
+    track: number;
+    item: ItunesItem;
+    name: string;
+  }> = [];
+  for (const item of body.results) {
+    if (!item || typeof item !== "object") continue;
+    if (item.collectionId !== collectionId) continue;
+    if (typeof item.trackName !== "string" || item.trackName.trim() === "")
+      continue;
+    if (typeof item.trackId !== "number" || !Number.isSafeInteger(item.trackId))
+      continue;
+    if (normalizeMusicName(String(item.artistName ?? "")) !== wantArtist)
+      continue;
+    tracks.push({
+      disc: typeof item.discNumber === "number" ? item.discNumber : 1,
+      track: typeof item.trackNumber === "number" ? item.trackNumber : 1,
+      item,
+      name: item.trackName,
+    });
+  }
+  tracks.sort((a, b) => a.disc - b.disc || a.track - b.track);
+  const lead =
+    tracks.find(
+      (row) => officialUrl(row.item.previewUrl, "itunes.apple.com") !== null,
+    ) ?? tracks[0];
+  if (!lead) return null;
+  return {
+    trackName: lead.name,
+    trackUrl: officialUrl(lead.item.trackViewUrl, "music.apple.com"),
+    previewUrl: officialUrl(lead.item.previewUrl, "itunes.apple.com"),
+  };
 }
