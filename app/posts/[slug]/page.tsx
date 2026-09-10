@@ -119,19 +119,20 @@ function PostHeader({ post }: { post: Post }) {
       <p className="label">
         {ui.post.published} —{" "}
         <time dateTime={post.published_at}>
-          {formatDate(post.published_at, post.lang)}
+          {formatDate(post.published_at)}
         </time>{" "}
         · <span data-tnum>{post.readingTimeMinutes}</span> {ui.post.readingTime}
       </p>
       {post.updated_at !== undefined && (
         <p className="label mt-2xs">
           {ui.post.updated} —{" "}
-          <time dateTime={post.updated_at}>
-            {formatDate(post.updated_at, post.lang)}
-          </time>
+          <time dateTime={post.updated_at}>{formatDate(post.updated_at)}</time>
         </p>
       )}
-      <h1 className="mt-md text-balance font-display text-display-xl text-ink">
+      <h1
+        className="mt-md text-balance font-display text-display-xl text-ink"
+        lang={post.lang}
+      >
         {post.title}
       </h1>
       {post.tags.length > 0 && (
@@ -178,7 +179,7 @@ export default async function PostPage({
   }).replace(/</g, "\\u003c");
 
   return (
-    <div className="mx-auto w-full max-w-page px-lg py-xl" lang={post.lang}>
+    <div className="mx-auto w-full max-w-page px-lg py-xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd }}
@@ -189,7 +190,9 @@ export default async function PostPage({
         className="mx-auto max-w-prose"
       >
         <CoverImage post={post} />
-        <article className="prose-blog drop-cap">{body}</article>
+        <article className="prose-blog drop-cap" lang={post.lang}>
+          {body}
+        </article>
         <EndMark />
         <div className="hairline mt-3xl" />
         {/* Fase 6 (T16): cierre del post — la marca, antes de Relacionados */}

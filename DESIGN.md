@@ -11,7 +11,7 @@ colors:
     paper-raised: "#EFEADD" # superficie apenas elevada (cards, code inline bg)
     ink: "#1A1815" # tinta principal. Nunca negro puro (#000 prohibido).
     ink-secondary: "#4A453C" # metadata, subtítulos
-    ink-muted: "#7A7264" # fechas, labels, texto terciario
+    ink-muted: "#71695D" # fechas, labels, texto terciario
     accent: "#5C1F1F" # burdeos. MÁXIMO UN elemento por vista.
     accent-hover: "#732727" # único estado derivado permitido del acento
     hairline: "#D9D2C3" # divisores 1px, bordes de contenedores
@@ -21,7 +21,7 @@ colors:
     paper-raised: "#362E25" # superficie elevada: un paso más clara, nunca sombra
     ink: "#E8E2D4" # hueso. Nunca blanco puro.
     ink-secondary: "#B5AC99" # metadata
-    ink-muted: "#847B69" # terciario
+    ink-muted: "#A09785" # terciario
     accent: "#A66A5E" # burdeos aclarado/desaturado para fondo oscuro (el #5C1F1F no contrasta)
     accent-hover: "#BC7F72"
     hairline: "#463E33" # separación por borde, jamás por sombra (sigue al papel aclarado)
@@ -208,3 +208,43 @@ Todo valor visual en componentes debe resolverse desde un token
 utilidades de la casa `.label`, `.hairline`, `.drop-cap`, `.link-underline`).
 **Un hex, un px de borde o una curva de easing escritos a mano en un componente son
 un defecto** y se corrigen agregando el token que faltaba, no dejando el literal.
+
+## Gabinete interactivo
+
+Tokens de objeto en `:root`: `--control-target` (2.75rem), `--shelf-height`
+(25rem; 19rem en móvil), `--vinyl-size` (4rem), `--vinyl-period` (5s), `--line-width` (1px),
+`--round-disc` (50%, solo el objeto circular vinilo), `--needle-rest` (-24deg)
+y `--needle-playing` (-8deg). La geometría Three se expresa en unidades de escena,
+no píxeles; materiales y rótulos se derivan de papel/tinta del tema. Sin portadas
+inventadas: encuadernaciones tipográficas numeradas, equivalentes a la lista HTML.
+Solo tres gestos nuevos: elevación breve del libro seleccionado, giro del disco
+mientras suena y aguja de estado. El estante se dibuja bajo demanda; reduced motion
+cambia la selección de forma instantánea y detiene el disco.
+
+El favicon (`app/icon.svg`, respaldo `app/favicon.ico` de 16/32/48 px) es una J
+vectorial de imprenta. El SVG replica únicamente los tokens papel/tinta de ambos
+temas porque un documento de icono externo no hereda las variables de la página.
+
+Los tokens `ink-muted` mantienen contraste AA para texto pequeño en ambos temas.
+
+### Biblioteca: encuadernaciones e índice
+
+El estante ocupa el ancho editorial y muestra tapas de proporción de libro, lomos
+rotulados, hojas y bandas de encuadernación. El seleccionado gira y avanza en un
+único gesto de `duration-slow`, dibujado solo mientras cambia la selección. No usa
+portadas comerciales inventadas ni texturas. El índice numerado y una ficha única
+separan navegación de lectura; en móvil el índice se desplaza horizontalmente dentro
+de su columna. Sin JavaScript cada libro conserva su ficha completa y su enlace.
+Tokens adicionales: `--shelf-height-mobile` (19rem), `--book-folio-size` (3.5rem),
+`--book-index-mobile-width` (12rem). La ficha usa el tipo display-md, el folio tinta
+muted, y divisores hairline. No hay nuevas sombras ni colores.
+
+### Tocadiscos (`/vinyl`)
+
+Ruta dedicada: el canvas no se monta en `/`. Tokens `--turntable-height` (28rem;
+20rem en móvil) y `--disc-index-mobile-width` (12rem). Un disco con surcos
+procedurales, sello tipográfico (o portada iTunes si hay CORS) y plinto/brazo
+simples; paleta papel/tinta. Gira con `--vinyl-period` solo a la vista y sin
+reduced-motion. El índice HTML es el equivalente accesible; sin JS se ven todas
+las fichas. TODO posterior: swap de plinto/brazo a GLB (Astra), conservando el
+disco procedural.

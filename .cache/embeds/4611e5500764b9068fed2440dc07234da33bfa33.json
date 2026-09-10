@@ -1,0 +1,12 @@
+{
+  "key": "itunes-track:v1:Phil Collins — I Wish It Would Rain Down",
+  "fetchedAt": "2026-09-10T15:08:20.533Z",
+  "data": {
+    "title": "I Wish It Would Rain Down",
+    "artist": "Phil Collins",
+    "trackId": 1148642447,
+    "trackUrl": "https://music.apple.com/us/album/i-wish-it-would-rain-down/1148642251?i=1148642447&uo=4",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1c/83/f9/1c83f950-aa62-aeb7-f561-21d9541514ba/dj.wxggooob.jpg/300x300bb.jpg",
+    "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/7d/d8/5e/7dd85ef5-bd06-333d-c2f3-638f9c29a197/mzaf_8689598294341495972.plus.aac.p.m4a"
+  }
+}

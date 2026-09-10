@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/archivo",
     "/gabinete",
+    "/vinyl",
     "/acerca",
     "/colofon",
   ].map((route) => ({

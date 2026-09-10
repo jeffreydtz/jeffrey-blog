@@ -93,7 +93,7 @@ export default async function LabPage() {
             <p className="label">
               {ui.post.published} —{" "}
               <time dateTime={post.published_at}>
-                {formatDate(post.published_at, post.lang)}
+                {formatDate(post.published_at)}
               </time>
             </p>
             <h1 className="mt-md font-display text-display-xl text-ink">

@@ -10,7 +10,9 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "refresh:library": "node scripts/refresh-library.mjs",
+    "test:embeds": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "fuse.js": "7.1.0",

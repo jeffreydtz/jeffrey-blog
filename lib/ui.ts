@@ -10,11 +10,30 @@ export const ui = {
   siteDescription:
     "Ensayos personales sobre atención, oficio y tecnología. Papel, tinta y espacio en blanco.",
   nav: {
+    label: "Principal",
     home: "Inicio",
     archive: "Archivo",
     cabinet: "Gabinete",
+    vinyl: "Vinilo",
     about: "Acerca de",
     colophon: "Colofón",
+  },
+  skipToContent: "Saltar al contenido",
+  pages: {
+    archiveDescription: "Índice de todos los ensayos, ordenados por año.",
+    aboutDescription:
+      "Quién escribe estas páginas: atención, oficio y tecnología, desde Argentina.",
+    colophonDescription:
+      "Cómo está hecho este sitio: tipografía, materiales y las reglas de la casa.",
+    cabinetDescription:
+      "Curaduría a mano: lo que estoy mirando y lo que recomiendo leer.",
+    vinylDescription:
+      "Un tocadiscos quieto: el disco de ahora y un cajón de álbumes enteros.",
+  },
+  notFound: {
+    title: "Esta página no está.",
+    body: "Ese enlace no lleva a ninguna página de este sitio.",
+    back: "Volver al inicio",
   },
   post: {
     published: "Publicado",
@@ -42,6 +61,58 @@ export const ui = {
   now: {
     listening: "Escuchando",
     reading: "Leyendo",
+    playPreview: "Reproducir fragmento autorizado",
+    pausePreview: "Pausar fragmento",
+    preview: "Fragmento oficial · 30 segundos",
+    previewError:
+      "No se pudo reproducir el fragmento. Podés abrir la canción en su sitio oficial.",
+    openTrack: "Abrir canción",
+  },
+  cabinet: {
+    channelTitle: "Mi canal",
+    channelLink: "Ver mi canal en YouTube",
+  },
+  library: {
+    title: "Mi biblioteca",
+    intro:
+      "Libros que ya leí: el estante Leído de Goodreads, completo. Sin lista de deseos.",
+    select: "Seleccionar libro",
+    selected: "Libro seleccionado",
+    instructions: "Elegí un libro del estante o recorré el índice de lecturas.",
+    collection: "Estante de lecturas",
+    volumes: "volúmenes",
+    index: "Índice",
+    profile: "Mi perfil en Goodreads",
+    bookLink: "Ver en Goodreads",
+    rating: "Mi valoración",
+    outOf: "de 5",
+    comment: "Mi comentario",
+    verified: "Última consulta",
+    fallback: "El estante también se puede recorrer en esta lista.",
+    empty: "Las lecturas están disponibles en mi perfil de Goodreads.",
+    shelves: {
+      "currently-reading": "Leyendo actualmente",
+      read: "Leído",
+      "to-read": "Por leer",
+    },
+  },
+  vinyl: {
+    title: "Vinilo",
+    intro:
+      "Un tocadiscos en el estudio: el disco que suena ahora — el mismo del pie de página — y un cajón corto de álbumes enteros. Sin shuffle, sin cola automática.",
+    platter: "En el plato",
+    sides: "caras",
+    nowPlaying: "Ahora",
+    crate: "Cajón",
+    index: "Índice",
+    select: "Poner en el plato",
+    selected: "Disco en el plato",
+    instructions:
+      "Elegí un disco de la lista. El plato gira despacio mientras está a la vista. Reproducí debajo con un toque (Safari exige gesto).",
+    fallback: "El tocadiscos también se recorre en esta lista.",
+    openSpotify: "Abrir en Spotify",
+    openApple: "Abrir en Apple Music",
+    empty: "No hay discos en el cajón todavía.",
   },
   reactions: {
     label: "¿Te quedó algo?",
@@ -86,7 +157,13 @@ const LOCALE_BY_LANG: Record<PostLang, string> = {
   en: "en-US",
 };
 
-/** Formatea una fecha ISO (YYYY-MM-DD) en el idioma del post. Ej: "14 de septiembre de 2025". */
+/**
+ * Formatea una fecha ISO (YYYY-MM-DD).
+ * El chrome del sitio es español: listados, archivo y metadata de post usan
+ * el default (`es`) para que el índice no mezcle "May 30, 2026" con
+ * "18 de enero de 2026". Pasá `lang` del post solo cuando la fecha acompaña
+ * contenido en ese idioma (p. ej. la tarjeta OG de un ensayo en inglés).
+ */
 export function formatDate(iso: string, lang: PostLang = "es"): string {
   return new Intl.DateTimeFormat(LOCALE_BY_LANG[lang], {
     day: "numeric",
