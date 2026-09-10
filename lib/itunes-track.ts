@@ -101,44 +101,65 @@ export function selectItunesTrack(
   return null;
 }
 
-/** Exact album title/artist match; remaster suffixes are not accepted as substitutes. */
+function readAlbumItem(item: ItunesItem): AlbumArtwork | null {
+  if (
+    typeof item.collectionName !== "string" ||
+    typeof item.artistName !== "string"
+  )
+    return null;
+  const appleUrl = officialUrl(item.collectionViewUrl, "music.apple.com");
+  if (
+    !appleUrl ||
+    typeof item.collectionId !== "number" ||
+    !Number.isSafeInteger(item.collectionId)
+  )
+    return null;
+  return {
+    title: item.collectionName,
+    artist: item.artistName,
+    collectionId: item.collectionId,
+    appleUrl,
+    coverUrl:
+      officialUrl(item.artworkUrl100, "mzstatic.com")?.replace(
+        "100x100bb",
+        "600x600bb",
+      ) ?? null,
+  };
+}
+
+/** Remainder after the editorial title: " (Remastered)", " [Deluxe Edition]", etc. */
+function isEditionSuffix(remainder: string): boolean {
+  return /^\s*[\(\[].+[\)\]]$/.test(remainder);
+}
+
+/**
+ * Prefer an exact album title/artist. If Apple only has a remaster/deluxe of
+ * that same album, accept the first such edition — never a different work.
+ */
 export function selectItunesAlbum(
   body: unknown,
   title: string,
   artist: string,
 ): AlbumArtwork | null {
   if (!isItunesList(body)) return null;
+  const wantTitle = normalizeMusicName(title);
+  const wantArtist = normalizeMusicName(artist);
+  let edition: AlbumArtwork | null = null;
   for (const item of body.results) {
-    if (
-      !item ||
-      typeof item !== "object" ||
-      typeof item.collectionName !== "string" ||
-      typeof item.artistName !== "string"
-    )
+    if (!item || typeof item !== "object") continue;
+    if (normalizeMusicName(String(item.artistName ?? "")) !== wantArtist)
       continue;
+    const name = normalizeMusicName(String(item.collectionName ?? ""));
+    const parsed = readAlbumItem(item);
+    if (!parsed) continue;
+    if (name === wantTitle) return parsed;
     if (
-      normalizeMusicName(item.collectionName) !== normalizeMusicName(title) ||
-      normalizeMusicName(item.artistName) !== normalizeMusicName(artist)
-    )
-      continue;
-    const appleUrl = officialUrl(item.collectionViewUrl, "music.apple.com");
-    if (
-      !appleUrl ||
-      typeof item.collectionId !== "number" ||
-      !Number.isSafeInteger(item.collectionId)
-    )
-      continue;
-    return {
-      title: item.collectionName,
-      artist: item.artistName,
-      collectionId: item.collectionId,
-      appleUrl,
-      coverUrl:
-        officialUrl(item.artworkUrl100, "mzstatic.com")?.replace(
-          "100x100bb",
-          "600x600bb",
-        ) ?? null,
-    };
+      !edition &&
+      name.startsWith(wantTitle) &&
+      isEditionSuffix(name.slice(wantTitle.length))
+    ) {
+      edition = parsed;
+    }
   }
-  return null;
+  return edition;
 }

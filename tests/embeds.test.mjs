@@ -213,12 +213,22 @@ const album = (changes = {}) => ({
 });
 const selectAlbum = (results) =>
   selectItunesAlbum({ results }, "In a Silent Way", "Miles Davis");
-test("iTunes albums require an exact title and artist, not remasters or covers", () => {
+test("iTunes albums prefer the exact title and otherwise accept a remaster of the same album", () => {
+  assert.equal(selectAlbum([album({ artistName: "Cover Band" })]), null);
+  assert.equal(selectAlbum([album({ collectionName: "Kind of Blue" })]), null);
   assert.equal(
-    selectAlbum([album({ collectionName: "In a Silent Way (Remastered)" })]),
+    selectAlbum([album({ collectionName: "In a Silent Way Live" })]),
     null,
   );
-  assert.equal(selectAlbum([album({ artistName: "Cover Band" })]), null);
+  const remaster = selectAlbum([
+    album({ collectionName: "In a Silent Way (Remastered)", collectionId: 99 }),
+  ]);
+  assert.equal(remaster.collectionId, 99);
+  const preferred = selectAlbum([
+    album({ collectionName: "In a Silent Way (Remastered)", collectionId: 1 }),
+    album({ collectionId: 44 }),
+  ]);
+  assert.equal(preferred.collectionId, 44);
 });
 test("iTunes albums treat unicode ellipsis as three dots and upscale artwork", () => {
   const result = selectItunesAlbum(
