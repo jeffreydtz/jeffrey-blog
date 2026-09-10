@@ -9,4 +9,6 @@
 - [x] T07: UI centralizada, README y revisión de tokens, motion y contenido no relacionado.
 - [x] T08: npm ci, TypeScript, lint, build y git diff --check.
 - [x] T09: verificación 390/768/1440 px, claro/oscuro, texto 200%, teclado, touch, reduced motion, WebGL/JS ausentes, audio y video, consola.
-- [ ] T10: revisión independiente, corregir hallazgos, revisar diff completo, commit con identidad solicitada, push y PR contra main sin merge.
+- [x] T10: revisión independiente, corregir hallazgos, revisar diff completo, commit con identidad solicitada, push y PR contra main sin merge.
+
+Entrega: https://github.com/jeffreydtz/jeffrey-blog/pull/1 — abierta contra main, sin merge.

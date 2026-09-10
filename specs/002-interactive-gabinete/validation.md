@@ -65,3 +65,11 @@ No se ejecutó lector de pantalla físico ni Safari/iOS real: se verificó semá
 nombres accesibles y navegación en Chromium, con touch emulado.
 No se desplegó a producción ni se hizo merge. La disponibilidad futura de Apple,
 Goodreads y YouTube sigue dependiendo de cada servicio.
+
+## Comprobación de la versión compilada y entrega
+
+`npm start -- --port 3100`: la versión de producción renderiza siete libros, canvas,
+cero iframes antes del click y ningún overlay. Touch, texto al 200%, navegación a
+home y ambos favicon repitieron PASS, sin errores de consola. PR abierta contra
+main: https://github.com/jeffreydtz/jeffrey-blog/pull/1. Vercel inició automáticamente
+un deployment Preview; no se ejecutó ningún deploy manual a producción.
