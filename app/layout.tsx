@@ -38,13 +38,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "es_AR",
     siteName: SITE.name,
-    title: ui.siteTitle,
-    description: ui.siteDescription,
   },
   twitter: {
     card: "summary_large_image",
-    title: ui.siteTitle,
-    description: ui.siteDescription,
   },
 };
 
