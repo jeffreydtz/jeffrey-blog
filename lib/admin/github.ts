@@ -7,9 +7,83 @@ import "server-only";
  * un commit real a `main`. El panel no toca el filesystem del deploy (que en
  * Vercel es de solo lectura y efímero) — lee y escribe SIEMPRE contra GitHub.
  *
- * Necesita GITHUB_TOKEN (fine-grained, permiso Contents read/write sobre el
- * repo). Nunca se loguea ni viaja al cliente.
+ * Necesita GITHUB_TOKEN (fine-grained, permiso Contents: Read and write
+ * sobre el repo). Un token de solo lectura — o el GITHUB_TOKEN de Actions
+ * sin `contents: write` — responde 403 "Resource not accessible by personal
+ * access token". Nunca se loguea ni viaja al cliente.
  */
+
+/** Error de la GitHub API con status, para mapear mensajes al panel. */
+export class GitHubApiError extends Error {
+  readonly status: number;
+  readonly githubMessage: string;
+
+  constructor(status: number, what: string, body: string) {
+    const githubMessage = parseGithubMessage(body);
+    super(
+      `[admin] GitHub ${what} falló (${status}): ${githubMessage || body.slice(0, 200)}`,
+    );
+    this.name = "GitHubApiError";
+    this.status = status;
+    this.githubMessage = githubMessage;
+  }
+}
+
+function parseGithubMessage(body: string): string {
+  try {
+    const parsed = JSON.parse(body) as { message?: unknown };
+    return typeof parsed.message === "string" ? parsed.message : "";
+  } catch {
+    return body.slice(0, 200).trim();
+  }
+}
+
+function asGitHubApiError(error: unknown): GitHubApiError | null {
+  if (error instanceof GitHubApiError) return error;
+  if (
+    error instanceof Error &&
+    error.name === "GitHubApiError" &&
+    "status" in error &&
+    typeof (error as GitHubApiError).status === "number"
+  ) {
+    return error as GitHubApiError;
+  }
+  return null;
+}
+
+/**
+ * Mensaje en español para el panel. No inventa tokens: si GitHub dijo 403
+ * de permisos, dice cómo corregir el fine-grained token.
+ */
+export function githubUserMessage(error: unknown): string {
+  if (
+    error instanceof Error &&
+    error.message.includes("GITHUB_TOKEN no configurado")
+  ) {
+    return "Falta GITHUB_TOKEN en las env vars del deploy.";
+  }
+  const gh = asGitHubApiError(error);
+  if (gh) {
+    const msg = gh.githubMessage.toLowerCase();
+    if (gh.status === 401) {
+      return "GitHub rechazó el token (inválido o vencido). Generá un fine-grained token nuevo con Contents: Read and write sobre este repo.";
+    }
+    if (
+      gh.status === 403 ||
+      msg.includes("resource not accessible by personal access token")
+    ) {
+      return "GitHub denegó la escritura (403): el token no tiene permiso Contents: Read and write sobre este repo. En GitHub → Settings → Developer settings → Fine-grained tokens → este token → Repository permissions → Contents = Read and write. Un token de solo lectura o el GITHUB_TOKEN de Actions no alcanza.";
+    }
+    if (gh.status === 404) {
+      return "GitHub no encontró el archivo o el repositorio. Revisá ADMIN_GITHUB_REPO.";
+    }
+    if (gh.status === 409 || gh.status === 422) {
+      return "GitHub rechazó el commit (¿el archivo cambió mientras editabas?). Recargá y reintentá.";
+    }
+    return `GitHub rechazó el guardado (${gh.status}).`;
+  }
+  return "No se pudo guardar. Intentá de nuevo.";
+}
 
 const API = "https://api.github.com";
 const REPO = process.env.ADMIN_GITHUB_REPO ?? "jeffreydtz/jeffrey-blog";
@@ -53,9 +127,7 @@ async function ghFetch(url: string, init?: RequestInit): Promise<Response> {
 
 async function fail(res: Response, what: string): Promise<never> {
   const body = await res.text().catch(() => "");
-  throw new Error(
-    `[admin] GitHub ${what} falló (${res.status}): ${body.slice(0, 300)}`,
-  );
+  throw new GitHubApiError(res.status, what, body);
 }
 
 /** Archivo del repo (rama main) o null si no existe. */

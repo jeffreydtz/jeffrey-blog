@@ -142,14 +142,14 @@ jeffrey-blog/
 Env vars (sin las dos primeras el panel queda deshabilitado y no aparece nada):
 
 - `ADMIN_PASSWORD` — contraseña de acceso (sesión de 7 días, cookie firmada; cambiar la contraseña revoca sesiones).
-- `GITHUB_TOKEN` — token fine-grained con permiso **Contents read/write** solo sobre este repo.
+- `GITHUB_TOKEN` — token fine-grained con permiso **Contents: Read and write** solo sobre este repo. Un token de solo lectura (o el `GITHUB_TOKEN` de Actions sin `contents: write`) da 403 *Resource not accessible by personal access token* al guardar.
 - `VERCEL_DEPLOY_HOOK_URL` — (opcional) Deploy Hook de Vercel; con él cada guardado dispara el rebuild solo. Sin él, el commit queda hecho y hay que deployar a mano.
 
 El panel está fuera de robots/sitemap/búsqueda; el login tiene rate limit por IP.
 
 ## Widget "Ahora"
 
-Qué estoy escuchando y leyendo, en el footer. Se actualiza a mano: editar los valores de `lib/now.ts`, commitear y pushear. Sin scrobbling — es parte del encanto. Las portadas sí se resuelven solas en build (iTunes para el disco, OpenLibrary para el libro, vía `lib/now-covers.ts`) y se cachean en `.cache/embeds/`; si la búsqueda no encuentra nada, el widget queda solo-texto. `coverUrl` en `lib/now.ts` permite fijar una portada a mano.
+Qué estoy escuchando y leyendo, en el footer. Desde `/admin/now` se busca una canción (iTunes Search) o un libro (OpenLibrary) y se rellenan título, artista/autor y portada (artwork 300×300 / cover `-M`). Los campos siguen editables a mano; Guardar y publicar commitea `lib/now.ts`. Sin scrobbling ni Spotify OAuth — es parte del encanto. Si la URL de portada queda vacía, el build la busca solo (`lib/now-covers.ts`) y la cachea en `.cache/embeds/`; si no hay resultado, el widget queda solo-texto.
 
 ## Sonido de página
 
