@@ -1,11 +1,8 @@
 /**
- * Canción editorial de "Ahora" y referencia manual de lectura.
- * El libro del footer se obtiene exclusivamente del snapshot de Goodreads;
- * `reading` se conserva para el formulario administrativo, sin prioridad visual.
+ * Widget "Ahora" — qué estoy escuchando y leyendo en este momento.
  *
- * Flujo editorial: esto se actualiza A MANO. Editá los valores, commiteá y
- * pusheá; el próximo deploy lo refleja en el footer. Sin APIs de scrobbling:
- * si cambió lo que escucho, cambio el archivo. Es parte del encanto.
+ * Flujo editorial: se edita desde /admin (o a mano); cada guardado es un
+ * commit y el próximo deploy lo refleja en el footer. Sin scrobbling.
  *
  * Las portadas se resuelven solas en build time (lib/now-covers.ts: iTunes
  * para el disco, OpenLibrary para el libro) y quedan cacheadas en
@@ -19,9 +16,6 @@ interface NowListening {
   artist: string;
   /** Override manual de portada; sin él se busca en iTunes en build time. */
   coverUrl?: string;
-  /** Track o álbum de Spotify para el embed de /vinyl. Editorial, opcional. */
-  spotifyUrl?: string;
-  spotifyTrackUrl?: string;
 }
 
 interface NowReading {
@@ -38,13 +32,13 @@ export interface Now {
 
 export const now: Now = {
   listening: {
-    title: "I Wish It Would Rain Down",
-    artist: "Phil Collins",
+    title: "Andar Conmigo",
+    artist: "Julieta Venegas",
+    coverUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
   },
   reading: {
     title: "El lobo estepario",
     author: "Hermann Hesse",
-    // OpenLibrary venía dando timeout en build — portada fijada a mano.
     coverUrl: "https://covers.openlibrary.org/b/id/12527375-M.jpg",
   },
 };
