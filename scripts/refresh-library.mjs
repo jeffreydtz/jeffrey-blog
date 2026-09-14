@@ -80,6 +80,11 @@ const snapshot = {
   profileUrl: goodreadsProfileUrl,
   verifiedAt: new Date().toISOString(),
   books,
+  // Keep Leído unchanged. The footer uses the first entry in this RSS order.
+  // No Open Library fallback: a missing current-book cover stays missing.
+  currentlyReading: shelves
+    .flat()
+    .filter((book) => book.shelf === "currently-reading"),
 };
 // Fetch/parse every configured shelf before changing the last valid snapshot.
 await fs.writeFile(

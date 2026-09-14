@@ -180,9 +180,6 @@ function VinylListen({
           >
             {playback.playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview}
           </button>
-          <p className="mt-xs text-body-sm text-ink-secondary">
-            {ui.vinyl.preview}
-          </p>
           <p role="status" className="text-body-sm text-ink-secondary">
             {playback.failed ? ui.now.previewError : ""}
           </p>

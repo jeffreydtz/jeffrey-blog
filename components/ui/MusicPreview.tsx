@@ -90,15 +90,12 @@ export function MusicPreview({
           {disc}
         </span>
       ) : null}
-      <div className="min-w-0">
+      <div className="min-w-0 break-words">
         <p className="label text-ink-secondary">{ui.now.listening}</p>
         <p className="mt-xs text-body-sm text-ink-secondary">
           {title}
           <span> — {artist}</span>
         </p>
-        {previewUrl ? (
-          <p className="text-body-sm text-ink-secondary">{ui.now.preview}</p>
-        ) : null}
         {trackUrl ? (
           <a
             href={trackUrl}

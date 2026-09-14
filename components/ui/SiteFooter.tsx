@@ -4,11 +4,10 @@ import { ui } from "@/lib/ui";
 export function SiteFooter() {
   return (
     <footer className="print-hidden mx-auto w-full max-w-page px-lg pb-2xl">
-      <div className="hairline mb-lg" />
-      <div className="flex flex-col justify-between gap-lg lg:flex-row lg:items-end">
-        {/* Columna izquierda: "Ahora" (T17) */}
+      <div className="hairline mb-xl" />
+      <div className="mx-auto flex max-w-prose flex-col gap-lg">
         <NowWidget />
-        <p className="text-body-sm text-ink-muted">
+        <p className="border-t border-hairline pt-lg text-center text-body-sm text-ink-muted">
           © {new Date().getFullYear()} Jeffrey Dietz ·{" "}
           {ui.footer.rights.toLowerCase()}
         </p>
