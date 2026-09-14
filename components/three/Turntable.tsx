@@ -1,287 +1,109 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useId, useRef, useState, type RefObject } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { SpotifyPreview } from "./SpotifyPreview";
 import { ui } from "@/lib/ui";
 import { spotifyEmbedFor, type VinylRecord } from "@/lib/vinyl-data";
+import { claimMusicPlayback, MUSIC_PLAYBACK_EVENT } from "@/lib/music-playback";
 
 const TurntableCanvas = dynamic(
   () => import("./TurntableCanvas").then((mod) => mod.TurntableCanvas),
   { ssr: false },
 );
 
-const EMPTY_RECORD: VinylRecord = {
-  id: "",
-  title: "",
-  artist: "",
-  coverUrl: null,
-  previewUrl: null,
-  source: "crate",
-};
-
-function Cover({ src }: { src: string | null }) {
-  if (!src) return null;
-  return (
-    // eslint-disable-next-line @next/next/no-img-element -- portada remota de host de terceros; sin remotePatterns comodín (convención de la casa)
-    <img
-      src={src}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      className="size-xl shrink-0 rounded-subtle border border-hairline object-cover"
-    />
-  );
-}
-
-type VinylPlayback = {
-  playing: boolean;
-  failed: boolean;
-  audioRef: RefObject<HTMLAudioElement | null>;
-  playFromGesture: () => void;
-  pause: () => void;
-  toggle: () => void;
-  onPlaying: () => void;
-  onPause: () => void;
-  onEnded: () => void;
-  onError: () => void;
-};
-
-function useVinylPlayback(record: VinylRecord): VinylPlayback {
+export function Turntable({ records }: { records: VinylRecord[] }) {
+  const owner = useId();
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);
   const generation = useRef(0);
-  const [session, setPlaySession] = useState({
-    id: record.id,
-    playing: false,
-    failed: false,
-  });
-  if (session.id !== record.id) {
-    requested.current = false;
-    setPlaySession({ id: record.id, playing: false, failed: false });
-  }
-  const playing = session.id === record.id && session.playing;
-  const failed = session.id === record.id && session.failed;
-
-  useEffect(() => {
-    requested.current = false;
-    generation.current += 1;
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.pause();
-    if (record.previewUrl) {
-      audio.src = record.previewUrl;
-    } else {
-      audio.removeAttribute("src");
-      audio.load();
-    }
-    return () => {
-      generation.current += 1;
-      requested.current = false;
-      audio.pause();
-    };
-  }, [record.id, record.previewUrl]);
-
-  function setPlaying(next: boolean) {
-    setPlaySession((current) =>
-      current.id === record.id ? { ...current, playing: next } : current,
-    );
-  }
-
-  function setFailed(next: boolean) {
-    setPlaySession((current) =>
-      current.id === record.id ? { ...current, failed: next } : current,
-    );
-  }
-
-  function playFromGesture() {
-    const audio = audioRef.current;
-    if (!audio || !record.previewUrl) return;
-    requested.current = true;
-    const attempt = ++generation.current;
-    setFailed(false);
-    setPlaying(true);
-    if (audio.ended) audio.currentTime = 0;
-    const attemptPlay = audio.play();
-    if (attemptPlay) {
-      void attemptPlay.catch(() => {
-        if (attempt !== generation.current) return;
-        requested.current = false;
-        setPlaying(false);
-        setFailed(true);
-      });
-    }
-  }
-
-  function pause() {
-    requested.current = false;
-    audioRef.current?.pause();
-  }
-
-  function toggle() {
-    if (requested.current) pause();
-    else playFromGesture();
-  }
-
-  function onPlaying() {
-    if (requested.current) setPlaying(true);
-    else audioRef.current?.pause();
-  }
-
-  function onPause() {
-    setPlaying(false);
-  }
-
-  function onEnded() {
-    requested.current = false;
-    setPlaying(false);
-  }
-
-  function onError() {
-    requested.current = false;
-    setPlaying(false);
-    setFailed(true);
-  }
-
-  return {
-    playing,
-    failed,
-    audioRef,
-    playFromGesture,
-    pause,
-    toggle,
-    onPlaying,
-    onPause,
-    onEnded,
-    onError,
-  };
-}
-
-/** Preview iTunes (brazo + botón) y, si hay URL, embed compacto de Spotify. */
-function VinylListen({
-  record,
-  playback,
-}: {
-  record: VinylRecord;
-  playback: VinylPlayback;
-}) {
-  const spotify = spotifyEmbedFor(record);
-  if (!record.previewUrl && !spotify) return null;
-
-  return (
-    <div className="mt-md">
-      {record.previewUrl ? (
-        <>
-          <button
-            type="button"
-            className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
-            aria-pressed={playback.playing}
-            aria-label={`${playback.playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview}: ${record.title} — ${record.artist}`}
-            onClick={() => playback.toggle()}
-          >
-            {playback.playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview}
-          </button>
-          <p role="status" className="text-body-sm text-ink-secondary">
-            {playback.failed ? ui.now.previewError : ""}
-          </p>
-        </>
-      ) : null}
-      {spotify ? (
-        <div
-          className="vinyl-embed print-hidden mt-md overflow-hidden rounded-subtle border border-hairline bg-paper-raised"
-          style={{ height: 152 }}
-        >
-          <iframe
-            src={`https://open.spotify.com/embed/${spotify.kind}/${spotify.id}`}
-            title={`${ui.mdx.spotifyTitle}: ${record.title}`}
-            loading="lazy"
-            className="h-full w-full border-0"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-          />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function Details({
-  record,
-  listen = false,
-  playback,
-}: {
-  record: VinylRecord;
-  listen?: boolean;
-  playback?: VinylPlayback;
-}) {
-  return (
-    <>
-      <p className="label text-ink-secondary">
-        {record.source === "now" ? ui.vinyl.nowPlaying : ui.vinyl.crate}
-      </p>
-      <div className="mt-sm flex items-start gap-sm">
-        <Cover src={record.coverUrl} />
-        <div className="min-w-0">
-          <h3 className="font-display text-display-md text-ink">
-            {record.title}
-          </h3>
-          <p className="mt-xs text-body text-ink-secondary">{record.artist}</p>
-        </div>
-      </div>
-      {record.note ? (
-        <p className="mt-md text-body-sm text-ink-secondary">{record.note}</p>
-      ) : null}
-      {record.spotifyUrl || record.spotifyTrackUrl || record.appleUrl ? (
-        <p className="mt-md flex flex-wrap gap-md">
-          {record.spotifyUrl || record.spotifyTrackUrl ? (
-            <a
-              href={record.spotifyTrackUrl ?? record.spotifyUrl}
-              className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
-            >
-              {ui.vinyl.openSpotify}
-            </a>
-          ) : null}
-          {record.appleUrl ? (
-            <a
-              href={record.appleUrl}
-              className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
-            >
-              {ui.vinyl.openApple}
-            </a>
-          ) : null}
-        </p>
-      ) : null}
-      {listen && playback ? (
-        <VinylListen record={record} playback={playback} />
-      ) : null}
-    </>
-  );
-}
-
-export function Turntable({ records }: { records: VinylRecord[] }) {
-  const detailId = useId();
-  const [selected, setSelected] = useState(0);
-  const [ready, setReady] = useState(false);
-  const [failed, setFailed] = useState(false);
-  const current = records[selected];
-  const playback = useVinylPlayback(current ?? EMPTY_RECORD);
-  const playingRef = useRef(false);
   const grabWasPlaying = useRef(false);
-  playingRef.current = playback.playing;
+  const [selected, setSelected] = useState(0);
+  const [provider, setProvider] = useState<"apple" | "spotify" | null>(null);
+  const [ready, setReady] = useState(false);
+  const [canvasFailed, setCanvasFailed] = useState(false);
+  const [playing, setPlaying] = useState(false);
+  const [audioFailed, setAudioFailed] = useState(false);
+  const current = records[selected];
 
   useEffect(() => {
     setReady(true);
-  }, []);
+    const audio = audioRef.current;
+    function stopOther(event: Event) {
+      if ((event as CustomEvent<string>).detail === owner) return;
+      generation.current += 1;
+      requested.current = false;
+      audio?.pause();
+      setPlaying(false);
+      setProvider(null);
+    }
+    window.addEventListener(MUSIC_PLAYBACK_EVENT, stopOther);
+    return () => {
+      window.removeEventListener(MUSIC_PLAYBACK_EVENT, stopOther);
+      generation.current += 1;
+      requested.current = false;
+      audio?.pause();
+    };
+  }, [owner]);
+
+  function pause() {
+    generation.current += 1;
+    requested.current = false;
+    audioRef.current?.pause();
+    setPlaying(false);
+  }
+
+  function choose(index: number) {
+    if (index === selected) return;
+    pause();
+    setProvider(null);
+    setAudioFailed(false);
+    setSelected(index);
+  }
+
+  function playApple(index: number) {
+    const record = records[index];
+    const audio = audioRef.current;
+    if (!record?.previewUrl || !audio) return;
+    if (index === selected && requested.current && provider === "apple") {
+      pause();
+      return;
+    }
+    pause();
+    claimMusicPlayback(owner);
+    setSelected(index);
+    setProvider("apple");
+    setAudioFailed(false);
+    // Set src and invoke play within the original gesture, including on iOS.
+    if (audio.getAttribute("src") !== record.previewUrl)
+      audio.src = record.previewUrl;
+    if (audio.ended) audio.currentTime = 0;
+    requested.current = true;
+    const attempt = ++generation.current;
+    void audio.play().catch(() => {
+      if (attempt !== generation.current) return;
+      requested.current = false;
+      setPlaying(false);
+      setAudioFailed(true);
+    });
+  }
+
+  function openSpotify(index: number) {
+    const closing = index === selected && provider === "spotify";
+    pause();
+    claimMusicPlayback(owner);
+    setSelected(index);
+    setAudioFailed(false);
+    setProvider(closing ? null : "spotify");
+  }
 
   function onArmGrab() {
-    grabWasPlaying.current = playingRef.current;
-    playback.playFromGesture();
+    grabWasPlaying.current = requested.current;
+    if (!grabWasPlaying.current) playApple(selected);
   }
 
   function onArmRelease(onRecord: boolean, tapped: boolean) {
-    if (tapped) {
-      if (grabWasPlaying.current) playback.pause();
-      return;
-    }
-    if (!onRecord) playback.pause();
+    if ((tapped && grabWasPlaying.current) || (!tapped && !onRecord)) pause();
   }
 
   if (!records.length) {
@@ -291,88 +113,203 @@ export function Turntable({ records }: { records: VinylRecord[] }) {
   return (
     <div className="turntable-cabinet mt-lg" data-enhanced={ready}>
       <div className="turntable-heading">
-        <p className="label text-ink-secondary">{ui.vinyl.platter}</p>
+        <p className="label text-ink-secondary">
+          {ui.vinyl.platter}: {current?.title}
+        </p>
         <span className="label text-ink-secondary">
           {String(records.length).padStart(2, "0")} {ui.vinyl.sides}
         </span>
       </div>
-      {ready && current && !failed ? (
+      {ready && current && !canvasFailed ? (
         <TurntableCanvas
           record={current}
-          playing={playback.playing}
+          playing={playing}
           canPlay={Boolean(current.previewUrl)}
-          onFailure={() => setFailed(true)}
+          onFailure={() => setCanvasFailed(true)}
           onArmGrab={onArmGrab}
           onArmRelease={onArmRelease}
         />
       ) : null}
-      {ready && current?.previewUrl ? (
-        <audio
-          ref={playback.audioRef}
-          src={current.previewUrl}
-          preload="none"
-          aria-label={`${ui.vinyl.playPreview}: ${current.title}`}
-          onPlaying={playback.onPlaying}
-          onPause={playback.onPause}
-          onEnded={playback.onEnded}
-          onError={playback.onError}
-        />
-      ) : null}
+      <audio
+        ref={audioRef}
+        preload="none"
+        aria-label={
+          current
+            ? `${ui.vinyl.playPreview}: ${current.title}`
+            : ui.vinyl.playPreview
+        }
+        onPlaying={() => {
+          if (requested.current) setPlaying(true);
+          else audioRef.current?.pause();
+        }}
+        onPause={() => setPlaying(false)}
+        onEnded={() => {
+          requested.current = false;
+          setPlaying(false);
+        }}
+        onError={() => {
+          if (requested.current) {
+            requested.current = false;
+            setPlaying(false);
+            setAudioFailed(true);
+          }
+        }}
+      />
       <p className="turntable-instructions text-body-sm text-ink-secondary">
-        {failed ? ui.vinyl.fallback : ui.vinyl.instructions}
+        {canvasFailed ? ui.vinyl.fallback : ui.vinyl.instructions}
       </p>
       <p className="sr-only" role="status">
         {ready && current ? `${ui.vinyl.selected}: ${current.title}` : ""}
       </p>
-      <div className="turntable-reading">
-        <div className="turntable-index">
-          <p className="label mb-md text-ink-secondary">{ui.vinyl.index}</p>
-          <ol>
-            {records.map((record, index) => (
+      <section className="vinyl-collection" aria-label={ui.vinyl.index}>
+        <div className="turntable-heading">
+          <h2 className="label text-ink-secondary">{ui.vinyl.index}</h2>
+          <span className="text-body-sm text-ink-secondary">
+            {ui.vinyl.collectionHint}
+          </span>
+        </div>
+        <ol className="vinyl-crate">
+          {records.map((record, index) => {
+            const active = index === selected;
+            const spotify = spotifyEmbedFor(record);
+            const spotifyUrl = record.spotifyTrackUrl ?? record.spotifyUrl;
+            const appleUrl =
+              record.appleUrl ??
+              `https://music.apple.com/us/search?term=${encodeURIComponent(`${record.artist} ${record.title}`)}`;
+            const spotifySearch = `https://open.spotify.com/search/${encodeURIComponent(`${record.artist} ${record.title}`)}`;
+            const expanded = active && provider === "spotify";
+            return (
               <li
                 key={record.id}
-                className="disc-entry min-w-0"
-                data-selected={ready && index === selected}
+                className="vinyl-sleeve"
+                data-selected={active && ready}
               >
+                <div className="vinyl-sleeve-label">
+                  <span className="label">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="label">
+                    {record.source === "now"
+                      ? ui.vinyl.nowPlaying
+                      : ui.vinyl.crate}
+                  </span>
+                </div>
+                <div className="vinyl-sleeve-heading">
+                  {record.coverUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element -- official metadata; no broad remote image proxy.
+                    <img
+                      src={record.coverUrl}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="vinyl-cover"
+                    />
+                  ) : (
+                    <span
+                      className="vinyl-cover vinyl-cover-empty"
+                      aria-hidden="true"
+                    >
+                      {record.title.slice(0, 1)}
+                    </span>
+                  )}
+                  <div className="min-w-0">
+                    <h3 className="font-display text-display-sm text-ink">
+                      {record.title}
+                    </h3>
+                    <p className="text-body-sm text-ink-secondary">
+                      {record.artist}
+                    </p>
+                  </div>
+                </div>
+                {record.note ? (
+                  <p className="mt-sm text-body-sm text-ink-secondary">
+                    {record.note}
+                  </p>
+                ) : null}
                 {ready ? (
                   <button
                     type="button"
-                    className="disc-choice"
-                    aria-pressed={index === selected}
-                    aria-controls={detailId}
+                    className="vinyl-select link-underline"
+                    aria-pressed={active}
                     aria-label={`${ui.vinyl.select}: ${record.title}`}
-                    onClick={() => setSelected(index)}
+                    onClick={() => choose(index)}
                   >
-                    <span className="disc-number" aria-hidden="true">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span>
-                      <span className="disc-index-title">{record.title}</span>
-                      <span className="disc-index-artist">{record.artist}</span>
-                    </span>
-                    <span className="disc-index-marker" aria-hidden="true">
-                      ↗
-                    </span>
+                    {active ? ui.vinyl.selected : ui.vinyl.select}
                   </button>
-                ) : (
-                  <div className="disc-static-detail">
-                    <Details record={record} />
+                ) : null}
+                <div className="vinyl-preview-options">
+                  {ready && record.previewUrl ? (
+                    <button
+                      type="button"
+                      className="vinyl-preview-button"
+                      aria-pressed={active && playing}
+                      aria-label={`${active && playing ? ui.vinyl.pausePreview : ui.vinyl.playPreview} Apple Music: ${record.title}`}
+                      onClick={() => playApple(index)}
+                    >
+                      {active && playing
+                        ? ui.vinyl.pausePreview
+                        : ui.vinyl.applePreview}
+                    </button>
+                  ) : (
+                    <a className="vinyl-preview-button" href={appleUrl}>
+                      {ui.vinyl.openApple}
+                    </a>
+                  )}
+                  {ready && spotify ? (
+                    <button
+                      type="button"
+                      className="vinyl-preview-button"
+                      aria-expanded={expanded}
+                      aria-controls={`${owner}-spotify-${index}`}
+                      onClick={() => openSpotify(index)}
+                    >
+                      {expanded
+                        ? ui.vinyl.closeSpotify
+                        : ui.vinyl.spotifyPreview}
+                    </button>
+                  ) : (
+                    <a
+                      className="vinyl-preview-button"
+                      href={spotifyUrl ?? spotifySearch}
+                    >
+                      {spotifyUrl ? ui.vinyl.openSpotify : ui.vinyl.findSpotify}
+                    </a>
+                  )}
+                </div>
+                {active && provider === "apple" ? (
+                  <div className="mt-sm">
+                    <p
+                      role="status"
+                      className="text-body-sm text-ink-secondary"
+                    >
+                      {audioFailed ? ui.now.previewError : ui.vinyl.appleCredit}
+                    </p>
+                    <a
+                      href={appleUrl}
+                      className="link-underline text-body-sm text-ink-secondary"
+                    >
+                      {ui.vinyl.openApple}
+                    </a>
                   </div>
-                )}
+                ) : null}
+                {expanded && spotify ? (
+                  <div
+                    id={`${owner}-spotify-${index}`}
+                    className="vinyl-provider"
+                  >
+                    <SpotifyPreview
+                      key={`${record.id}-${spotify.id}`}
+                      spotify={spotify}
+                      title={record.title}
+                      url={spotifyUrl!}
+                    />
+                  </div>
+                ) : null}
               </li>
-            ))}
-          </ol>
-        </div>
-        {ready && current ? (
-          <section
-            className="disc-detail"
-            id={detailId}
-            aria-label={ui.vinyl.selected}
-          >
-            <Details record={current} listen playback={playback} />
-          </section>
-        ) : null}
-      </div>
+            );
+          })}
+        </ol>
+      </section>
     </div>
   );
 }

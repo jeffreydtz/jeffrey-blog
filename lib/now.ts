@@ -11,32 +11,16 @@
  * el widget queda solo-texto, como siempre.
  */
 
-interface NowListening {
-  title: string;
-  artist: string;
-  /** Override manual de portada; sin él se busca en iTunes en build time. */
-  coverUrl?: string;
-  spotifyUrl?: string;
-  spotifyTrackUrl?: string;
-}
-
-interface NowReading {
-  title: string;
-  author: string;
-  /** Override manual de portada; sin él se busca en OpenLibrary en build time. */
-  coverUrl?: string;
-}
-
-export interface Now {
-  listening: NowListening;
-  reading: NowReading;
-}
+import type { Now } from "@/lib/now-types";
+export type { Now, NowListening, NowReading } from "@/lib/now-types";
 
 export const now: Now = {
   listening: {
     title: "Andar Conmigo",
     artist: "Julieta Venegas",
-    coverUrl: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
+    spotifyTrackUrl: "https://open.spotify.com/track/5LymLsCJpJGn2st1P48GQm",
+    coverUrl:
+      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
   },
   reading: {
     title: "El lobo estepario",

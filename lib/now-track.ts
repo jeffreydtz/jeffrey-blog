@@ -5,7 +5,17 @@ import { selectItunesTrack, type TrackPreview } from "@/lib/itunes-track";
 
 /** Cache is committed and keyed by the editorial song in lib/now.ts. */
 export async function getNowTrack(): Promise<TrackPreview | null> {
-  const { artist, title } = now.listening;
+  return getListeningTrack(now.listening);
+}
+
+/** Same exact song matcher for current and accumulated songs. */
+export async function getListeningTrack({
+  artist,
+  title,
+}: {
+  artist: string;
+  title: string;
+}): Promise<TrackPreview | null> {
   const key = `itunes-track:v1:${artist} — ${title}`;
   const cached = readEmbedCache<TrackPreview>(key);
   if (cached) return cached;

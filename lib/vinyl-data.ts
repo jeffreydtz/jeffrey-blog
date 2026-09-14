@@ -145,6 +145,7 @@ function catalogKey(title: string, artist: string): string {
       .normalize("NFKC")
       .replace(/\u2026/g, "...")
       .trim()
+      .replace(/\s+/g, " ")
       .toLocaleLowerCase("en-US");
   return `${normalize(title)}|${normalize(artist)}`;
 }

@@ -1,53 +1,42 @@
 import "server-only";
-import crate from "@/content/data/vinyl.json";
+import history from "@/content/data/listening-history.json";
 import { now } from "@/lib/now";
-import { getNowCovers } from "@/lib/now-covers";
-import { getNowTrack } from "@/lib/now-track";
-import { resolveAlbumArtwork, resolveAlbumPreview } from "@/lib/vinyl-covers";
+import { getListeningTrack } from "@/lib/now-track";
 import {
-  assembleVinyl,
-  parseVinylCrate,
-  type VinylRecord,
-} from "@/lib/vinyl-data";
+  accumulateListening,
+  parseListeningHistory,
+  sameListeningTrack,
+} from "@/lib/listening-history";
+import type { VinylRecord } from "@/lib/vinyl-data";
 
 export type { VinylRecord } from "@/lib/vinyl-data";
 
-/** Disco en el plato (Ahora) + cajón editorial. Portadas en build, cacheadas. */
+/** Personal songs only. The former sample album crate is not listening history. */
 export async function getVinylRecords(): Promise<VinylRecord[]> {
-  const albums = parseVinylCrate(crate);
-  const [covers, track, artwork] = await Promise.all([
-    getNowCovers(),
-    getNowTrack(),
-    Promise.all(albums.map(resolveAlbumArtwork)),
-  ]);
-  const previews = await Promise.all(
-    albums.map((album, index) => resolveAlbumPreview(album, artwork[index])),
-  );
-
-  const nowPlaying: VinylRecord = {
-    id: "now",
-    title: now.listening.title,
-    artist: now.listening.artist,
-    coverUrl: now.listening.coverUrl ?? track?.coverUrl ?? covers.listening,
-    appleUrl: track?.trackUrl,
-    spotifyUrl: now.listening.spotifyUrl,
-    spotifyTrackUrl: now.listening.spotifyTrackUrl,
-    previewUrl: track?.previewUrl ?? null,
-    source: "now",
-  };
-
-  const crateRecords: VinylRecord[] = albums.map((album, index) => ({
-    id: album.id,
-    title: album.title,
-    artist: album.artist,
-    coverUrl: album.coverUrl ?? artwork[index]?.coverUrl ?? null,
-    spotifyUrl: album.spotifyUrl,
-    spotifyTrackUrl: album.spotifyTrackUrl,
-    appleUrl: artwork[index]?.appleUrl || undefined,
-    previewUrl: previews[index],
-    note: album.note,
-    source: "crate",
-  }));
-
-  return assembleVinyl(nowPlaying, crateRecords);
+  const songs = accumulateListening(
+    parseListeningHistory(history),
+    now.listening,
+  ).tracks;
+  const records: VinylRecord[] = [];
+  // Bound Apple concurrency as the permanent collection grows.
+  for (let offset = 0; offset < songs.length; offset += 4) {
+    const batch = await Promise.all(
+      songs.slice(offset, offset + 4).map(async (song, index) => {
+        const preview = await getListeningTrack(song);
+        const current = sameListeningTrack(song, now.listening);
+        return {
+          ...song,
+          id: current ? "now" : `song-${offset + index}`,
+          coverUrl: song.coverUrl ?? preview?.coverUrl ?? null,
+          appleUrl: song.appleUrl ?? preview?.trackUrl,
+          previewUrl: preview?.previewUrl ?? null,
+          source: current ? ("now" as const) : ("crate" as const),
+        };
+      }),
+    );
+    records.push(...batch);
+  }
+  return records
+    .reverse()
+    .sort((a, b) => Number(b.source === "now") - Number(a.source === "now"));
 }

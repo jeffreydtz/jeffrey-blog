@@ -10,6 +10,9 @@ export interface NowFormValues {
   listeningTitle: string;
   listeningArtist: string;
   listeningCover: string;
+  listeningApple: string;
+  listeningSpotify: string;
+  listeningSpotifyAlbum: string;
   readingTitle: string;
   readingAuthor: string;
   readingCover: string;
@@ -25,11 +28,23 @@ export function NowForm({ values }: { values: NowFormValues }) {
   const listeningTitle = useRef<HTMLInputElement>(null);
   const listeningArtist = useRef<HTMLInputElement>(null);
   const listeningCover = useRef<HTMLInputElement>(null);
+  const listeningApple = useRef<HTMLInputElement>(null);
+  const listeningSpotify = useRef<HTMLInputElement>(null);
+  const listeningSpotifyAlbum = useRef<HTMLInputElement>(null);
   const readingTitle = useRef<HTMLInputElement>(null);
   const readingAuthor = useRef<HTMLInputElement>(null);
   const readingCover = useRef<HTMLInputElement>(null);
 
+  function clearProviders() {
+    setRef(listeningApple, "");
+    setRef(listeningSpotify, "");
+    setRef(listeningSpotifyAlbum, "");
+  }
+
   function fillListening(hit: SongHit) {
+    clearProviders();
+    if (/^\d+$/.test(hit.id))
+      setRef(listeningApple, `https://music.apple.com/us/song/${hit.id}`);
     setRef(listeningTitle, hit.title);
     setRef(listeningArtist, hit.artist);
     setRef(listeningCover, hit.artwork);
@@ -54,6 +69,7 @@ export function NowForm({ values }: { values: NowFormValues }) {
             <input
               ref={listeningTitle}
               name="listeningTitle"
+              onChange={clearProviders}
               defaultValue={values.listeningTitle}
               required
               className={inputClass}
@@ -63,6 +79,7 @@ export function NowForm({ values }: { values: NowFormValues }) {
             <input
               ref={listeningArtist}
               name="listeningArtist"
+              onChange={clearProviders}
               defaultValue={values.listeningArtist}
               required
               className={inputClass}
@@ -76,6 +93,40 @@ export function NowForm({ values }: { values: NowFormValues }) {
               className={inputClass}
             />
           </Field>
+          <Field label="Apple Music (enlace de la canción, opcional)">
+            <input
+              ref={listeningApple}
+              name="listeningApple"
+              type="url"
+              defaultValue={values.listeningApple}
+              className={inputClass}
+              placeholder="https://music.apple.com/…"
+            />
+          </Field>
+          <Field label="Spotify (enlace de la canción, opcional)">
+            <input
+              ref={listeningSpotify}
+              name="listeningSpotify"
+              type="url"
+              defaultValue={values.listeningSpotify}
+              className={inputClass}
+              placeholder="https://open.spotify.com/track/…"
+            />
+          </Field>
+          <input
+            ref={listeningSpotifyAlbum}
+            name="listeningSpotifyAlbum"
+            type="hidden"
+            defaultValue={values.listeningSpotifyAlbum}
+          />
+          <p className="text-body-sm text-ink-secondary">
+            Al guardar, esta canción se suma al cajón de Vinilo. Las anteriores
+            quedan guardadas; volver a elegir una actualiza su ficha.
+          </p>
+          <p className="text-body-sm text-ink-secondary">
+            El buscador completa Apple Music. Pegá el enlace de una canción de
+            Spotify para habilitar su mini preview.
+          </p>
         </fieldset>
       </div>
 
