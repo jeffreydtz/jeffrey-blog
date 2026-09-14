@@ -232,6 +232,8 @@ interface NowListening {
   artist: string;
   /** Override manual de portada; sin él se busca en iTunes en build time. */
   coverUrl?: string;
+  spotifyUrl?: string;
+  spotifyTrackUrl?: string;
 }
 
 interface NowReading {
