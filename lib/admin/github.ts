@@ -121,6 +121,8 @@ async function ghFetch(url: string, init?: RequestInit): Promise<Response> {
     ...init,
     headers: { ...ghHeaders(), ...init?.headers },
     cache: "no-store",
+    signal: AbortSignal.timeout(8_000),
+    redirect: "error",
   });
   return res;
 }

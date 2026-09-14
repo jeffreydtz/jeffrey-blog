@@ -1,91 +1,9 @@
-// Node >=20; no additional package or API key.
+// Node >=20.18; no additional package or API key.
 import fs from "node:fs/promises";
 import config from "../content/data/goodreads-config.json" with { type: "json" };
-import {
-  parseGoodreadsRss,
-  selectLibraryBooks,
-} from "../lib/goodreads-rss.mjs";
+import { buildGoodreadsSnapshot } from "../lib/goodreads-sync.mjs";
 
-const { profileUrl: goodreadsProfileUrl, shelves: libraryShelves } = config;
-
-const userId = /\/user\/show\/(\d+)/.exec(goodreadsProfileUrl)?.[1];
-if (!userId) throw new Error("Invalid Goodreads profile URL");
-
-const HEADERS = {
-  accept: "application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8",
-  "user-agent":
-    "jeffrey-blog-library/1.0 (+https://jeffrey-blog-tau.vercel.app)",
-};
-
-const MAX_PAGES = 20;
-
-async function fetchShelf(/** @type {string} */ shelf) {
-  /** @type {import("../lib/library-data").LibraryBook[]} */
-  const books = [];
-  for (let page = 1; page <= MAX_PAGES; page++) {
-    const url = new URL(`https://www.goodreads.com/review/list_rss/${userId}`);
-    url.searchParams.set("shelf", shelf);
-    url.searchParams.set("page", String(page));
-    const response = await fetch(url, {
-      headers: HEADERS,
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!response.ok)
-      throw new Error(`Goodreads ${shelf} p${page}: HTTP ${response.status}`);
-    const pageBooks = parseGoodreadsRss(await response.text(), shelf, userId);
-    if (pageBooks.length === 0) break;
-    const before = books.length;
-    for (const book of pageBooks) {
-      if (!books.some((item) => item.id === book.id)) books.push(book);
-    }
-    if (books.length === before) break;
-  }
-  return books;
-}
-
-async function openLibraryCover(title, author) {
-  const endpoint = `https://openlibrary.org/search.json?title=${encodeURIComponent(title)}&author=${encodeURIComponent(author)}&limit=1`;
-  const response = await fetch(endpoint, {
-    headers: { accept: "application/json" },
-    signal: AbortSignal.timeout(10_000),
-  });
-  if (!response.ok) return undefined;
-  const body = await response.json();
-  const coverId = body.docs?.[0]?.cover_i;
-  if (!coverId || typeof coverId !== "number") return undefined;
-  return `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`;
-}
-
-async function fillMissingCovers(books) {
-  let filled = 0;
-  for (const book of books) {
-    if (book.coverUrl) continue;
-    try {
-      const coverUrl = await openLibraryCover(book.title, book.author);
-      if (coverUrl) {
-        book.coverUrl = coverUrl;
-        filled += 1;
-      }
-    } catch {
-      // Keep the snapshot even if Open Library is down.
-    }
-  }
-  if (filled) console.log(`Open Library: filled ${filled} missing covers.`);
-}
-
-const shelves = await Promise.all(libraryShelves.map(fetchShelf));
-const books = selectLibraryBooks(shelves);
-await fillMissingCovers(books);
-const snapshot = {
-  profileUrl: goodreadsProfileUrl,
-  verifiedAt: new Date().toISOString(),
-  books,
-  // Keep Leído unchanged. The footer uses the first entry in this RSS order.
-  // No Open Library fallback: a missing current-book cover stays missing.
-  currentlyReading: shelves
-    .flat()
-    .filter((book) => book.shelf === "currently-reading"),
-};
+const snapshot = await buildGoodreadsSnapshot(config);
 // Fetch/parse every configured shelf before changing the last valid snapshot.
 await fs.writeFile(
   new URL("../content/data/goodreads.json.tmp", import.meta.url),

@@ -164,8 +164,16 @@ sin resultado queda el texto.
 el primer libro en el orden del RSS, con su título, autor, enlace y su propia portada.
 Si no tiene portada queda el texto; si no hay lectura en curso se muestra ese estado
 y el enlace al perfil, nunca un libro manual ni uno ya leído. Los campos de libro de
-`/admin/now` se conservan como referencia y no afectan el footer. Actualizar Goodreads
-requiere ejecutar `npm run refresh:library`, revisar el snapshot y publicarlo por PR.
+`/admin/now` se conservan como referencia y no afectan el footer.
+
+Para actualizar desde la web: entrar a `/admin/now` y pulsar **Actualizar Goodreads**.
+El botón sólo aparece en el panel autenticado. Consulta los dos estantes, guarda un
+único snapshot en GitHub y solicita la publicación con el Deploy Hook ya configurado.
+El aviso «Publicación solicitada» significa que Vercel recibió el pedido; el sitio
+cambia cuando termina correctamente la compilación. Si el hook falla, las lecturas
+siguen guardadas y **Reintentar publicación** permite publicar sin consultar Goodreads
+ni crear otro commit. También se puede volver a `/admin` → **Publicar ahora**.
+La música y los campos manuales no se modifican al actualizar Goodreads.
 La sincronización no ocurre en cada visita.
 
 ## Vinilo
@@ -247,7 +255,9 @@ Cero en `user_rating`
 significa sin valoración. Un estante vacío no recibe libros inventados.
 
 **Snapshot local:** ni el build ni las visitas consultan Goodreads. La página siempre sirve
-los datos revisados y versionados. Para renovarlos explícitamente (Node 20.18+ o 22+):
+los datos versionados. La forma habitual de renovarlos es **Actualizar Goodreads**
+en `/admin/now`; no hace falta correr comandos locales. Como alternativa de mantenimiento
+sigue disponible el comando (Node 20.18+ o 22+):
 
 ```bash
 npm run refresh:library
@@ -255,10 +265,23 @@ npm run test:embeds
 git diff -- content/data/goodreads.json
 ```
 
-El comando consulta ambos feeds paginados, valida todos y recién entonces reemplaza el archivo.
-Si hay timeout, una página de login o XML inesperado, sale con error y conserva el respaldo.
-Revisar el diff, commitear y publicar por PR. Al cambiar de perfil ejecutar este comando;
-si falla, no se muestran los libros del perfil anterior.
+CLI y panel comparten `lib/goodreads-sync.mjs`: ambos feeds se validan antes de guardar.
+Si hay timeout, una página de login, XML inesperado o se excede la paginación, se conserva
+el respaldo. Sólo se consultan hosts fijos (Goodreads y, para tapas de Leído, Open Library),
+sin seguir redirects; máximo 20 páginas por estante, 2 MB por respuesta y 35 segundos
+compartidos de red. Las tapas opcionales tienen 8 segundos y hasta 4 consultas simultáneas.
+
+La web captura el SHA del snapshot antes de consultar Goodreads y lo usa al guardar:
+un cambio concurrente provoca un conflicto recuperable en lugar de pisar el archivo.
+El botón se desactiva mientras trabaja y hay un freno de 2 pedidos/minuto por instancia;
+no es un bloqueo distribuido. La acción requiere sesión válida antes de leer o escribir.
+GitHub tiene timeout de 8 segundos por llamada y el hook 5; `/admin/now` dispone de 60.
+Si el navegador pierde la respuesta tras guardar, recargar y usar **Publicar ahora**
+permite solicitar nuevamente la publicación del contenido que ya está en GitHub.
+No se confirma el estado final del deploy ni se ejecutan tareas programadas.
+
+Con CLI, revisar el diff, commitear y publicar por PR. Al cambiar de perfil renovar el
+snapshot desde el panel o el comando; si falla, no se muestran libros del perfil anterior.
 
 ## Canal de YouTube
 
