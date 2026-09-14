@@ -1,6 +1,6 @@
 {
   "profileUrl": "https://www.goodreads.com/user/show/128723960-jeffrey",
-  "verifiedAt": "2026-09-14T14:26:45.261Z",
+  "verifiedAt": "2026-09-14T14:58:01.348Z",
   "books": [
     {
       "id": "43517789",
@@ -862,5 +862,19 @@
       "description": "Alternate cover edition of ISBN 9781577314806. To make the journey into the Now we will need to leave our analytical mind and its false created self, the ego, behind. From the very first page of Eckhart Tolle's extraordinary book, we move rapidly into a significantly higher altitude where we breathe a lighter air. We become connected to the indestructible essence of our Being, “The eternal, ever present One Life beyond the myriad forms of life that are subject to birth and death.” Although the journey is challenging, Eckhart Tolle uses simple language and an easy question-and-answer format to guide us. A word-of-mouth phenomenon since its first publication, The Power of Now is one of those rare books with the power to create an experience in readers, one that can radically change their lives for the better."
     }
   ],
-  "currentlyReading": []
+  "currentlyReading": [
+    {
+      "id": "27776",
+      "title": "La caída",
+      "author": "Albert Camus",
+      "shelf": "currently-reading",
+      "url": "https://www.goodreads.com/book/show/27776.La_ca_da?utm_medium=api&utm_source=rss",
+      "sourceUrl": "https://www.goodreads.com/review/show/8945122145?utm_medium=api&utm_source=rss",
+      "coverUrl": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1456859800l/27776.jpg",
+      "averageRating": 4.03,
+      "publishedYear": 1956,
+      "pageCount": 128,
+      "description": "Publicada en 1956, un año antes de que se le concediera el Premio Nobel, La caída fue (tras El extranjero y La peste), la tercera y última novela de Camus, quien reflejó en ella la desesperación del hombre contemporáneo, condenado a vivir en un mundo dominado por el absurdo y forzado a descubrir, tras las ilusiones de la felicidad y la virtud, la dureza de una realidad hostil. La historia transcurre en Ámsterdam. Ahí el lector recibe la invitación de un antiguo abogado francés para que tome asiento junto a él y escuche el relato de su vida, que transcurre en París, dónde asiste con al decepcionante desarrollo de una sociedad que termina por conducirle al aislamiento psicológico."
+    }
+  ]
 }
