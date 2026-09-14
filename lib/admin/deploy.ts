@@ -20,7 +20,12 @@ export async function triggerDeploy(): Promise<{
     };
   }
   try {
-    const res = await fetch(url, { method: "POST", cache: "no-store" });
+    const res = await fetch(url, {
+      method: "POST",
+      cache: "no-store",
+      signal: AbortSignal.timeout(5_000),
+      redirect: "error",
+    });
     if (!res.ok) {
       return {
         triggered: false,

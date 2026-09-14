@@ -1,7 +1,11 @@
 import { requireAdmin } from "@/lib/admin/auth";
 import { githubUserMessage, repoFile } from "@/lib/admin/github";
 import { Notice } from "@/components/admin/Field";
+import { GoodreadsRefresh } from "@/components/admin/GoodreadsRefresh";
 import { NowForm } from "@/components/admin/NowForm";
+
+// Allow bounded RSS + GitHub + deploy requests in the server action.
+export const maxDuration = 60;
 
 /**
  * Widget "Ahora" — currently listening / currently reading del footer.
@@ -52,6 +56,7 @@ export default async function AdminNowPage({
         portada; los campos siguen editables a mano. Las portadas también se
         buscan solas en el build (iTunes / OpenLibrary) si la URL queda vacía.
       </p>
+      <GoodreadsRefresh />
       <NowForm
         values={{
           listeningTitle: extract(listening, "title"),

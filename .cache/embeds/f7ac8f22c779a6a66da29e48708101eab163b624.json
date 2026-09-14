@@ -1,0 +1,12 @@
+{
+  "key": "itunes-track:v1:Julieta Venegas — Andar Conmigo",
+  "fetchedAt": "2026-09-14T15:12:13.248Z",
+  "data": {
+    "title": "Andar Conmigo",
+    "artist": "Julieta Venegas",
+    "trackId": 251197279,
+    "trackUrl": "https://music.apple.com/us/album/andar-conmigo/251197275?i=251197279&uo=4",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
+    "previewUrl": "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/2b/b5/e6/2bb5e6a9-9220-77fe-3e5b-a4f1e9758efa/mzaf_13956117157476340570.plus.aac.p.m4a"
+  }
+}
