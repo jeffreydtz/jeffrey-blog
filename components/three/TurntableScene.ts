@@ -417,7 +417,9 @@ export function createTurntableScene(
       const { width, height } = host.getBoundingClientRect();
       if (!width || !height) return;
       camera.aspect = width / height;
-      camera.position.set(0.15, 2.55, 3.55);
+      // Preserve horizontal framing on phones so the tonearm remains visible.
+      const fit = Math.max(1, 1.9 / camera.aspect);
+      camera.position.set(0.15 * fit, 0.12 + 2.43 * fit, 3.55 * fit);
       camera.lookAt(0, 0.12, 0);
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);

@@ -14,7 +14,9 @@ export const maxDuration = 60;
  */
 
 function extract(block: string, field: string): string {
-  const match = block.match(new RegExp(`${field}:\\s*"((?:[^"\\\\]|\\\\.)*)"`));
+  const match = block.match(
+    new RegExp(`"?${field}"?:\\s*"((?:[^"\\\\]|\\\\.)*)"`),
+  );
   try {
     return match ? (JSON.parse(`"${match[1]}"`) as string) : "";
   } catch {
@@ -23,7 +25,9 @@ function extract(block: string, field: string): string {
 }
 
 function section(text: string, name: string): string {
-  const match = text.match(new RegExp(`${name}:\\s*\\{([\\s\\S]*?)\\}`));
+  const match = text.match(
+    new RegExp(`"?${name}"?:\\s*\\{([\\s\\S]*?)^\\s*\\}`, "m"),
+  );
   return match ? match[1] : "";
 }
 
@@ -62,6 +66,9 @@ export default async function AdminNowPage({
           listeningTitle: extract(listening, "title"),
           listeningArtist: extract(listening, "artist"),
           listeningCover: extract(listening, "coverUrl"),
+          listeningApple: extract(listening, "appleUrl"),
+          listeningSpotify: extract(listening, "spotifyTrackUrl"),
+          listeningSpotifyAlbum: extract(listening, "spotifyUrl"),
           readingTitle: extract(reading, "title"),
           readingAuthor: extract(reading, "author"),
           readingCover: extract(reading, "coverUrl"),

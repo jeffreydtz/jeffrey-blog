@@ -16,6 +16,10 @@ import {
   githubUserMessage,
   repoFile,
 } from "@/lib/admin/github";
+import { commitNowWithHistory } from "@/lib/admin/listening-history";
+import { serializeNow } from "@/lib/admin/now-data";
+import { parseListeningTrack } from "@/lib/listening-history";
+import type { Now } from "@/lib/now-types";
 import { triggerDeploy } from "@/lib/admin/deploy";
 import { rateLimit } from "@/lib/rate-limit";
 import type { PostFrontmatter } from "@/types/post";
@@ -212,61 +216,35 @@ export async function saveNowAction(formData: FormData): Promise<void> {
   if (!listeningTitle || !listeningArtist || !readingTitle || !readingAuthor)
     backToNow("Título y artista/autor son obligatorios.");
 
-  const cover = (v: string) =>
-    v ? `\n    coverUrl: ${JSON.stringify(v)},` : "";
-  const text = `/**
- * Widget "Ahora" — qué estoy escuchando y leyendo en este momento.
- *
- * Flujo editorial: se edita desde /admin (o a mano); cada guardado es un
- * commit y el próximo deploy lo refleja en el footer. Sin scrobbling.
- *
- * Las portadas se resuelven solas en build time (lib/now-covers.ts: iTunes
- * para el disco, OpenLibrary para el libro) y quedan cacheadas en
- * \`.cache/embeds/\`. \`coverUrl\` es un override manual OPCIONAL: si está,
- * gana sobre la búsqueda automática; si la búsqueda no encuentra nada,
- * el widget queda solo-texto, como siempre.
- */
-
-interface NowListening {
-  title: string;
-  artist: string;
-  /** Override manual de portada; sin él se busca en iTunes en build time. */
-  coverUrl?: string;
-  spotifyUrl?: string;
-  spotifyTrackUrl?: string;
-}
-
-interface NowReading {
-  title: string;
-  author: string;
-  /** Override manual de portada; sin él se busca en OpenLibrary en build time. */
-  coverUrl?: string;
-}
-
-export interface Now {
-  listening: NowListening;
-  reading: NowReading;
-}
-
-export const now: Now = {
-  listening: {
-    title: ${JSON.stringify(listeningTitle)},
-    artist: ${JSON.stringify(listeningArtist)},${cover(listeningCover)}
-  },
-  reading: {
-    title: ${JSON.stringify(readingTitle)},
-    author: ${JSON.stringify(readingAuthor)},${cover(readingCover)}
-  },
-};
-`;
-
+  let nextNow: Now;
   try {
-    const existing = await repoFile("lib/now.ts");
-    await commitFile(
-      "lib/now.ts",
-      text,
+    nextNow = {
+      listening: parseListeningTrack({
+        title: listeningTitle,
+        artist: listeningArtist,
+        coverUrl: listeningCover,
+        appleUrl: get("listeningApple"),
+        spotifyTrackUrl: get("listeningSpotify"),
+        spotifyUrl: get("listeningSpotifyAlbum"),
+      }),
+      reading: {
+        title: readingTitle,
+        author: readingAuthor,
+        ...(readingCover ? { coverUrl: readingCover } : {}),
+      },
+    };
+  } catch (error) {
+    backToNow(
+      error instanceof Error
+        ? error.message
+        : "Los enlaces de la canción no son válidos.",
+    );
+  }
+  try {
+    await commitNowWithHistory(
+      nextNow!,
+      serializeNow(nextNow!),
       `chore(now): ${readingTitle} + ${listeningTitle}`,
-      existing?.sha,
     );
   } catch (error) {
     backToNow(githubUserMessage(error));

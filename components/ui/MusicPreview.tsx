@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ui } from "@/lib/ui";
+import { claimMusicPlayback, MUSIC_PLAYBACK_EVENT } from "@/lib/music-playback";
 
 type Props = {
   title: string;
@@ -18,6 +19,7 @@ export function MusicPreview({
   trackUrl,
   previewUrl,
 }: Props) {
+  const owner = useId();
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);
   const generation = useRef(0);
@@ -29,14 +31,23 @@ export function MusicPreview({
     setReady(true);
     const audio = audioRef.current;
     if (audio && previewUrl) audio.src = previewUrl;
+    function stopOther(event: Event) {
+      if ((event as CustomEvent<string>).detail === owner) return;
+      generation.current += 1;
+      requested.current = false;
+      audio?.pause();
+      setPlaying(false);
+    }
+    window.addEventListener(MUSIC_PLAYBACK_EVENT, stopOther);
     return () => {
+      window.removeEventListener(MUSIC_PLAYBACK_EVENT, stopOther);
       generation.current += 1;
       requested.current = false;
       audio?.pause();
       audio?.removeAttribute("src");
       audio?.load();
     };
-  }, [previewUrl]);
+  }, [previewUrl, owner]);
 
   async function toggle() {
     const audio = audioRef.current;
@@ -48,6 +59,7 @@ export function MusicPreview({
       return;
     }
     setFailed(false);
+    claimMusicPlayback(owner);
     try {
       if (audio.ended) audio.currentTime = 0;
       await audio.play();

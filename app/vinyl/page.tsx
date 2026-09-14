@@ -18,7 +18,7 @@ export default async function VinylPage() {
   const records = await getVinylRecords();
 
   return (
-    <div className="mx-auto w-full max-w-page px-lg">
+    <div className="mx-auto w-full max-w-page px-xs sm:px-lg">
       <div className="py-2xl sm:py-3xl sm:pl-[14%]">
         <h1 className="font-display text-display-lg text-ink">
           {ui.vinyl.title}

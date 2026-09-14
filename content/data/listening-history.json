@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "tracks": [
+    {
+      "title": "I Wish It Would Rain Down",
+      "artist": "Phil Collins",
+      "spotifyTrackUrl": "https://open.spotify.com/track/5s7iwYrSPspe5DfMJoscM8"
+    },
+    {
+      "title": "Andar Conmigo",
+      "artist": "Julieta Venegas",
+      "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
+      "spotifyTrackUrl": "https://open.spotify.com/track/5LymLsCJpJGn2st1P48GQm"
+    }
+  ]
+}

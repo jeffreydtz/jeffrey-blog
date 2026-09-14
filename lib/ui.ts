@@ -27,8 +27,7 @@ export const ui = {
       "Cómo está hecho este sitio: tipografía, materiales y las reglas de la casa.",
     cabinetDescription:
       "Curaduría a mano: lo que estoy mirando y lo que recomiendo leer.",
-    vinylDescription:
-      "Un tocadiscos quieto: el disco de ahora y un cajón de álbumes enteros.",
+    vinylDescription: "Un tocadiscos y el cajón de canciones que voy sumando.",
   },
   notFound: {
     title: "Esta página no está.",
@@ -110,12 +109,13 @@ export const ui = {
   vinyl: {
     title: "Vinilo",
     intro:
-      "Un tocadiscos en el estudio: el disco que suena ahora — el mismo del pie de página — y un cajón corto de álbumes enteros. Sin shuffle, sin cola automática.",
+      "Las canciones que voy escuchando quedan en este cajón. Elegí una, ponela en el plato y escuchá un pequeño fragmento.",
     platter: "En el plato",
-    sides: "caras",
+    sides: "discos",
     nowPlaying: "Ahora",
     crate: "Cajón",
-    index: "Índice",
+    index: "El cajón",
+    collectionHint: "Cada canción queda acá",
     select: "Poner en el plato",
     selected: "Disco en el plato",
     instructions:
@@ -124,7 +124,15 @@ export const ui = {
     playPreview: "Escuchar preview",
     pausePreview: "Pausar preview",
     openSpotify: "Abrir en Spotify",
-    openApple: "Abrir en Apple",
+    openApple: "Abrir en Apple Music",
+    applePreview: "Preview Apple Music",
+    spotifyPreview: "Preview Spotify",
+    closeSpotify: "Cerrar Spotify",
+    spotifyLoading: "Cargando Spotify…",
+    spotifyUnavailable:
+      "Spotify no respondió. Podés abrir la canción en su sitio.",
+    findSpotify: "Buscar en Spotify",
+    appleCredit: "Fragmento cortesía de iTunes.",
     empty: "No hay discos en el cajón todavía.",
   },
   reactions: {

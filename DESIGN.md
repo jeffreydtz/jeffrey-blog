@@ -248,3 +248,10 @@ reduced-motion. El brazo se arrastra al disco para el preview (toque en
 móvil; el botón HTML es el control accesible). El índice HTML es el equivalente
 accesible; sin JS se ven todas las fichas. TODO posterior: swap de plinto/brazo
 a GLB (Astra), conservando el disco procedural.
+
+El índice de Vinilo es un cajón acumulativo de fundas iguales; la canción actual
+comparte ficha con las anteriores. Fondo `paper-raised`, borde `hairline`, sello
+numérico y portada `--vinyl-cover-size` (5rem); grid adaptable con mínimo
+`--vinyl-card-min` (18rem). Spotify se carga a pedido, como bloque sin padding ni
+recorte, con altura nativa `--vinyl-preview-height` (152px). Los controles de ambos
+proveedores tienen `control-target`; sólo un reproductor activo entre cajón y footer.

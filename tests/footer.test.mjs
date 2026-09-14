@@ -36,6 +36,7 @@ async function load(relative, mocks = {}) {
 const { ui } = await load("../lib/ui.ts");
 const music = await load("../components/ui/MusicPreview.tsx", {
   "@/lib/ui": { ui },
+  "@/lib/music-playback": await load("../lib/music-playback.ts"),
 });
 const profileUrl = "https://www.goodreads.com/user/show/123-test";
 const manual = {
