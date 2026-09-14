@@ -1,16 +1,13 @@
 import { MusicPreview } from "@/components/ui/MusicPreview";
 import { now } from "@/lib/now";
-import { getNowCovers } from "@/lib/now-covers";
+import { getLibrary } from "@/lib/goodreads";
 import { getNowTrack } from "@/lib/now-track";
 import { ui } from "@/lib/ui";
 
 /**
- * Widget "Ahora" (T17, FR-005) — qué estoy escuchando y leyendo, editado a
- * mano en lib/now.ts. Server component async: las portadas se resuelven en
- * build (lib/now-covers.ts, cache commiteado); sin portada el bloque queda
- * solo-texto como siempre. Mismo tratamiento tipográfico que el resto de la
- * metadata del footer (.label + body-sm ink-secondary / ink-muted), donde
- * vive su único mount.
+ * Canción editorial y primera lectura del RSS, en el orden del snapshot.
+ * Goodreads se actualiza explícitamente; nunca se consulta durante la visita.
+ * Título, autor, enlace y portada proceden del mismo libro, sin override manual.
  */
 
 function Cover({ src }: { src: string | null }) {
@@ -22,32 +19,46 @@ function Cover({ src }: { src: string | null }) {
       alt=""
       loading="lazy"
       decoding="async"
-      className="size-xl shrink-0 rounded-subtle border border-hairline object-cover"
+      className="max-h-full max-w-full rounded-subtle border border-hairline object-contain"
     />
   );
 }
 
 export async function NowWidget() {
-  const [covers, track] = await Promise.all([getNowCovers(), getNowTrack()]);
+  const library = getLibrary();
+  const reading = library.currentlyReading?.[0];
+  const track = await getNowTrack();
 
   return (
-    <div className="flex min-w-0 flex-col gap-lg sm:flex-row sm:flex-wrap sm:gap-xl">
+    <div className="grid min-w-0 grid-cols-1 gap-lg md:grid-cols-2 md:gap-xl">
       <MusicPreview
         key={`${now.listening.title}-${now.listening.artist}`}
         title={now.listening.title}
         artist={now.listening.artist}
-        coverUrl={now.listening.coverUrl ?? track?.coverUrl ?? covers.listening}
+        coverUrl={now.listening.coverUrl ?? track?.coverUrl ?? null}
         trackUrl={track?.trackUrl ?? null}
         previewUrl={track?.previewUrl ?? null}
       />
-      <div className="flex min-w-0 items-center gap-sm">
-        <Cover src={covers.reading} />
+      <div className="flex min-w-0 items-start gap-sm">
+        <div
+          className="flex size-[var(--vinyl-size)] shrink-0 items-center justify-center"
+          aria-hidden="true"
+        >
+          <Cover src={reading?.coverUrl ?? null} />
+        </div>
         <div className="min-w-0">
           <p className="label text-ink-secondary">{ui.now.reading}</p>
-          <p className="mt-xs text-body-sm text-ink-secondary">
-            {now.reading.title}
-            <span className="text-ink-secondary"> — {now.reading.author}</span>
+          <p className="mt-xs break-words text-body-sm text-ink-secondary">
+            {reading
+              ? `${reading.title} — ${reading.author}`
+              : ui.now.noReading}
           </p>
+          <a
+            href={reading?.url ?? library.profileUrl}
+            className="link-underline inline-flex min-h-[var(--control-target)] items-center text-body-sm text-ink-secondary"
+          >
+            {ui.library.bookLink}
+          </a>
         </div>
       </div>
     </div>

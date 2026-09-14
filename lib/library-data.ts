@@ -22,6 +22,8 @@ export interface LibrarySnapshot {
   profileUrl: string;
   verifiedAt: string;
   books: LibraryBook[];
+  /** Separate from the read shelf; ordered as returned by the last RSS refresh. */
+  currentlyReading?: LibraryBook[];
 }
 
 import config from "@/content/data/goodreads-config.json";

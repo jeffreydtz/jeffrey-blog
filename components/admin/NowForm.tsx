@@ -80,6 +80,11 @@ export function NowForm({ values }: { values: NowFormValues }) {
       </div>
 
       <div className="flex flex-col gap-md">
+        <p className="text-body-sm text-ink-secondary">
+          El footer muestra la lectura en curso de Goodreads. Estos campos
+          manuales se conservan como referencia y no cambian el libro del
+          footer.
+        </p>
         <NowSearch kind="book" label="Buscar libro…" onPick={fillReading} />
         <fieldset className="flex flex-col gap-md">
           <legend className="label mb-xs">Leyendo</legend>

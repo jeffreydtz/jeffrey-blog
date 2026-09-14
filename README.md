@@ -155,7 +155,18 @@ El panel está fuera de robots/sitemap/búsqueda; el login tiene rate limit por 
 
 ## Widget "Ahora"
 
-Qué estoy escuchando y leyendo, en el footer. Desde `/admin/now` se busca una canción (iTunes Search) o un libro (OpenLibrary) y se rellenan título, artista/autor y portada (artwork 300×300 / cover `-M`). Los campos siguen editables a mano; Guardar y publicar commitea `lib/now.ts`. Sin scrobbling ni Spotify OAuth — es parte del encanto. Si la URL de portada queda vacía, el build la busca solo (`lib/now-covers.ts`) y la cachea en `.cache/embeds/`; si no hay resultado, el widget queda solo-texto. El mismo `listening` es el disco que arranca en el plato de `/vinyl`.
+La canción del footer se edita desde `/admin/now` (búsqueda iTunes o campos manuales)
+y se guarda en `lib/now.ts`. El mismo `listening` es el disco inicial de `/vinyl`.
+La portada editorial gana sobre la metadata de la coincidencia exacta de iTunes;
+sin resultado queda el texto.
+
+**Leyendo** usa exclusivamente `currentlyReading` del snapshot de Goodreads:
+el primer libro en el orden del RSS, con su título, autor, enlace y su propia portada.
+Si no tiene portada queda el texto; si no hay lectura en curso se muestra ese estado
+y el enlace al perfil, nunca un libro manual ni uno ya leído. Los campos de libro de
+`/admin/now` se conservan como referencia y no afectan el footer. Actualizar Goodreads
+requiere ejecutar `npm run refresh:library`, revisar el snapshot y publicarlo por PR.
+La sincronización no ocurre en cada visita.
 
 ## Vinilo
 
@@ -225,10 +236,14 @@ fija. Si una tapa falta o falla, hay una placa tipográfica — nunca un ladrill
 
 La fuente es el **RSS público del propio perfil de Goodreads**, sin login ni API key.
 La configuración vive en `content/data/goodreads-config.json`: `profileUrl` y
-`shelfUrl` (estante Leído). Solo se consulta `read`: no entra `to-read` ni
-`currently-reading`. El snapshot revisable está en `content/data/goodreads.json`.
-Cada libro guarda tapa (`book_large_image_url`, o Open Library si falta),
-`user_rating`, `average_rating`, año, comentario y URL. Cero en `user_rating`
+`shelfUrl` (estante Leído). Se consultan `read` y `currently-reading`. El snapshot
+revisable está en `content/data/goodreads.json`: `books` conserva exclusivamente Leído
+para el gabinete; `currentlyReading` guarda la lectura en curso para el footer, sin
+mezclar ambos estantes ni incluir `to-read`.
+Cada libro guarda `user_rating`, `average_rating`, año, comentario y URL.
+Leído usa la tapa del RSS u Open Library si falta; la lectura en curso usa
+exclusivamente la tapa del RSS y queda como texto cuando no hay portada.
+Cero en `user_rating`
 significa sin valoración. Un estante vacío no recibe libros inventados.
 
 **Snapshot local:** ni el build ni las visitas consultan Goodreads. La página siempre sirve
@@ -240,7 +255,7 @@ npm run test:embeds
 git diff -- content/data/goodreads.json
 ```
 
-El comando consulta el feed `read` (paginado), valida y recién entonces reemplaza el archivo.
+El comando consulta ambos feeds paginados, valida todos y recién entonces reemplaza el archivo.
 Si hay timeout, una página de login o XML inesperado, sale con error y conserva el respaldo.
 Revisar el diff, commitear y publicar por PR. Al cambiar de perfil ejecutar este comando;
 si falla, no se muestran los libros del perfil anterior.

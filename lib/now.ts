@@ -1,5 +1,7 @@
 /**
- * Widget "Ahora" — qué estoy escuchando y leyendo en este momento.
+ * Canción editorial de "Ahora" y referencia manual de lectura.
+ * El libro del footer se obtiene exclusivamente del snapshot de Goodreads;
+ * `reading` se conserva para el formulario administrativo, sin prioridad visual.
  *
  * Flujo editorial: esto se actualiza A MANO. Editá los valores, commiteá y
  * pusheá; el próximo deploy lo refleja en el footer. Sin APIs de scrobbling:

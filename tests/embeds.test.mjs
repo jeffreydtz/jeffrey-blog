@@ -51,6 +51,16 @@ const parse = (xml) => parseGoodreadsRss(xml, "read", "123");
 
 test("Goodreads accepts a genuinely empty public shelf", () =>
   assert.deepEqual(parse(feed()), []));
+test("Goodreads validates the currently-reading feed independently from Leído", () => {
+  const current = (xml) => parseGoodreadsRss(xml, "currently-reading", "123");
+  assert.deepEqual(current(feed("", "currently-reading")), []);
+  assert.equal(
+    current(feed(item(), "currently-reading"))[0].shelf,
+    "currently-reading",
+  );
+  assert.throws(() => current(feed(item(), "read")));
+  assert.throws(() => current(feed(item(), "currently-reading", "999")));
+});
 test("Goodreads keeps the member rating, decoded text, source and requested shelf", () => {
   const [book] = parse(feed(item()));
   assert.equal(book.rating, 4);
@@ -163,6 +173,12 @@ test("Committed snapshot is the full read shelf, never to-read", async () => {
     await fs.readFile(
       new URL("../content/data/goodreads.json", import.meta.url),
       "utf8",
+    ),
+  );
+  assert.ok(Array.isArray(snapshot.currentlyReading));
+  assert.ok(
+    snapshot.currentlyReading.every(
+      (book) => book.shelf === "currently-reading",
     ),
   );
   assert.ok(snapshot.books.length > 7);

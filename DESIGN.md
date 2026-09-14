@@ -167,6 +167,10 @@ ruido. El lujo está en lo que falta.
 - Escala de espaciado 8px (`spacing.*`). El aire entre bloques es generoso:
   secciones separadas por `2xl`/`3xl`, no por cajas.
 - Chrome (header/footer) a `ui-max`, contenido de lectura a `prose`.
+- Footer: composición centrada a `prose`, música y lectura en dos columnas iguales
+  desde tablet; una columna en móvil. Medios con el mismo espacio `vinyl-size`,
+  rótulos alineados arriba y copyright centrado debajo de un divisor hairline.
+  Una portada de libro mantiene su proporción, sin recorte cuadrado.
 
 ## Interacción
 

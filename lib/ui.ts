@@ -63,7 +63,7 @@ export const ui = {
     reading: "Leyendo",
     playPreview: "Reproducir fragmento autorizado",
     pausePreview: "Pausar fragmento",
-    preview: "Fragmento oficial · 30 segundos",
+    noReading: "Sin lectura en curso en Goodreads.",
     previewError:
       "No se pudo reproducir el fragmento. Podés abrir la canción en su sitio oficial.",
     openTrack: "Abrir canción",
@@ -123,7 +123,6 @@ export const ui = {
     fallback: "El tocadiscos también se recorre en esta lista.",
     playPreview: "Escuchar preview",
     pausePreview: "Pausar preview",
-    preview: "Fragmento oficial · 30 segundos",
     openSpotify: "Abrir en Spotify",
     openApple: "Abrir en Apple",
     empty: "No hay discos en el cajón todavía.",

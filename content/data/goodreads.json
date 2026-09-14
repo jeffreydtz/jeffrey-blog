@@ -1,6 +1,6 @@
 {
   "profileUrl": "https://www.goodreads.com/user/show/128723960-jeffrey",
-  "verifiedAt": "2026-09-10T16:55:58.297Z",
+  "verifiedAt": "2026-09-14T14:26:45.261Z",
   "books": [
     {
       "id": "43517789",
@@ -147,7 +147,7 @@
       "rating": 3,
       "comment": "Gran libro excelentemente narrado y te mantiene alerta a que va a pasar. una historia de mi zona geográfica completamente desconocida :)",
       "coverUrl": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1731955912l/221374096._SY475_.jpg",
-      "averageRating": 4.05,
+      "averageRating": 4.04,
       "publishedYear": 2023,
       "pageCount": 403,
       "description": "El 28 de enero de 1742, treinta hombres desnutridos, apenas con vida pero con una fascinante historia que contar, alcanzaron las costas de Brasil, donde fueron acogidos con grandes fiestas. Eran supervivientes del HMS Wager, un barco de la Marina Real británica que, en la guerra imperial contra España, acabó naufragando en una isla desierta próxima a la Patagonia. Seis meses más tarde, otro barco en condiciones aún peores llegó a las costas de Chile. En él solo había tres náufragos, y contaban un relato muy distinto. Al parecer, los marineros de Brasil no eran héroes, sino amotinados. Ante las múltiples acusaciones de traición y asesinato por parte de ambas facciones, se convocó un consejo de guerra en tierras británicas. El juicio fue uno de los más sonados de la época y tuvo una inusitada repercusión en los debates morales del inicio de la Ilustración. Los náufragos del Wager es un true crime y una absorbente historia de supervivencia, fruto de una exhaustiva investigación periodística pero que se lee como una novela de Conrad. Grann nos sobrecoge con su capacidad para contar una historia que tuvo lugar hace más de doscientos años: recupera el eterno debate entre la maldad y la bondad en la naturaleza humana y los pone sobre la mesa de nuestro convulso presente."
@@ -427,7 +427,7 @@
       "sourceUrl": "https://www.goodreads.com/review/show/4105344501?utm_medium=api&utm_source=rss",
       "rating": 3,
       "coverUrl": "https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1469456922l/9828677.jpg",
-      "averageRating": 3.95,
+      "averageRating": 3.94,
       "publishedYear": 1995,
       "pageCount": 397,
       "description": "La inteligencia emocional constituye un verdadero fenomeno editorial que no solamente revoluciono el concepto de inteligencia, sino que agrego una nueva expresion a nuestro vocabulario cotidiano y cambio el modo en que percibimos la excelencia personal. Por que no siempre el alumno mas inteligente termina siendo el adulto que mayor exito tiene en el trabajo? Por que algunos son mas capaces que otros de enfrentar contratiempos, superar obstaculos y ver las dificultades bajo una optica distinta? Un nuevo concepto viene a darnos la respuesta a estos interrogantes. Es la inteligencia emocional la que nos permite tomar conciencia de nuestras emociones, comprender los sentimientos de los demas, tolerar las presiones y frustraciones que soportamos en el trabajo, incrementar nuestra capacidad de empatia y nuestras habilidades sociales y aumentar nuestras posibilidades de desarrollo social. / Everyone knows that the high IQ is no of success, happiness, or virtue, but until Emotional I"
@@ -861,5 +861,6 @@
       "pageCount": 229,
       "description": "Alternate cover edition of ISBN 9781577314806. To make the journey into the Now we will need to leave our analytical mind and its false created self, the ego, behind. From the very first page of Eckhart Tolle's extraordinary book, we move rapidly into a significantly higher altitude where we breathe a lighter air. We become connected to the indestructible essence of our Being, “The eternal, ever present One Life beyond the myriad forms of life that are subject to birth and death.” Although the journey is challenging, Eckhart Tolle uses simple language and an easy question-and-answer format to guide us. A word-of-mouth phenomenon since its first publication, The Power of Now is one of those rare books with the power to create an experience in readers, one that can radically change their lives for the better."
     }
-  ]
+  ],
+  "currentlyReading": []
 }
