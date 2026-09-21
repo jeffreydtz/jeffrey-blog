@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 
 /**
  * Reacciones (T16, FR-005) — bloque minimal al fin del post: prompt en .label,
@@ -28,6 +28,7 @@ function storageKey(slug: string): string {
 }
 
 export function Reactions({ slug }: { slug: string }) {
+  const { ui } = useI18n();
   const [state, setState] = useState<State>({ phase: "pending" });
   const [reacted, setReacted] = useState(false);
   const [busy, setBusy] = useState(false);

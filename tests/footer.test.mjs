@@ -35,7 +35,7 @@ async function load(relative, mocks = {}) {
 
 const { ui } = await load("../lib/ui.ts");
 const music = await load("../components/ui/MusicPreview.tsx", {
-  "@/lib/ui": { ui },
+  "@/lib/i18n/client": { useI18n: () => ({ locale: "es", ui }) },
   "@/lib/music-playback": await load("../lib/music-playback.ts"),
 });
 const profileUrl = "https://www.goodreads.com/user/show/123-test";
@@ -64,7 +64,7 @@ const book = {
 async function render(currentlyReading, selectedTrack = track) {
   const { NowWidget } = await load("../components/ui/NowWidget.tsx", {
     "@/components/ui/MusicPreview": music,
-    "@/lib/ui": { ui },
+    "@/lib/i18n/server": { getI18n: async () => ({ locale: "es", ui }) },
     "@/lib/now": { now: manual },
     "@/lib/goodreads": {
       getLibrary: () => ({ profileUrl, books: [], currentlyReading }),

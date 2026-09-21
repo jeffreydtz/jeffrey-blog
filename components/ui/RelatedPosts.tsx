@@ -1,5 +1,6 @@
 import { PostLink } from "@/components/ui/PostLink";
-import { formatDate, ui } from "@/lib/ui";
+import { formatDate } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 import type { Post } from "@/types/post";
 
 /**
@@ -7,7 +8,8 @@ import type { Post } from "@/types/post";
  * Sección entera desaparece si no hay ninguno: nada de secciones vacías.
  * Título + fecha, tipografía sola — sin cards.
  */
-export function RelatedPosts({ posts }: { posts: Post[] }) {
+export async function RelatedPosts({ posts }: { posts: Post[] }) {
+  const { locale, ui } = await getI18n();
   if (posts.length === 0) return null;
 
   return (
@@ -27,7 +29,7 @@ export function RelatedPosts({ posts }: { posts: Post[] }) {
               {post.title}
             </PostLink>
             <time className="label" dateTime={post.published_at}>
-              {formatDate(post.published_at)}
+              {formatDate(post.published_at, locale)}
             </time>
           </li>
         ))}

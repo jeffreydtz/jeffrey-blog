@@ -1,5 +1,5 @@
 import { EmbedFrame } from "@/components/mdx/EmbedFrame";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 const KINDS = [
   "track",
@@ -19,7 +19,7 @@ type SpotifyKind = (typeof KINDS)[number];
  * Player liviano de Spotify: iframe directo con loading="lazy" (sin facade;
  * no hay miniatura pública estable y el peso es menor que el de video).
  */
-export function Spotify({
+export async function Spotify({
   id,
   kind,
   url,
@@ -32,6 +32,7 @@ export function Spotify({
   compact?: boolean;
   title?: string;
 }) {
+  const { ui } = await getI18n();
   let resolvedId = id;
   let resolvedKind = kind;
 

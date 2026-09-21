@@ -2,10 +2,12 @@ import type { PostLang } from "@/types/post";
 
 /**
  * TODOS los strings de UI del sitio viven acá (spec: decisión "bilingüe").
- * Los posts declaran su propio idioma; el chrome del sitio es español por defecto.
- * Ningún componente hardcodea texto de interfaz.
+ * Diccionario español; lib/i18n/en.ts mantiene las mismas claves en inglés.
+ * SSR y clientes eligen el diccionario a partir de la URL pública.
  */
 export const ui = {
+  translationUnavailable:
+    "Todavía no hay una traducción actualizada. Esta es la versión original en inglés.",
   siteTitle: "Jeffrey's blog",
   siteDescription:
     "Ensayos personales sobre atención, oficio y tecnología. Papel, tinta y espacio en blanco.",
@@ -178,13 +180,7 @@ const LOCALE_BY_LANG: Record<PostLang, string> = {
   en: "en-US",
 };
 
-/**
- * Formatea una fecha ISO (YYYY-MM-DD).
- * El chrome del sitio es español: listados, archivo y metadata de post usan
- * el default (`es`) para que el índice no mezcle "May 30, 2026" con
- * "18 de enero de 2026". Pasá `lang` del post solo cuando la fecha acompaña
- * contenido en ese idioma (p. ej. la tarjeta OG de un ensayo en inglés).
- */
+/** Formatea fechas editoriales en UTC y el idioma de la vista (ES por defecto). */
 export function formatDate(iso: string, lang: PostLang = "es"): string {
   return new Intl.DateTimeFormat(LOCALE_BY_LANG[lang], {
     day: "numeric",

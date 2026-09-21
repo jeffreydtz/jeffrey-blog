@@ -1,5 +1,5 @@
 import { fetchTweet } from "@/lib/oembed";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /**
  * Uso en MDX: `<Tweet id="20" />` — T10.
@@ -9,6 +9,7 @@ import { ui } from "@/lib/ui";
  * → fallback: link estilado "Ver en X".
  */
 export async function Tweet({ id }: { id?: string }) {
+  const { ui } = await getI18n();
   if (!id || !/^\d{1,25}$/.test(id)) {
     throw new Error(
       `[mdx] <Tweet>: prop "id" requerida — el id numérico del estado, p. ej. <Tweet id="20" />. Recibido: ${JSON.stringify(id)}`,

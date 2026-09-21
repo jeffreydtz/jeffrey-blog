@@ -5,6 +5,11 @@ const nextConfig: NextConfig = {
      de filas, T16): garantizar que el file trace del handler serverless
      incluya los .mdx — el resto del sitio los consume solo en build. */
   outputFileTracingIncludes: {
+    "/*": [
+      "./content/posts/**/*",
+      "./content/pages/**/*",
+      "./content/translations/**/*",
+    ],
     "/api/reactions": ["./content/posts/**/*"],
   },
 };

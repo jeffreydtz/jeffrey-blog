@@ -2,7 +2,7 @@ import { MusicPreview } from "@/components/ui/MusicPreview";
 import { now } from "@/lib/now";
 import { getLibrary } from "@/lib/goodreads";
 import { getNowTrack } from "@/lib/now-track";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /**
  * Canción editorial y primera lectura del RSS, en el orden del snapshot.
@@ -25,6 +25,7 @@ function Cover({ src }: { src: string | null }) {
 }
 
 export async function NowWidget() {
+  const { ui } = await getI18n();
   const library = getLibrary();
   const reading = library.currentlyReading?.[0];
   const track = await getNowTrack();

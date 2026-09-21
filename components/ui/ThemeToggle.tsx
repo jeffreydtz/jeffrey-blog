@@ -1,6 +1,6 @@
 "use client";
 
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 
 /**
  * Alterna la clase "dark" en <html> y persiste en localStorage.
@@ -8,6 +8,7 @@ import { ui } from "@/lib/ui";
  * evitar mismatch de hidratación: el estado vive en el DOM, no en React.
  */
 export function ThemeToggle() {
+  const { ui } = useI18n();
   function toggleTheme() {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);

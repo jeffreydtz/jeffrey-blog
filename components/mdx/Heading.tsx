@@ -1,5 +1,5 @@
 import { isValidElement, type ReactElement, type ReactNode } from "react";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /**
  * Overrides de h2/h3 — T11: id slugificado (hecho a mano, sin rehype-slug)
@@ -28,7 +28,7 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
-function Heading({
+async function Heading({
   as: Tag,
   id,
   children,
@@ -37,6 +37,7 @@ function Heading({
   id: string;
   children?: ReactNode;
 }) {
+  const { ui } = await getI18n();
   if (!id) return <Tag>{children}</Tag>;
   return (
     <Tag id={id} className="scroll-mt-lg">
@@ -63,13 +64,13 @@ export function createHeadings() {
     return n === 1 ? base : `${base}-${n}`;
   };
   return {
-    h2: ({ children }: { children?: ReactNode }) => (
-      <Heading as="h2" id={dedupedId(children)}>
+    h2: ({ children, id }: { children?: ReactNode; id?: string }) => (
+      <Heading as="h2" id={id ?? dedupedId(children)}>
         {children}
       </Heading>
     ),
-    h3: ({ children }: { children?: ReactNode }) => (
-      <Heading as="h3" id={dedupedId(children)}>
+    h3: ({ children, id }: { children?: ReactNode; id?: string }) => (
+      <Heading as="h3" id={id ?? dedupedId(children)}>
         {children}
       </Heading>
     ),

@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 
 /**
  * Afordancia de búsqueda en el header (T14): botón "Buscar ⌘K" en .label.
@@ -18,6 +18,7 @@ const CommandPalette = dynamic(
 );
 
 export function SearchButton() {
+  const { ui } = useI18n();
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
 

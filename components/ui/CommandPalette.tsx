@@ -1,10 +1,12 @@
 "use client";
+import { localizedPath } from "@/lib/i18n/routing";
 
 import Fuse from "fuse.js";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSound } from "@/components/scroll/SoundProvider";
-import { formatDate, ui } from "@/lib/ui";
+import { formatDate } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 import type { SearchDoc } from "@/types/search";
 
 /**
@@ -19,15 +21,6 @@ import type { SearchDoc } from "@/types/search";
  * opción activa. Tags: sin ruta /tags — elegir un tema filtra los ensayos
  * dentro de la propia palette (query = tag).
  */
-
-const PAGES = [
-  { href: "/", label: ui.nav.home },
-  { href: "/archivo", label: ui.nav.archive },
-  { href: "/gabinete", label: ui.nav.cabinet },
-  { href: "/vinyl", label: ui.nav.vinyl },
-  { href: "/acerca", label: ui.nav.about },
-  { href: "/colofon", label: ui.nav.colophon },
-] as const;
 
 const MAX_POSTS = 8;
 const MAX_TAGS = 6;
@@ -49,6 +42,8 @@ export function CommandPalette({
   open: boolean;
   onClose: () => void;
 }) {
+  const { locale, ui } = useI18n();
+
   const router = useRouter();
   const { playPageTurn } = useSound();
   const [docs, setDocs] = useState<SearchDoc[] | null>(null);
@@ -60,7 +55,7 @@ export function CommandPalette({
   // Índice: un solo fetch en el primer montaje (que ya es el primer open).
   useEffect(() => {
     let cancelled = false;
-    fetch("/search-index.json")
+    fetch(`/search-index.${locale}.json`)
       .then((res) => (res.ok ? res.json() : []))
       .then((data: SearchDoc[]) => {
         if (!cancelled) setDocs(data);
@@ -71,7 +66,7 @@ export function CommandPalette({
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale]);
 
   // Abrir: guardar foco previo, resetear estado, foco al input, scroll lock.
   useEffect(() => {
@@ -109,6 +104,14 @@ export function CommandPalette({
   );
 
   const groups = useMemo<Group[]>(() => {
+    const PAGES = [
+      { href: "/", label: ui.nav.home },
+      { href: "/archivo", label: ui.nav.archive },
+      { href: "/gabinete", label: ui.nav.cabinet },
+      { href: "/vinyl", label: ui.nav.vinyl },
+      { href: "/acerca", label: ui.nav.about },
+      { href: "/colofon", label: ui.nav.colophon },
+    ] as const;
     const all = docs ?? [];
     const trimmed = query.trim();
     const lower = trimmed.toLowerCase();
@@ -143,7 +146,7 @@ export function CommandPalette({
         items: tags.map((tag): PaletteItem => ({ kind: "tag", tag })),
       },
     ].filter((group) => group.items.length > 0);
-  }, [docs, fuse, query]);
+  }, [docs, fuse, query, ui]);
 
   const flatItems = useMemo(
     () => groups.flatMap((group) => group.items),
@@ -172,7 +175,7 @@ export function CommandPalette({
     const href = item.kind === "post" ? `/posts/${item.doc.slug}` : item.href;
     if (item.kind === "post") playPageTurn();
     onClose();
-    router.push(href);
+    router.push(localizedPath(href, locale));
   }
 
   function handleKeyDown(event: React.KeyboardEvent) {
@@ -302,7 +305,7 @@ export function CommandPalette({
                             dateTime={item.doc.published_at}
                             className="label shrink-0"
                           >
-                            {formatDate(item.doc.published_at)}
+                            {formatDate(item.doc.published_at, locale)}
                           </time>
                         </>
                       ) : item.kind === "page" ? (

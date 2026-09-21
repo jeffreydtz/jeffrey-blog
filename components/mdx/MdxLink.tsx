@@ -1,3 +1,5 @@
+import { getLocale } from "@/lib/i18n/server";
+import { localizedPath } from "@/lib/i18n/routing";
 import Link from "next/link";
 import type { ComponentPropsWithoutRef } from "react";
 
@@ -9,7 +11,7 @@ import type { ComponentPropsWithoutRef } from "react";
  * `.prose-blog a` en globals.css: en prosa el link mantiene subrayado visible
  * en reposo — legibilidad de libro, no chrome.
  */
-export function MdxLink({
+export async function MdxLink({
   href = "",
   children,
   ...rest
@@ -23,7 +25,7 @@ export function MdxLink({
   }
   if (href.startsWith("/")) {
     return (
-      <Link href={href} {...rest}>
+      <Link href={localizedPath(href, await getLocale())} {...rest}>
         {children}
       </Link>
     );

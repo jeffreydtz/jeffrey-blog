@@ -1,7 +1,7 @@
 "use client";
 
 import { useSound } from "@/components/scroll/SoundProvider";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 
 /**
  * Toggle de sonido de página (T08) — control discreto en el header, junto a
@@ -11,6 +11,7 @@ import { ui } from "@/lib/ui";
  * render del cliente es siempre off, igual que el SSR.
  */
 export function SoundToggle() {
+  const { ui } = useI18n();
   const { available, enabled, toggle } = useSound();
 
   if (!available) return null;

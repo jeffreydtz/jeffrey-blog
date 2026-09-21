@@ -35,7 +35,7 @@ yarn-error.log*
 !.env.example
 
 # índice de búsqueda generado en build (scripts/build-search-index.mjs, prebuild/predev)
-/public/search-index.json
+/public/search-index*.json
 
 # vercel
 .vercel

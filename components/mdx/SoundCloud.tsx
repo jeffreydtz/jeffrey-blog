@@ -1,5 +1,5 @@
 import { EmbedFrame } from "@/components/mdx/EmbedFrame";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /**
  * Uso en MDX: `<SoundCloud url="https://soundcloud.com/artista/track" />` — T09.
@@ -7,7 +7,14 @@ import { ui } from "@/lib/ui";
  * El `color` del player replica el acento de DESIGN.md (colors.light.accent):
  * un query param de un player externo no puede leer CSS custom properties.
  */
-export function SoundCloud({ url, title }: { url?: string; title?: string }) {
+export async function SoundCloud({
+  url,
+  title,
+}: {
+  url?: string;
+  title?: string;
+}) {
+  const { ui } = await getI18n();
   if (
     !url ||
     !/^https:\/\/(soundcloud\.com|api\.soundcloud\.com|on\.soundcloud\.com)\//.test(

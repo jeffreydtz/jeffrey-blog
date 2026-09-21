@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 import type { SpotifyEmbed } from "@/lib/vinyl-data";
 
 /** Native compact embed: a stalled request collapses to its official link. */
@@ -14,6 +14,7 @@ export function SpotifyPreview({
   title: string;
   url: string;
 }) {
+  const { ui } = useI18n();
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [state, setState] = useState<"loading" | "ready" | "unavailable">(
     "loading",

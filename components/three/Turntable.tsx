@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useId, useRef, useState } from "react";
 import { SpotifyPreview } from "./SpotifyPreview";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 import { spotifyEmbedFor, type VinylRecord } from "@/lib/vinyl-data";
 import { claimMusicPlayback, MUSIC_PLAYBACK_EVENT } from "@/lib/music-playback";
 
@@ -13,6 +13,7 @@ const TurntableCanvas = dynamic(
 );
 
 export function Turntable({ records }: { records: VinylRecord[] }) {
+  const { ui } = useI18n();
   const owner = useId();
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);
