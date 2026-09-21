@@ -1,3 +1,5 @@
+import { translatedContent } from "@/lib/i18n/content.mjs";
+import type { Locale } from "@/lib/i18n/routing";
 import "server-only";
 import fs from "node:fs";
 import path from "node:path";
@@ -42,7 +44,7 @@ function assertLang(value: unknown, file: string): PostLang {
   throw new Error(`[posts] ${file}: frontmatter "lang" debe ser "es" | "en"`);
 }
 
-function parsePostFile(fileName: string): Post {
+function parsePostFile(fileName: string, locale?: Locale): Post {
   const raw = fs.readFileSync(path.join(POSTS_DIR, fileName), "utf8");
   const { data, content } = matter(raw);
 
@@ -76,23 +78,37 @@ function parsePostFile(fileName: string): Post {
     draft: data.draft === true,
   };
 
+  const translation =
+    locale && locale !== frontmatter.lang
+      ? translatedContent(raw, "posts", frontmatter.slug, locale)
+      : null;
+  const body = translation?.content ?? content;
   return {
     ...frontmatter,
-    content,
-    readingTimeMinutes: readingTimeMinutes(content),
+    ...(translation
+      ? {
+          title: String(translation.data.title),
+          excerpt: String(translation.data.excerpt),
+          lang: locale!,
+        }
+      : {}),
+    content: body,
+    readingTimeMinutes: readingTimeMinutes(body),
   };
 }
 
-let cache: Post[] | null = null;
+const cache = new Map<string, Post[]>();
 
 /** Todos los posts publicados, orden cronológico descendente (más nuevo primero). */
-export function getAllPosts(): Post[] {
-  if (cache !== null && process.env.NODE_ENV === "production") return cache;
+export function getAllPosts(locale?: Locale): Post[] {
+  const key = locale ?? "original";
+  const cached = cache.get(key);
+  if (cached && process.env.NODE_ENV === "production") return cached;
 
   const posts = fs
     .readdirSync(POSTS_DIR)
     .filter((f) => f.endsWith(".mdx"))
-    .map(parsePostFile)
+    .map((file) => parsePostFile(file, locale))
     .filter((p) => INCLUDE_DRAFTS || !p.draft)
     .sort(
       (a, b) =>
@@ -107,22 +123,22 @@ export function getAllPosts(): Post[] {
     slugs.add(post.slug);
   }
 
-  cache = posts;
+  cache.set(key, posts);
   return posts;
 }
 
-export function getPostBySlug(slug: string): Post | null {
-  return getAllPosts().find((p) => p.slug === slug) ?? null;
+export function getPostBySlug(slug: string, locale?: Locale): Post | null {
+  return getAllPosts(locale).find((p) => p.slug === slug) ?? null;
 }
 
-export function getPostsByTag(tag: string): Post[] {
-  return getAllPosts().filter((p) => p.tags.includes(tag));
+export function getPostsByTag(tag: string, locale?: Locale): Post[] {
+  return getAllPosts(locale).filter((p) => p.tags.includes(tag));
 }
 
 /** Posts agrupados por año, años descendentes (biblioteca: 2026, 2025…). */
-export function getPostsByYear(): YearGroup[] {
+export function getPostsByYear(locale?: Locale): YearGroup[] {
   const groups = new Map<number, Post[]>();
-  for (const post of getAllPosts()) {
+  for (const post of getAllPosts(locale)) {
     const year = new Date(post.published_at).getUTCFullYear();
     const group = groups.get(year);
     if (group) group.push(post);
@@ -137,12 +153,16 @@ export function getPostsByYear(): YearGroup[] {
  * Relacionados por tags compartidos: score = cantidad de tags en común,
  * tie-break por fecha (más reciente primero). Score 0 queda excluido.
  */
-export function getRelatedPosts(slug: string, limit = 3): Post[] {
-  const current = getPostBySlug(slug);
+export function getRelatedPosts(
+  slug: string,
+  limit = 3,
+  locale?: Locale,
+): Post[] {
+  const current = getPostBySlug(slug, locale);
   if (!current) return [];
   const currentTags = new Set(current.tags);
 
-  return getAllPosts()
+  return getAllPosts(locale)
     .filter((p) => p.slug !== slug)
     .map((post) => ({
       post,
@@ -160,12 +180,18 @@ export function getRelatedPosts(slug: string, limit = 3): Post[] {
 }
 
 /** prev = anterior en el tiempo (más viejo), next = siguiente (más nuevo). */
-export function getAdjacentPosts(slug: string): AdjacentPosts {
-  const posts = getAllPosts(); // orden descendente
+export function getAdjacentPosts(slug: string, locale?: Locale): AdjacentPosts {
+  const posts = getAllPosts(locale); // orden descendente
   const index = posts.findIndex((p) => p.slug === slug);
   if (index === -1) return { prev: null, next: null };
   return {
     prev: posts[index + 1] ?? null,
     next: posts[index - 1] ?? null,
   };
+}
+
+export function getPostLocales(slug: string): Locale[] {
+  return (["es", "en"] as const).filter(
+    (locale) => getPostBySlug(slug, locale)?.lang === locale,
+  );
 }

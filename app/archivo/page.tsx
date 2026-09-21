@@ -1,7 +1,9 @@
+import { getI18n } from "@/lib/i18n/server";
+import { pageMetadata } from "@/lib/i18n/metadata";
 import type { Metadata } from "next";
 import { PostLink } from "@/components/ui/PostLink";
 import { getPostsByYear } from "@/lib/posts";
-import { formatDate, ui } from "@/lib/ui";
+import { formatDate } from "@/lib/ui";
 
 /**
  * Archivo (T13) — índice de biblioteca por año, descendente (2026, 2025…).
@@ -10,14 +12,20 @@ import { formatDate, ui } from "@/lib/ui";
  * Años separados por hairline.
  */
 
-export const metadata: Metadata = {
-  title: ui.nav.archive,
-  description: ui.pages.archiveDescription,
-  alternates: { canonical: "/archivo" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, ui } = await getI18n();
+  return pageMetadata(
+    "/archivo",
+    locale,
+    ui.nav.archive,
+    ui.pages.archiveDescription,
+  );
+}
 
-export default function ArchivePage() {
-  const years = getPostsByYear();
+export default async function ArchivePage() {
+  const { locale, ui } = await getI18n();
+
+  const years = getPostsByYear(locale);
 
   return (
     <div className="mx-auto w-full max-w-page px-lg">
@@ -48,7 +56,7 @@ export default function ArchivePage() {
                         {post.title}
                       </PostLink>
                       <time className="label" dateTime={post.published_at}>
-                        {formatDate(post.published_at)}
+                        {formatDate(post.published_at, locale)}
                       </time>
                     </li>
                   ))}

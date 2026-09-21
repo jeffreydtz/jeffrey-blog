@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 import { claimMusicPlayback, MUSIC_PLAYBACK_EVENT } from "@/lib/music-playback";
 
 type Props = {
@@ -19,6 +19,7 @@ export function MusicPreview({
   trackUrl,
   previewUrl,
 }: Props) {
+  const { ui } = useI18n();
   const owner = useId();
   const audioRef = useRef<HTMLAudioElement>(null);
   const requested = useRef(false);

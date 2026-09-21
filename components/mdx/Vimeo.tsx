@@ -1,9 +1,9 @@
 import { EmbedFrame } from "@/components/mdx/EmbedFrame";
 import { LazyEmbed } from "@/components/mdx/LazyEmbed";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /** Uso en MDX: `<Vimeo id="76979871" caption="…" />` — T09. */
-export function Vimeo({
+export async function Vimeo({
   id,
   title,
   caption,
@@ -12,6 +12,7 @@ export function Vimeo({
   title?: string;
   caption?: string;
 }) {
+  const { ui } = await getI18n();
   if (!id || !/^\d{4,15}$/.test(id)) {
     throw new Error(
       `[mdx] <Vimeo>: prop "id" requerida — el id numérico del video, p. ej. <Vimeo id="76979871" />. Recibido: ${JSON.stringify(id)}`,

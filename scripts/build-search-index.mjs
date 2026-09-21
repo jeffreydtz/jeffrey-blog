@@ -7,6 +7,7 @@
  * A propósito es un .mjs plano (sin tsx/ts-node): cero dependencias de
  * ejecución de TypeScript en el pipeline de build.
  */
+import { translatedContent } from "../lib/i18n/content.mjs";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -36,32 +37,55 @@ function toIsoDate(value, field, file) {
   );
 }
 
-const docs = fs
-  .readdirSync(postsDir)
-  .filter((file) => file.endsWith(".mdx"))
-  .map((file) => {
-    const { data } = matter(fs.readFileSync(path.join(postsDir, file), "utf8"));
-    return { data, file };
-  })
-  .filter(({ data }) => data.draft !== true)
-  .map(({ data, file }) => {
-    for (const field of ["title", "slug", "excerpt", "lang"]) {
-      if (typeof data[field] !== "string" || data[field].trim() === "") {
-        throw new Error(`[search-index] ${file}: "${field}" requerido`);
+function documents(locale) {
+  return fs
+    .readdirSync(postsDir)
+    .filter((file) => file.endsWith(".mdx"))
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(postsDir, file), "utf8");
+      const { data } = matter(raw);
+      const translation =
+        locale !== data.lang
+          ? translatedContent(raw, "posts", data.slug, locale)
+          : null;
+      return {
+        data: translation
+          ? {
+              ...data,
+              title: translation.data.title,
+              excerpt: translation.data.excerpt,
+              lang: locale,
+            }
+          : data,
+        file,
+      };
+    })
+    .filter(({ data }) => data.draft !== true)
+    .map(({ data, file }) => {
+      for (const field of ["title", "slug", "excerpt", "lang"]) {
+        if (typeof data[field] !== "string" || data[field].trim() === "") {
+          throw new Error(`[search-index] ${file}: "${field}" requerido`);
+        }
       }
-    }
-    const published_at = toIsoDate(data.published_at, "published_at", file);
-    return {
-      slug: data.slug,
-      title: data.title,
-      excerpt: data.excerpt,
-      tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
-      lang: data.lang,
-      published_at,
-      year: Number(published_at.slice(0, 4)),
-    };
-  })
-  .sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
-
-fs.writeFileSync(outFile, JSON.stringify(docs));
-console.log(`[search-index] ${docs.length} posts → public/search-index.json`);
+      const published_at = toIsoDate(data.published_at, "published_at", file);
+      return {
+        slug: data.slug,
+        title: data.title,
+        excerpt: data.excerpt,
+        tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+        lang: data.lang,
+        published_at,
+        year: Number(published_at.slice(0, 4)),
+      };
+    })
+    .sort((a, b) => (a.published_at < b.published_at ? 1 : -1));
+}
+for (const locale of ["es", "en"]) {
+  const docs = documents(locale);
+  fs.writeFileSync(
+    path.join(root, "public", `search-index.${locale}.json`),
+    JSON.stringify(docs),
+  );
+  if (locale === "es") fs.writeFileSync(outFile, JSON.stringify(docs));
+  console.log(`[search-index] ${docs.length} posts (${locale})`);
+}

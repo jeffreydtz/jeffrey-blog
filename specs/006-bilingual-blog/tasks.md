@@ -1,0 +1,4 @@
+- [x] Negociación, rutas y contexto
+- [x] Textos propios, UI y selector
+- [x] SEO, búsqueda y feeds
+- [x] Regresión, navegador y revisión independiente

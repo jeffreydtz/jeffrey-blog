@@ -1,3 +1,6 @@
+import { getI18n } from "@/lib/i18n/server";
+import { alternates } from "@/lib/i18n/metadata";
+import { localizedPath } from "@/lib/i18n/routing";
 import { EndMark } from "@/components/three/EndMark";
 import fs from "node:fs";
 import path from "node:path";
@@ -12,17 +15,17 @@ import { RelatedPosts } from "@/components/ui/RelatedPosts";
 import { renderMdx } from "@/lib/mdx";
 import {
   getAdjacentPosts,
-  getAllPosts,
   getPostBySlug,
+  getPostLocales,
   getRelatedPosts,
 } from "@/lib/posts";
 import { SITE } from "@/lib/site";
-import { formatDate, ui } from "@/lib/ui";
+import { formatDate } from "@/lib/ui";
 import type { Post } from "@/types/post";
 
 /**
- * Vista de post (T12) — SSG total: generateStaticParams + dynamicParams=false
- * (slug desconocido → 404 estático). RSC async: el MDX se compila en build.
+ * Vista de post: RSC async con idioma resuelto antes de renderizar.
+ * Los slugs desconocidos devuelven 404; las traducciones comparten identidad.
  * ScrollReveal va keyed por slug: en navegación cliente (prev/next, related)
  * el wrapper se remonta y el pergamino se vuelve a desenrollar.
  */
@@ -31,30 +34,29 @@ interface Params {
   slug: string;
 }
 
-export const dynamicParams = false;
-
-export function generateStaticParams(): Params[] {
-  return getAllPosts().map((post) => ({ slug: post.slug }));
-}
-
 export async function generateMetadata({
   params,
 }: {
   params: Promise<Params>;
 }): Promise<Metadata> {
+  const { locale } = await getI18n();
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
   if (!post) return {};
 
   return {
     title: post.title,
     description: post.excerpt,
-    alternates: { canonical: `/posts/${post.slug}` },
+    alternates: {
+      ...alternates(`/posts/${post.slug}`, locale, getPostLocales(post.slug)),
+      canonical: localizedPath(`/posts/${post.slug}`, post.lang),
+    },
     openGraph: {
       type: "article",
       title: post.title,
       description: post.excerpt,
-      url: `/posts/${post.slug}`,
+      url: localizedPath(`/posts/${post.slug}`, post.lang),
+      images: [`/${post.lang}/posts/${post.slug}/opengraph-image`],
       siteName: SITE.name,
       locale: post.lang === "es" ? "es_AR" : "en_US",
       publishedTime: post.published_at,
@@ -64,6 +66,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
+      images: [`/${post.lang}/posts/${post.slug}/opengraph-image`],
       title: post.title,
       description: post.excerpt,
     },
@@ -113,20 +116,23 @@ function CoverImage({ post }: { post: Post }) {
   );
 }
 
-function PostHeader({ post }: { post: Post }) {
+async function PostHeader({ post }: { post: Post }) {
+  const { locale, ui } = await getI18n();
   return (
     <header className="mb-2xl">
       <p className="label">
         {ui.post.published} —{" "}
         <time dateTime={post.published_at}>
-          {formatDate(post.published_at)}
+          {formatDate(post.published_at, locale)}
         </time>{" "}
         · <span data-tnum>{post.readingTimeMinutes}</span> {ui.post.readingTime}
       </p>
       {post.updated_at !== undefined && (
         <p className="label mt-2xs">
           {ui.post.updated} —{" "}
-          <time dateTime={post.updated_at}>{formatDate(post.updated_at)}</time>
+          <time dateTime={post.updated_at}>
+            {formatDate(post.updated_at, locale)}
+          </time>
         </p>
       )}
       <h1
@@ -153,13 +159,14 @@ export default async function PostPage({
 }: {
   params: Promise<Params>;
 }) {
+  const { locale, ui } = await getI18n();
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
   if (!post) notFound();
 
   const body = await renderMdx(post.content);
-  const related = getRelatedPosts(post.slug);
-  const { prev, next } = getAdjacentPosts(post.slug);
+  const related = getRelatedPosts(post.slug, 3, locale);
+  const { prev, next } = getAdjacentPosts(post.slug, locale);
 
   /* JSON-LD Article (FR-007). Contenido propio del repo; el escape de "<"
      evita cierre de <script> por si un título lo incluyera. */
@@ -173,9 +180,9 @@ export default async function PostPage({
     dateModified: post.updated_at ?? post.published_at,
     keywords: post.tags.join(", "),
     author: { "@type": "Person", name: SITE.author, url: SITE.url },
-    mainEntityOfPage: `${SITE.url}/posts/${post.slug}`,
-    url: `${SITE.url}/posts/${post.slug}`,
-    image: `${SITE.url}/posts/${post.slug}/opengraph-image`,
+    mainEntityOfPage: `${SITE.url}${localizedPath(`/posts/${post.slug}`, post.lang)}`,
+    url: `${SITE.url}${localizedPath(`/posts/${post.slug}`, post.lang)}`,
+    image: `${SITE.url}/${post.lang}/posts/${post.slug}/opengraph-image`,
   }).replace(/</g, "\\u003c");
 
   return (
@@ -191,6 +198,11 @@ export default async function PostPage({
       >
         <CoverImage post={post} />
         <article className="prose-blog drop-cap" lang={post.lang}>
+          {post.lang !== locale && (
+            <p role="note" lang={locale}>
+              {ui.translationUnavailable}
+            </p>
+          )}
           {body}
         </article>
         <EndMark />

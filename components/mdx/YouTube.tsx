@@ -1,9 +1,9 @@
 import { EmbedFrame } from "@/components/mdx/EmbedFrame";
 import { LazyEmbed } from "@/components/mdx/LazyEmbed";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /** Uso en MDX: `<YouTube id="ZXsQAXx_ao0" caption="…" />` — T09. */
-export function YouTube({
+export async function YouTube({
   id,
   title,
   caption,
@@ -12,6 +12,7 @@ export function YouTube({
   title?: string;
   caption?: string;
 }) {
+  const { ui } = await getI18n();
   if (!id || !/^[A-Za-z0-9_-]{6,20}$/.test(id)) {
     throw new Error(
       `[mdx] <YouTube>: prop "id" requerida — el id del video (lo que sigue a watch?v=), p. ej. <YouTube id="ZXsQAXx_ao0" />. Recibido: ${JSON.stringify(id)}`,

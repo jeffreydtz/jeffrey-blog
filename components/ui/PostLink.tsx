@@ -1,5 +1,7 @@
 "use client";
 
+import { useI18n } from "@/lib/i18n/client";
+import { localizedPath } from "@/lib/i18n/routing";
 import Link from "next/link";
 import type { ComponentProps, MouseEvent } from "react";
 import { useSound } from "@/components/scroll/SoundProvider";
@@ -11,6 +13,7 @@ import { useSound } from "@/components/scroll/SoundProvider";
  * está apagado o el asset no existe (useSound ya lo resuelve).
  */
 export function PostLink({ onClick, ...props }: ComponentProps<typeof Link>) {
+  const { locale } = useI18n();
   const { playPageTurn } = useSound();
 
   function handleClick(event: MouseEvent<HTMLAnchorElement>) {
@@ -18,5 +21,15 @@ export function PostLink({ onClick, ...props }: ComponentProps<typeof Link>) {
     playPageTurn();
   }
 
-  return <Link {...props} onClick={handleClick} />;
+  return (
+    <Link
+      {...props}
+      href={
+        typeof props.href === "string"
+          ? localizedPath(props.href, locale)
+          : props.href
+      }
+      onClick={handleClick}
+    />
+  );
 }

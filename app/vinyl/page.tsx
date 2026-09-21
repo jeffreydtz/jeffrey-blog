@@ -1,6 +1,8 @@
+import { getI18n } from "@/lib/i18n/server";
+import { pageMetadata } from "@/lib/i18n/metadata";
 import type { Metadata } from "next";
 import { Turntable } from "@/components/three/Turntable";
-import { ui } from "@/lib/ui";
+
 import { getVinylRecords } from "@/lib/vinyl";
 
 /**
@@ -8,13 +10,19 @@ import { getVinylRecords } from "@/lib/vinyl";
  * procedural + plinto simple, alimentado por lib/now.ts y content/data/vinyl.json.
  */
 
-export const metadata: Metadata = {
-  title: ui.vinyl.title,
-  description: ui.pages.vinylDescription,
-  alternates: { canonical: "/vinyl" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, ui } = await getI18n();
+  return pageMetadata(
+    "/vinyl",
+    locale,
+    ui.vinyl.title,
+    ui.pages.vinylDescription,
+  );
+}
 
 export default async function VinylPage() {
+  const { ui } = await getI18n();
+
   const records = await getVinylRecords();
 
   return (

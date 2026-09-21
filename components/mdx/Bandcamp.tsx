@@ -1,5 +1,5 @@
 import { EmbedFrame } from "@/components/mdx/EmbedFrame";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
 /**
  * Uso en MDX — T09 (formato EmbeddedPlayer de Bandcamp, ids numéricos):
@@ -10,7 +10,7 @@ import { ui } from "@/lib/ui";
  * bgcol/linkcol replican paper/accent de DESIGN.md (colors.light): el player
  * externo se configura por query param, no puede leer CSS custom properties.
  */
-export function Bandcamp({
+export async function Bandcamp({
   album,
   track,
   title,
@@ -19,6 +19,7 @@ export function Bandcamp({
   track?: string;
   title?: string;
 }) {
+  const { ui } = await getI18n();
   if (album && !/^\d{1,20}$/.test(album)) {
     throw new Error(
       `[mdx] <Bandcamp>: prop "album" debe ser el id numérico del álbum. Recibido: ${JSON.stringify(album)}`,

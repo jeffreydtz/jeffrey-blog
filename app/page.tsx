@@ -1,12 +1,15 @@
+import { getI18n } from "@/lib/i18n/server";
+import { pageMetadata } from "@/lib/i18n/metadata";
 import type { Metadata } from "next";
 import { AmbientRing } from "@/components/three/AmbientRing";
 import { PostLink } from "@/components/ui/PostLink";
 import { getAllPosts } from "@/lib/posts";
-import { formatDate, ui } from "@/lib/ui";
+import { formatDate } from "@/lib/ui";
 
-export const metadata: Metadata = {
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, ui } = await getI18n();
+  return pageMetadata("/", locale, ui.siteTitle, ui.siteDescription);
+}
 
 /**
  * Home (T12) — índice editorial: la tapa del blog es su tabla de contenidos.
@@ -15,8 +18,10 @@ export const metadata: Metadata = {
  * derecha. Separación por hairline, cero cards. El folio numera las entradas
  * como un índice de libro (01, 02…) en micro/Fraunces.
  */
-export default function HomePage() {
-  const posts = getAllPosts();
+export default async function HomePage() {
+  const { locale, ui } = await getI18n();
+
+  const posts = getAllPosts(locale);
 
   return (
     <div className="mx-auto w-full max-w-page px-lg">
@@ -43,7 +48,7 @@ export default function HomePage() {
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <time className="label block" dateTime={post.published_at}>
-                    {formatDate(post.published_at)}
+                    {formatDate(post.published_at, locale)}
                   </time>
                   <p className="label" data-tnum>
                     {post.readingTimeMinutes} {ui.post.readingTime} ·{" "}

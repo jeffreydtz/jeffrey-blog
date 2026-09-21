@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/lib/i18n/client";
 
 import {
   useCallback,
@@ -28,25 +29,6 @@ type ReadingShelfProps = {
   shelfUrl?: string;
 };
 
-const COPY = {
-  heading: "Lo que leí",
-  myScore: "Mi nota",
-  average: "Promedio Goodreads",
-  published: "Publicado",
-  about: "Acerca",
-  viewOnGoodreads: "Ver en Goodreads",
-  notRated: "Sin nota",
-  previous: "Libro anterior",
-  next: "Libro siguiente",
-  browse: "Recorrer el estante",
-  choose: "Elegir un libro",
-  close: "Cerrar",
-  aboutBook: "Sobre el libro",
-  books: "libros",
-  goodreads: "Goodreads",
-  selected: "Libro seleccionado",
-};
-
 function clamp(index: number, length: number) {
   if (length <= 0) return 0;
   return Math.min(length - 1, Math.max(0, index));
@@ -58,12 +40,13 @@ function formatAverage(value: number | null) {
 }
 
 function StarRow({ value }: { value: number | null }) {
+  const { ui } = useI18n();
   if (value === null) {
-    return <span className={styles.muted}>{COPY.notRated}</span>;
+    return <span className={styles.muted}>{ui.library.notRated}</span>;
   }
   const filled = Math.round(value);
   return (
-    <span className={styles.stars} aria-label={`${value} de 5`}>
+    <span className={styles.stars} aria-label={`${value} ${ui.library.outOf}`}>
       {Array.from({ length: 5 }, (_, index) => (
         <svg
           key={index}
@@ -150,6 +133,7 @@ function Volume({
 }
 
 export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
+  const { ui } = useI18n();
   const dialogId = useId();
   const railRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLOListElement>(null);
@@ -305,7 +289,7 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
     <section className={styles.archive} aria-labelledby="reading-shelf-title">
       <header className={styles.topbar}>
         <h2 id="reading-shelf-title" className={styles.brand}>
-          {COPY.heading}
+          {ui.library.title}
         </h2>
         {shelfUrl ? (
           <a
@@ -315,12 +299,12 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
             target="_blank"
           >
             <span>
-              {books.length} {COPY.books}
+              {books.length} {ui.library.volumes}
             </span>
             <span aria-hidden="true" className={styles.dot}>
               ·
             </span>
-            <span>{COPY.goodreads}</span>
+            <span>Goodreads</span>
             <span aria-hidden="true">↗</span>
           </a>
         ) : null}
@@ -332,7 +316,7 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
           className={styles.rail}
           tabIndex={0}
           role="listbox"
-          aria-label={COPY.browse}
+          aria-label={ui.library.browse}
           aria-activedescendant={`reading-slide-${selected}`}
           onKeyDown={onRailKey}
           onPointerDown={onPointerDown}
@@ -374,7 +358,7 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
 
       <section
         className={styles.copy}
-        aria-label={COPY.selected}
+        aria-label={ui.library.selected}
         aria-live="polite"
       >
         <p className={styles.eyebrow}>
@@ -384,24 +368,24 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
         <p className={styles.author}>{current.author}</p>
         <dl className={styles.stats}>
           <div>
-            <dt>{COPY.myScore}</dt>
+            <dt>{ui.library.rating}</dt>
             <dd>
               <StarRow value={current.rating} />
             </dd>
           </div>
           <div>
-            <dt>{COPY.average}</dt>
+            <dt>{ui.library.averageRating}</dt>
             <dd data-tnum>{formatAverage(current.averageRating)}</dd>
           </div>
           <div>
-            <dt>{COPY.published}</dt>
+            <dt>{ui.library.published}</dt>
             <dd data-tnum>{current.publishedYear ?? "—"}</dd>
           </div>
         </dl>
         <div className={styles.actions}>
           {hasAbout ? (
             <button type="button" className={styles.pill} onClick={openAbout}>
-              {COPY.about}
+              {ui.library.about}
             </button>
           ) : null}
           {current.goodreadsUrl ? (
@@ -411,25 +395,29 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
               rel="noopener noreferrer"
               target="_blank"
             >
-              {COPY.viewOnGoodreads}
+              {ui.library.bookLink}
               <span aria-hidden="true">↗</span>
             </a>
           ) : null}
         </div>
       </section>
 
-      <nav className={styles.gallery} aria-label={COPY.browse}>
+      <nav className={styles.gallery} aria-label={ui.library.browse}>
         <button
           type="button"
           className={styles.arrow}
-          aria-label={COPY.previous}
+          aria-label={ui.library.previousBook}
           disabled={selected === 0}
           onClick={() => goTo(selected - 1)}
         >
           <Arrow direction="left" />
         </button>
         <div className={styles.scrub}>
-          <ol ref={stripRef} className={styles.strip} aria-label={COPY.choose}>
+          <ol
+            ref={stripRef}
+            className={styles.strip}
+            aria-label={ui.library.choose}
+          >
             {books.map((book, index) => (
               <li key={`thumb-${book.title}-${index}`}>
                 <button
@@ -449,7 +437,7 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
         <button
           type="button"
           className={styles.arrow}
-          aria-label={COPY.next}
+          aria-label={ui.library.nextBook}
           disabled={selected === books.length - 1}
           onClick={() => goTo(selected + 1)}
         >
@@ -467,11 +455,11 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
         aria-labelledby={`${dialogId}-title`}
       >
         <div className={styles.notesHeader}>
-          <p className={styles.notesKicker}>{COPY.aboutBook}</p>
+          <p className={styles.notesKicker}>{ui.library.aboutBook}</p>
           <button
             type="button"
             className={styles.notesClose}
-            aria-label={COPY.close}
+            aria-label={ui.library.closeAbout}
             onClick={() => aboutRef.current?.close()}
           >
             ×
@@ -480,7 +468,7 @@ export function ReadingShelf({ books, shelfUrl }: ReadingShelfProps) {
         <div className={styles.notesBody}>
           <h4 id={`${dialogId}-title`}>{current.title}</h4>
           <p className={styles.notesAuthor}>{current.author}</p>
-          <p>{current.review}</p>
+          <p lang="">{current.review}</p>
         </div>
       </dialog>
     </section>

@@ -1,7 +1,8 @@
 import { NowWidget } from "@/components/ui/NowWidget";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const { ui } = await getI18n();
   return (
     <footer className="print-hidden mx-auto w-full max-w-page px-lg pb-2xl">
       <div className="hairline mb-xl" />

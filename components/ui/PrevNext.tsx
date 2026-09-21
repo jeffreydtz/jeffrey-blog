@@ -1,8 +1,9 @@
 "use client";
+import { localizedPath } from "@/lib/i18n/routing";
 
 import Link from "next/link";
 import { useSound } from "@/components/scroll/SoundProvider";
-import { ui } from "@/lib/ui";
+import { useI18n } from "@/lib/i18n/client";
 
 export interface PrevNextItem {
   slug: string;
@@ -24,6 +25,7 @@ export function PrevNext({
   prev: PrevNextItem | null;
   next: PrevNextItem | null;
 }) {
+  const { locale, ui } = useI18n();
   const { playPageTurn } = useSound();
 
   if (prev === null && next === null) return null;
@@ -35,7 +37,7 @@ export function PrevNext({
         <div>
           {prev !== null && (
             <Link
-              href={`/posts/${prev.slug}`}
+              href={localizedPath(`/posts/${prev.slug}`, locale)}
               onClick={playPageTurn}
               className="page-flip group block py-sm"
               rel="prev"
@@ -52,7 +54,7 @@ export function PrevNext({
         <div className="sm:text-right">
           {next !== null && (
             <Link
-              href={`/posts/${next.slug}`}
+              href={localizedPath(`/posts/${next.slug}`, locale)}
               onClick={playPageTurn}
               className="page-flip group block py-sm"
               data-side="next"

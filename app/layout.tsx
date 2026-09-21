@@ -6,7 +6,8 @@ import { SiteFooter } from "@/components/ui/SiteFooter";
 import { SiteHeader } from "@/components/ui/SiteHeader";
 import { SITE } from "@/lib/site";
 import { hasPageTurnAsset } from "@/lib/sound";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
+import { LocaleProvider } from "@/lib/i18n/client";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -22,27 +23,24 @@ const sourceSerif = Source_Serif_4({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: ui.siteTitle,
-    template: `%s · ${ui.siteTitle}`,
-  },
-  description: ui.siteDescription,
-  authors: [{ name: SITE.author, url: SITE.url }],
-  creator: SITE.author,
-  alternates: {
-    types: { "application/rss+xml": "/rss.xml" },
-  },
-  openGraph: {
-    type: "website",
-    locale: "es_AR",
-    siteName: SITE.name,
-  },
-  twitter: {
-    card: "summary_large_image",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, ui } = await getI18n();
+  return {
+    metadataBase: new URL(SITE.url),
+    title: { default: ui.siteTitle, template: `%s · ${ui.siteTitle}` },
+    description: ui.siteDescription,
+    authors: [{ name: SITE.author, url: SITE.url }],
+    creator: SITE.author,
+    alternates: { types: { "application/rss+xml": `/feeds/${locale}` } },
+    openGraph: {
+      type: "website",
+      locale: locale === "es" ? "es_AR" : "en_US",
+      siteName: SITE.name,
+      images: [`/${locale}/opengraph-image`],
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 /**
  * Anti-FOUC: decide el tema antes del primer paint.
@@ -50,14 +48,15 @@ export const metadata: Metadata = {
  */
 const themeInitScript = `(function(){try{var t=localStorage.getItem("theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark");}catch(e){}})();`;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, ui } = await getI18n();
   return (
     <html
-      lang="es"
+      lang={locale}
       suppressHydrationWarning
       className={`${fraunces.variable} ${sourceSerif.variable}`}
     >
@@ -65,16 +64,18 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="flex min-h-dvh flex-col antialiased">
-        <SoundProvider available={hasPageTurnAsset()}>
-          <a href="#contenido" className="skip-link print-hidden z-50">
-            {ui.skipToContent}
-          </a>
-          <SiteHeader />
-          <main id="contenido" className="flex-1">
-            {children}
-          </main>
-          <SiteFooter />
-        </SoundProvider>
+        <LocaleProvider locale={locale}>
+          <SoundProvider available={hasPageTurnAsset()}>
+            <a href="#contenido" className="skip-link print-hidden z-50">
+              {ui.skipToContent}
+            </a>
+            <SiteHeader />
+            <main id="contenido" className="flex-1">
+              {children}
+            </main>
+            <SiteFooter />
+          </SoundProvider>
+        </LocaleProvider>
       </body>
     </html>
   );

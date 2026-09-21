@@ -1,8 +1,9 @@
 import { YouTube } from "@/components/mdx/YouTube";
 import { cabinetChannel } from "@/lib/cabinet-channel";
-import { ui } from "@/lib/ui";
+import { getI18n } from "@/lib/i18n/server";
 
-export function CabinetChannel() {
+export async function CabinetChannel() {
+  const { ui } = await getI18n();
   const { url, video } = cabinetChannel;
   return (
     <section

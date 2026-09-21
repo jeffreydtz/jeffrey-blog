@@ -4,6 +4,12 @@
 
 Blog personal con estética old-money: papel, tinta y espacio. Next.js 15 (App Router) + MDX. Todo el contenido vive en git — escribir es crear un archivo `.mdx` y pushear (o guardarlo desde `/admin`, que commitea al mismo repo). No es un CMS ni hay base de datos para los posts. Lo único con backend es un extra opcional (las reacciones) que desaparece solo si no está configurado.
 
+## Idiomas
+
+El blog público está disponible en español e inglés en `/es` y `/en`. Al entrar por un enlace anterior, usa el idioma preferido del navegador; el selector **ES / EN / Auto** permite cambiarlo y recordar la elección. El artículo publicado y las páginas propias tienen traducciones versionadas.
+
+El admin sigue editando los originales. Si cambia una fuente, su traducción se invalida y se muestra el original actualizado con aviso hasta revisar la traducción; no se traduce automáticamente al guardar. Detalles, hashes de fuente y feeds en [docs/IDIOMAS.md](docs/IDIOMAS.md).
+
 ## Cómo agregar un post nuevo
 
 1. Crear un archivo en `content/posts/` con el slug como nombre: `content/posts/mi-slug.mdx`.
