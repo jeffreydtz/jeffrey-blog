@@ -159,6 +159,14 @@ export const ui = {
     embedsTitle: "Componentes MDX",
     embedsSubtitle: "Embeds, tipografía y código — solo desarrollo",
   },
+  keepGoing: {
+    title: "keep going",
+    intro: "una colección de imágenes para seguir.",
+    credit: "inspirado en",
+    creditHost: "jackfriks.com/keep-going",
+    imageAlt: "Imagen motivacional",
+    videoLabel: "Video motivacional",
+  },
   mdx: {
     play: "Reproducir",
     youtubeTitle: "Video de YouTube",

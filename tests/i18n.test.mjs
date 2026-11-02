@@ -68,6 +68,7 @@ test("paths retain homepage and post queries/fragments without prefixing externa
     "/rss.xml",
     "/feeds/en",
     "/cover.jpg",
+    "/keep-going",
     "//evil.example",
     "https://example.com",
   ])
@@ -104,6 +105,14 @@ test("legacy redirects are private, preserve queries; explicit prefix wins and s
     explicit.headers.get("x-middleware-request-x-blog-locale"),
     "en",
   );
+  const hidden = middleware(
+    new NextRequest("https://blog.test/keep-going", {
+      headers: { "accept-language": "en-US" },
+    }),
+  );
+  assert.equal(hidden.headers.get("location"), null);
+  assert.equal(hidden.headers.get("x-middleware-rewrite"), null);
+
   for (const p of [
     "/admin/now",
     "/api/admin/now-search",

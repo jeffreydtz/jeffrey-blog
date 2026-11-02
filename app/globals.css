@@ -181,6 +181,64 @@
     border-top: 1px solid var(--color-hairline);
   }
 
+  /* Galería /keep-going: masonry por columnas, tokens de la casa. */
+  .keep-going-masonry {
+    column-count: 1;
+    column-gap: var(--spacing-md);
+  }
+  .keep-going-item {
+    break-inside: avoid;
+    margin-bottom: var(--spacing-md);
+  }
+  .keep-going-media {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: var(--line-width) solid var(--color-hairline);
+    border-radius: var(--radius-subtle);
+    background-color: var(--color-paper-raised);
+  }
+  .keep-going-item video.keep-going-media {
+    cursor: pointer;
+  }
+  @media (min-width: 40rem) {
+    .keep-going-masonry {
+      column-count: 2;
+    }
+  }
+  @media (min-width: 64rem) {
+    .keep-going-masonry {
+      column-count: 3;
+    }
+  }
+
+  /* Velo breve al disparar el easter egg ↑ → ↑ → */
+  .keep-going-veil {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: var(--text-display-lg);
+    line-height: var(--text-display-lg--line-height);
+    font-weight: var(--text-display-lg--font-weight);
+    letter-spacing: var(--text-display-lg--letter-spacing);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .keep-going-veil[data-visible="true"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .keep-going-veil {
+      transition: opacity var(--duration-slow) var(--ease-page);
+    }
+  }
+
   /* Saltar al contenido: invisible hasta el foco (primer tab) */
   .skip-link {
     position: absolute;

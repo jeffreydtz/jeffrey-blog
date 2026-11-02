@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
+import { KeepGoingTrigger } from "@/components/keep-going/KeepGoingTrigger";
 import { SoundProvider } from "@/components/scroll/SoundProvider";
 import { SiteFooter } from "@/components/ui/SiteFooter";
 import { SiteHeader } from "@/components/ui/SiteHeader";
@@ -74,6 +75,7 @@ export default async function RootLayout({
               {children}
             </main>
             <SiteFooter />
+            <KeepGoingTrigger />
           </SoundProvider>
         </LocaleProvider>
       </body>

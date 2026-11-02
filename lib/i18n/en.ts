@@ -154,6 +154,14 @@ export const en = {
     embedsTitle: "MDX components",
     embedsSubtitle: "Embeds, typography, and code — development only",
   },
+  keepGoing: {
+    title: "keep going",
+    intro: "a collection of images to help you keep going.",
+    credit: "inspired by",
+    creditHost: "jackfriks.com/keep-going",
+    imageAlt: "Motivational image",
+    videoLabel: "Motivational video",
+  },
   mdx: {
     play: "Play",
     youtubeTitle: "YouTube video",

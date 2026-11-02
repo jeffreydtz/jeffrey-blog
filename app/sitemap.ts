@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/acerca",
     "/colofon",
   ];
+  // /keep-going is a hidden easter egg: noindex, omitted from this sitemap.
   const entries: MetadataRoute.Sitemap = [];
   for (const route of routes) {
     const available = ["/gabinete", "/acerca", "/colofon"].includes(route)
