@@ -106,7 +106,7 @@ test("reads actual generated now source without executing embedded strings", asy
     new URL("../lib/now.ts", import.meta.url),
     "utf8",
   );
-  assert.deepEqual(listeningFromNowSource(source).title, b.title);
+  assert.deepEqual(listeningFromNowSource(source).title, "The Gambler");
   assert.match(
     listeningFromNowSource(source).coverUrl,
     /^https:\/\/is1-ssl\.mzstatic\.com/,

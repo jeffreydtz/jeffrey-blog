@@ -16,15 +16,15 @@ export type { Now, NowListening, NowReading } from "@/lib/now-types";
 
 export const now: Now = {
   listening: {
-    title: "Andar Conmigo",
-    artist: "Julieta Venegas",
-    spotifyTrackUrl: "https://open.spotify.com/track/5LymLsCJpJGn2st1P48GQm",
+    title: "The Gambler",
+    artist: "Kenny Rogers",
+    spotifyTrackUrl: "https://open.spotify.com/track/5KqldkCunQ2rWxruMEtGh0",
     coverUrl:
-      "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/41/ec/dd/41ecddff-a8e2-6ce2-5c4a-60ee909e65ea/mzi.ajqhjytq.jpg/300x300bb.jpg",
+      "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/04/74/a2/0474a210-0239-df57-1457-96339adf1e56/13UABIM74030.rgb.jpg/300x300bb.jpg",
   },
   reading: {
-    title: "El lobo estepario",
-    author: "Hermann Hesse",
-    coverUrl: "https://covers.openlibrary.org/b/id/12527375-M.jpg",
+    title: "La campana de cristal",
+    author: "Sylvia Plath",
+    coverUrl: "https://covers.openlibrary.org/b/id/8564661-M.jpg",
   },
 };
